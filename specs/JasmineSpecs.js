@@ -304,6 +304,79 @@
 }).call(this);
 
 (function() {
+  require(["Together"], function(Together) {
+    return describe("Together", function() {
+      var getChild;
+      getChild = function() {
+        return {
+          reset: function() {},
+          update: function() {}
+        };
+      };
+      beforeEach(function() {
+        this.children = [getChild(), getChild(), getChild()];
+        this.together = new Together();
+        return this.together.children = this.children;
+      });
+      it("should reset all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reset");
+        }
+        this.together.reset();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reset).toHaveBeenCalled());
+        }
+        return _results;
+      });
+      it("should update all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "update");
+        }
+        this.together.update();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.update).toHaveBeenCalled());
+        }
+        return _results;
+      });
+      it("should report its done if all its children are done", function() {
+        var child, _i, _len, _ref;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          child.done = true;
+        }
+        this.together.update();
+        return expect(this.together.done).toBeTruthy();
+      });
+      return it("should not report its done if all its @children are not done", function() {
+        var child, _i, _len, _ref;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          child.done = true;
+        }
+        this.children[1].done = false;
+        this.together.update();
+        return expect(this.together.done).toBeFalsy();
+      });
+    });
+  });
+
+}).call(this);
+
+(function() {
   require(['Tween', 'Easing'], function(Tween, Easing) {
     return describe("Tween", function() {
       var getArrayTween, getNoFromTween, getNumericTween, getTween;

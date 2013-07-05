@@ -24,19 +24,31 @@ require ['Timeline'], (Timeline) ->
 
   entity = new Entity()
   entity.timeline.repeat 2, (tl) ->
-    tl.tween
-      property: 'x'
-      from: 10
-      to: 100
-      duration: 2000
-      easing: 'easeInOutQuad'
+    tl.together (tl) ->
+      tl.tween
+        property: 'y'
+        from: 10
+        to: 50
+        duration: 2000
+      tl.tween
+        property: 'x'
+        from: 10
+        to: 100
+        duration: 2000
+        easing: 'easeInOutQuad'
     tl.wait 500
-    tl.tween
-      property: 'x'
-      from: 100
-      to: 10
-      duration: 2000
-      easing: 'easeInOutQuad'
+    tl.together (tl) ->
+      tl.tween
+        property: 'y'
+        from: 50
+        to: 10
+        duration: 2000
+      tl.tween
+        property: 'x'
+        from: 100
+        to: 10
+        duration: 2000
+        easing: 'easeInOutQuad'
 
 
 

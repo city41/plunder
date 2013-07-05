@@ -4,7 +4,8 @@ define "Timeline",
     "Tween"
     "Wait"
     "Repeat"
-  ], (U, Tween, Wait, Repeat) ->
+    "Together"
+  ], (U, Tween, Wait, Repeat, Together) ->
 
     class Timeline
       constructor: (owner) ->

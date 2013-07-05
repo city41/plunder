@@ -1,4 +1,4 @@
-define("Timeline", ["Util", "Tween", "Wait", "Repeat"], function(U, Tween, Wait, Repeat) {
+define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, Tween, Wait, Repeat, Together) {
   var Timeline;
   return Timeline = (function() {
     function Timeline(owner) {
@@ -513,6 +513,50 @@ define("Repeat", ["Util"], function(U) {
     };
 
     return Repeat;
+
+  })();
+});
+
+var __slice = [].slice;
+
+define("Together", function() {
+  var Together;
+  return Together = (function() {
+    function Together() {
+      this.children = [];
+    }
+
+    Together.prototype.reset = function() {
+      var child, _i, _len, _ref, _results;
+      this.done = false;
+      _ref = this.children;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
+        _results.push(child.reset());
+      }
+      return _results;
+    };
+
+    Together.prototype.update = function() {
+      var args, child, childNotDone, _i, _len, _ref;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (this.done) {
+        return;
+      }
+      childNotDone = false;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
+        child.update.apply(child, args);
+        if (!child.done) {
+          childNotDone = true;
+        }
+      }
+      return this.done = !childNotDone;
+    };
+
+    return Together;
 
   })();
 });

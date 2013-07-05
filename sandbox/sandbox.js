@@ -37,20 +37,36 @@ require(['Timeline'], function(Timeline) {
   })();
   entity = new Entity();
   entity.timeline.repeat(2, function(tl) {
-    tl.tween({
-      property: 'x',
-      from: 10,
-      to: 100,
-      duration: 2000,
-      easing: 'easeInOutQuad'
+    tl.together(function(tl) {
+      tl.tween({
+        property: 'y',
+        from: 10,
+        to: 50,
+        duration: 2000
+      });
+      return tl.tween({
+        property: 'x',
+        from: 10,
+        to: 100,
+        duration: 2000,
+        easing: 'easeInOutQuad'
+      });
     });
     tl.wait(500);
-    return tl.tween({
-      property: 'x',
-      from: 100,
-      to: 10,
-      duration: 2000,
-      easing: 'easeInOutQuad'
+    return tl.together(function(tl) {
+      tl.tween({
+        property: 'y',
+        from: 50,
+        to: 10,
+        duration: 2000
+      });
+      return tl.tween({
+        property: 'x',
+        from: 100,
+        to: 10,
+        duration: 2000,
+        easing: 'easeInOutQuad'
+      });
     });
   });
   context = document.getElementById('canvas').getContext('2d');
