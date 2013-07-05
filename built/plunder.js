@@ -1,4 +1,4 @@
-define('Timeline', ['Util', 'Tween'], function(U, Tween) {
+define("Timeline", ["Util", "Tween", "Wait", "Repeat"], function(U, Tween, Wait, Repeat) {
   var Timeline;
   return Timeline = (function() {
     function Timeline(owner) {
@@ -459,6 +459,64 @@ define('Easing', function() {
   };
 });
 
+var __slice = [].slice;
+
+define("Repeat", ["Util"], function(U) {
+  var Repeat;
+  return Repeat = (function() {
+    function Repeat(count) {
+      this.count = count;
+      this.children = [];
+      this._currentChild = 0;
+      this._curCount = 0;
+    }
+
+    Repeat.prototype.reset = function() {
+      var child, _i, _len, _results;
+      this.done = false;
+      this._currentChild = 0;
+      this._curCount = 0;
+      _results = [];
+      for (_i = 0, _len = children.length; _i < _len; _i++) {
+        child = children[_i];
+        _results.push(child.reset());
+      }
+      return _results;
+    };
+
+    Repeat.prototype.update = function() {
+      var args, child, curChild, _i, _len, _ref, _results;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      this.done = this._curCount >= this.count;
+      if (this.done) {
+        return;
+      }
+      curChild = this.children[this._currentChild];
+      curChild.update.apply(curChild, args);
+      if (curChild.done) {
+        ++this._currentChild;
+        if (this._currentChild >= this.children.length) {
+          this._currentChild = 0;
+          ++this._curCount;
+          this.done = this._curCount >= this.count;
+          if (!this.done) {
+            _ref = this.children;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              child = _ref[_i];
+              _results.push(child.reset());
+            }
+            return _results;
+          }
+        }
+      }
+    };
+
+    return Repeat;
+
+  })();
+});
+
 define('Tween', ['Easing', 'Util'], function(Easing, U) {
   var Tween, _idCounter;
   _idCounter = 0;
@@ -602,7 +660,7 @@ define('Wait', ['Util'], function(U) {
   return Wait = (function() {
     function Wait(config) {
       U.extend(this, config);
-      if ((this.min != null) && (this.max != null) && this.min >= this.max) {
+      if ((this.min != null) && (this.max != null) && this.min > this.max) {
         throw new Error("Wait: min must be less than max");
       }
       this._specifiedDuration = this.duration;

@@ -4,7 +4,7 @@ define 'Wait', ['Util'], (U) ->
     constructor: (config) ->
       U.extend(this, config)
 
-      if @min? && @max? && @min >= @max
+      if @min? && @max? && @min > @max
         throw new Error("Wait: min must be less than max")
 
       @_specifiedDuration = @duration

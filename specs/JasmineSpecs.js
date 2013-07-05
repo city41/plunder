@@ -241,6 +241,69 @@
 }).call(this);
 
 (function() {
+  require(["Repeat"], function(Repeat) {
+    return describe("Repeat", function() {
+      var getChild;
+      getChild = function() {
+        return {
+          update: function() {
+            var _base;
+            this.done = true;
+            if ((_base = this.update).called == null) {
+              _base.called = 0;
+            }
+            return ++this.update.called;
+          },
+          reset: function() {}
+        };
+      };
+      beforeEach(function() {
+        this.children = [getChild(), getChild()];
+        this.repeat = new Repeat(2);
+        return this.repeat.children = this.children;
+      });
+      it("should update the @children in sequence", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reset");
+        }
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBeUndefined();
+        delete this.children[0].update.called;
+        this.repeat.update();
+        expect(this.children[0].update.called).toBeUndefined();
+        expect(this.children[1].update.called).toBe(1);
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reset).toHaveBeenCalled());
+        }
+        return _results;
+      });
+      return it("should @repeat the cycle", function() {
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBeUndefined();
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBe(1);
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(2);
+        expect(this.children[1].update.called).toBe(1);
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(2);
+        return expect(this.children[1].update.called).toBe(2);
+      });
+    });
+  });
+
+}).call(this);
+
+(function() {
   require(['Tween', 'Easing'], function(Tween, Easing) {
     return describe("Tween", function() {
       var getArrayTween, getNoFromTween, getNumericTween, getTween;

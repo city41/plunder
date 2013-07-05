@@ -1,7 +1,10 @@
-define 'Timeline',
-  [ 'Util'
-    'Tween'
-  ], (U, Tween) ->
+define "Timeline",
+  [ 
+    "Util"
+    "Tween"
+    "Wait"
+    "Repeat"
+  ], (U, Tween, Wait, Repeat) ->
 
     class Timeline
       constructor: (owner) ->
