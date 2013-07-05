@@ -41,7 +41,7 @@ module.exports = (grunt) ->
     jasmine:
       src: 'built/**/*.js'
       options:
-        keepRunner: false
+        keepRunner: true
         specs: 'specs/JasmineSpecs.js'
         template: require('grunt-template-jasmine-requirejs')
         templateOptions:
@@ -93,4 +93,4 @@ module.exports = (grunt) ->
   
   # Default task.
   grunt.registerTask "default", ["jshint", "jasmine", "clean", "concat", "uglify"]
-  grunt.registerTask "spec", ["coffee", "jshint:spec", "jasmine"]
+  grunt.registerTask "spec", ["clean", "coffee", "jshint:spec", "jasmine"]
