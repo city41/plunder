@@ -475,3 +475,61 @@
   });
 
 }).call(this);
+
+(function() {
+  require(["Wait"], function(Wait) {
+    var getMinMaxWait, getWait;
+    getWait = function() {
+      return new Wait({
+        duration: 100
+      });
+    };
+    getMinMaxWait = function(min, max) {
+      if (min == null) {
+        min = 10;
+      }
+      if (max == null) {
+        max = 20;
+      }
+      return new Wait({
+        min: min,
+        max: max
+      });
+    };
+    return describe("Wait", function() {
+      describe("#constructor", function() {
+        it("should not be done", function() {
+          var wait;
+          wait = getWait();
+          return expect(wait.done).toBeFalsy();
+        });
+        it("should set duration from min and max", function() {
+          var wait;
+          wait = getMinMaxWait(5, 10);
+          expect(wait.duration).toBeGreaterThan(4);
+          return expect(wait.duration).toBeLessThan(11);
+        });
+        return it("should throw if min is greater than max", function() {
+          var fn;
+          fn = function() {
+            return getMinMaxWait(10, 5);
+          };
+          return expect(fn).toThrow();
+        });
+      });
+      return describe("#update", function() {
+        return it("should wait for the specified duration", function() {
+          var i, wait, _i;
+          wait = getWait();
+          for (i = _i = 0; _i < 99; i = ++_i) {
+            wait.update(1);
+            expect(wait.done).toBeFalsy();
+          }
+          wait.update(1);
+          return expect(wait.done).toBeTruthy();
+        });
+      });
+    });
+  });
+
+}).call(this);
