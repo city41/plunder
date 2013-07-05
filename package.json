@@ -11,5 +11,8 @@
     "grunt": "~0.4.1",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-template-jasmine-requirejs": "~0.1.2"
+  },
+  "scripts": {
+    "test": "grunt spec --verbose"
   }
 }
