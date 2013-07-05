@@ -1,3 +1,175 @@
+define('Timeline', ['Util', 'Tween'], function(U, Tween) {
+  var Timeline;
+  return Timeline = (function() {
+    function Timeline(owner) {
+      if (!owner) {
+        throw new Error("Timeline requires an owner");
+      }
+      this._owner = owner;
+      this._buildStack = [];
+      this._targetStack = [];
+      this._addedAnis = [];
+    }
+
+    Timeline.prototype._getTargets = function(targetOptions) {
+      var targets, _ref, _ref1;
+      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this._owner;
+      return U.toArray(targets);
+    };
+
+    Timeline.prototype._addAnimationToOwner = function(ani) {
+      this._addedAnis.push(ani);
+      return this._owner._addAni(ani);
+    };
+
+    Timeline.prototype._addParentAnimation = function(builder, targetOptions, AniConstructor, consArg) {
+      var ani, targets;
+      ani = new AniConstructor(consArg);
+      if (targetOptions) {
+        targets = this._getTargets(targetOptions);
+        this._targetStack.push(targets);
+      }
+      this._buildStack.push(ani);
+      builder(this);
+      this._buildStack.pop();
+      if (targetOptions) {
+        this._targetStack.pop();
+      }
+      if (this._buildStack.length === 0) {
+        this._addAnimationToOwner(ani);
+      } else {
+        this._buildStack[this._buildStack.length - 1].children.push(ani);
+      }
+      return ani;
+    };
+
+    Timeline.prototype._addAnimation = function(config, AniConstructor) {
+      var ani;
+      if (!config.targets) {
+        if (config.target) {
+          config.targets = config.target;
+        } else if (this._targetStack.length > 0) {
+          config.targets = this._targetStack.last;
+        } else {
+          config.targets = this._owner;
+        }
+      }
+      config.targets = U.toArray(config.targets);
+      ani = new AniConstructor(config);
+      if (this._buildStack.length === 0) {
+        this._addAnimationToOwner(ani);
+      } else {
+        this._buildStack[this._buildStack.length - 1].children.push(ani);
+      }
+      return ani;
+    };
+
+    Timeline.prototype._fade = function(config, from, to) {
+      if (U.isNumber(config)) {
+        config = {
+          duration: config
+        };
+      }
+      config.property = "alpha";
+      config.from = from;
+      config.to = to;
+      return this._addAnimation(config, Tween);
+    };
+
+    Timeline.prototype.setProperty = function(config) {
+      config.duration = 0;
+      config.from = config.to = config.value;
+      return this.tween(config);
+    };
+
+    Timeline.prototype.copyProperty = function(config) {
+      return this._addAnimation(config, CopyProperty);
+    };
+
+    Timeline.prototype.tween = function(config) {
+      return this._addAnimation(config, Tween);
+    };
+
+    Timeline.prototype.frame = function(config) {
+      return this._addAnimation(config, Frame);
+    };
+
+    Timeline.prototype.fadeIn = function(config) {
+      return this._fade(config, 0, 1);
+    };
+
+    Timeline.prototype.fadeOut = function(config) {
+      return this._fade(config, 1, 0);
+    };
+
+    Timeline.prototype.sequence = function(targetOptionsOrBuilder, builderOrUndefined) {
+      return this.repeat(1, targetOptionsOrBuilder, builderOrUndefined);
+    };
+
+    Timeline.prototype.together = function(targetOptionsOrBuilder, builderOrUndefined) {
+      var builder, targetOptions;
+      if (U.isFunction(targetOptionsOrBuilder)) {
+        builder = targetOptionsOrBuilder;
+      } else {
+        targetOptions = targetOptionsOrBuilder;
+        builder = builderOrUndefined;
+      }
+      return this._addParentAnimation(builder, targetOptions, Together);
+    };
+
+    Timeline.prototype.repeat = function(count, targetOptionsOrBuilder, builderOrUndefined) {
+      var builder, targetOptions;
+      if (U.isFunction(targetOptionsOrBuilder)) {
+        builder = targetOptionsOrBuilder;
+      } else {
+        targetOptions = targetOptionsOrBuilder;
+        builder = builderOrUndefined;
+      }
+      return this._addParentAnimation(builder, targetOptions, Repeat, count);
+    };
+
+    Timeline.prototype.wait = function(millis) {
+      return this.waitBetween(millis, millis);
+    };
+
+    Timeline.prototype.waitBetween = function(min, max) {
+      return this._addAnimation({
+        min: min,
+        max: max
+      }, Wait);
+    };
+
+    Timeline.prototype.invoke = function(func) {
+      return this._addAnimation({
+        func: func
+      }, Invoke);
+    };
+
+    Timeline.prototype.setAnimation = function(config) {
+      return this._addAnimation(config, SetAnimation);
+    };
+
+    Timeline.prototype.end = function() {
+      var me, rootAni;
+      rootAni = this._buildStack.first;
+      if (rootAni) {
+        me = this;
+        return this.invoke(function() {
+          return me.die();
+        });
+      }
+    };
+
+    Timeline.prototype.die = function() {
+      var _ref;
+      return (_ref = this._owner) != null ? _ref._clearAnis() : void 0;
+    };
+
+    return Timeline;
+
+  })();
+});
+
 var __hasProp = {}.hasOwnProperty;
 
 define('Util', function() {
@@ -45,13 +217,15 @@ define('Util', function() {
     },
     extend: function(target, incoming) {
       var key, value, _results;
-      _results = [];
-      for (key in incoming) {
-        if (!__hasProp.call(incoming, key)) continue;
-        value = incoming[key];
-        _results.push(target[key] = value);
+      if (target != null) {
+        _results = [];
+        for (key in incoming) {
+          if (!__hasProp.call(incoming, key)) continue;
+          value = incoming[key];
+          _results.push(target[key] = value);
+        }
+        return _results;
       }
-      return _results;
     },
     toArray: function(obj) {
       if (obj == null) {

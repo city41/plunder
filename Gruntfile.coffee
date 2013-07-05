@@ -16,7 +16,13 @@ module.exports = (grunt) ->
           'built/plunder.js': 'src/**/*.coffee'
       spec:
         files:
-          'specs/JasmineSpecs.js': 'specs/**/*.coffee'
+          'specs/JasmineSpecs.js': 'specs/specs/**/*Spec.coffee'
+          'specs/helpers/helpers.js': 'specs/helpers/**/*.coffee'
+      sandbox:
+        options:
+          bare: true
+        files:
+          'sandbox/sandbox.js': 'sandbox/**/*.coffee'
 
     clean:
       files: ["built", "specs/JasmineSpecs.js"]
@@ -47,7 +53,12 @@ module.exports = (grunt) ->
         templateOptions:
           requireConfig:
             baseUrl: 'built/'
-        # helpers: 'specs/helpers/*.js'
+        helpers: 'specs/helpers/**/*.js'
+        
+    watch:
+      sandbox:
+        files: ['sandbox/**/*.coffee', 'src/**/*.coffee']
+        tasks: ['coffee:sandbox', 'coffee:src']
 
   
   # These plugins provide necessary tasks.

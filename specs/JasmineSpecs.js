@@ -1,4 +1,82 @@
 (function() {
+  require(["Timeline", "Tween"], function(Timeline, Tween) {
+    return describe("Timeline", function() {
+      var getOwner;
+      getOwner = function() {
+        return {
+          anis: [],
+          _addAni: function(ani) {
+            return this.anis.push(ani);
+          },
+          _clearAnis: function() {
+            return this.anis = [];
+          }
+        };
+      };
+      describe("#constructor", function() {
+        return it("should throw if no owner provided", function() {
+          var fn;
+          fn = function() {
+            return new Timeline();
+          };
+          expect(fn).toThrow();
+          fn = function() {
+            return new Timeline({});
+          };
+          return expect(fn).not.toThrow();
+        });
+      });
+      describe("targets", function() {
+        it("should use the owner as a target if none specified", function() {
+          var owner, timeline;
+          owner = getOwner();
+          timeline = new Timeline(owner);
+          timeline.tween({
+            property: 'x'
+          });
+          return expect(owner.anis[0].targets[0]).toBe(owner);
+        });
+        it("should convert a singular target into targets", function() {
+          var owner, target, timeline;
+          target = {};
+          owner = getOwner();
+          timeline = new Timeline(owner);
+          timeline.tween({
+            target: target,
+            property: 'x'
+          });
+          return expect(owner.anis[0].targets[0]).toBe(target);
+        });
+        return it("should use the targets", function() {
+          var owner, targets, timeline;
+          targets = [{}, {}];
+          owner = getOwner();
+          timeline = new Timeline(owner);
+          timeline.tween({
+            targets: targets,
+            property: 'x'
+          });
+          expect(owner.anis[0].targets[0]).toBe(targets[0]);
+          return expect(owner.anis[0].targets[1]).toBe(targets[1]);
+        });
+      });
+      return describe("#tween", function() {
+        return it("should build a tween object", function() {
+          var owner, timeline;
+          owner = getOwner();
+          timeline = new Timeline(owner);
+          timeline.tween({
+            property: 'x'
+          });
+          return expect(owner.anis[0]).toBeInstanceOf(Tween);
+        });
+      });
+    });
+  });
+
+}).call(this);
+
+(function() {
   require(['Util'], function(U) {
     return describe("Util", function() {
       describe("#toArray", function() {
@@ -51,7 +129,7 @@
           return expect(U.isFunction("foo")).toBeFalsy();
         });
       });
-      return describe("#isUndefined", function() {
+      describe("#isUndefined", function() {
         it("should say undefined is undefined", function() {
           expect(U.isUndefined(void 0)).toBeTruthy();
           return expect(U.isUndefined()).toBeTruthy();
@@ -61,6 +139,100 @@
           expect(U.isUndefined(12)).toBeFalsy();
           expect(U.isUndefined(function() {})).toBeFalsy();
           return expect(U.isUndefined("hello")).toBeFalsy();
+        });
+      });
+      describe("#areSameTypes", function() {
+        it("should indicate arrays are the same type", function() {
+          return expect(U.areSameTypes([], [1, "foo"])).toBeTruthy();
+        });
+        it("should indicate numbers are the same type", function() {
+          return expect(U.areSameTypes(88, 123.44)).toBeTruthy();
+        });
+        it("should indicate strings are the same type", function() {
+          return expect(U.areSameTypes("hello", "george")).toBeTruthy();
+        });
+        it("should say null and an object are the same type", function() {
+          return expect(U.areSameTypes(null, {})).toBeTruthy();
+        });
+        return it("should not say different types are the same", function() {
+          expect(U.areSameTypes(null, void 0)).toBeFalsy();
+          expect(U.areSameTypes("foo", 12)).toBeFalsy();
+          return expect(U.areSameTypes({}, function() {})).toBeFalsy();
+        });
+      });
+      describe("#isArray", function() {
+        it("should say its an array", function() {
+          var obj;
+          expect(U.isArray([])).toBeTruthy();
+          expect(U.isArray([1, 2, 3])).toBeTruthy();
+          obj = {
+            foo: [8, 9]
+          };
+          return expect(U.isArray(obj.foo)).toBeTruthy();
+        });
+        return it("should say non arrays are not arrays", function() {
+          expect(U.isArray()).toBeFalsy();
+          expect(U.isArray(12)).toBeFalsy();
+          expect(U.isArray("not an array")).toBeFalsy();
+          expect(U.isArray({})).toBeFalsy();
+          return expect(U.isArray({
+            '0': 1,
+            '1': 8,
+            '2': 5
+          })).toBeFalsy();
+        });
+      });
+      return describe("#extend", function() {
+        it("should extend an object", function() {
+          var incoming, obj;
+          obj = {};
+          incoming = {
+            foo: 1,
+            bar: 2
+          };
+          U.extend(obj, incoming);
+          expect(obj.foo).toEqual(1);
+          return expect(obj.bar).toEqual(2);
+        });
+        it("should quietly ignore null destinations", function() {
+          var fn;
+          fn = function() {
+            return U.extend(null, {
+              foo: 1
+            });
+          };
+          return expect(fn).not.toThrow();
+        });
+        it("should quietly ignore undefined destinations", function() {
+          var fn;
+          fn = function() {
+            return U.extend(void 0, {
+              foo: 1
+            });
+          };
+          return expect(fn).not.toThrow();
+        });
+        return it("should only apply immediate keys", function() {
+          var Foo, obj, source;
+          obj = {};
+          Foo = (function() {
+            function Foo() {}
+
+            Foo.prototype.bar = 1;
+
+            Foo.prototype.buz = 2;
+
+            return Foo;
+
+          })();
+          source = new Foo();
+          source.hi = 8;
+          source.woah = 9;
+          U.extend(obj, source);
+          expect(obj.hi).toEqual(8);
+          expect(obj.woah).toEqual(9);
+          expect(obj.bar).toBeUndefined();
+          return expect(obj.buz).toBeUndefined();
         });
       });
     });
