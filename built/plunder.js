@@ -1,3 +1,5 @@
+var __hasProp = {}.hasOwnProperty;
+
 define('Util', function() {
   var Util, _isInteger;
   _isInteger = function(num) {
@@ -5,15 +7,16 @@ define('Util', function() {
   };
   Util = {
     rand: function(minOrMax, maxOrUndefined, dontFloor) {
-      var max, min, range, result;
-      if (Util.isUndefined(dontFloor)) {
+      var max, min, range, result, shouldFloor;
+      if (dontFloor == null) {
         dontFloor = false;
       }
-      min = (Util.isNumber(maxOrUndefined) ? minOrMax : 0);
-      max = (Util.isNumber(maxOrUndefined) ? maxOrUndefined : minOrMax);
+      shouldFloor = !dontFloor;
+      min = Util.isNumber(maxOrUndefined) ? minOrMax : 0;
+      max = Util.isNumber(maxOrUndefined) ? maxOrUndefined : minOrMax;
       range = max - min;
       result = Math.random() * range + min;
-      if (_isInteger(min) && _isInteger(max) && !dontFloor) {
+      if (_isInteger(min) && _isInteger(max) && shouldFloor) {
         return Math.floor(result);
       } else {
         return result;
@@ -31,15 +34,22 @@ define('Util', function() {
     isFunction: function(f) {
       return typeof f === "function";
     },
+    areSameTypes: function(a, b) {
+      if (this.isArray(a)) {
+        return this.isArray(b);
+      }
+      if (this.isArray(b)) {
+        return this.isArray(a);
+      }
+      return typeof a === typeof b;
+    },
     extend: function(target, incoming) {
-      var key, _results;
+      var key, value, _results;
       _results = [];
       for (key in incoming) {
-        if (incoming.hasOwnProperty(key)) {
-          _results.push(target[key] = incoming[key]);
-        } else {
-          _results.push(void 0);
-        }
+        if (!__hasProp.call(incoming, key)) continue;
+        value = incoming[key];
+        _results.push(target[key] = value);
       }
       return _results;
     }
@@ -296,6 +306,9 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
           this._setProperty(target, this._saveProperty, curValue);
         }
         value = this.from != null ? this.from : target[this.property];
+        if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
+          throw new Error("Tween: mismatched types between from/to and targets current value");
+        }
         if (U.isArray(value)) {
           value = value.slice(0);
         }
@@ -368,21 +381,21 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
     };
 
     Tween.prototype._tween = function(target) {
-      var array, curValue, from, i, tweenedValue, _results;
+      var cell, curValue, from, i, tweenedValue, _i, _len, _results;
       curValue = this._getProperty(target, this.property);
       if (U.isArray(curValue)) {
-        array = this._getProperty(target, this.property);
-        i = 0;
         _results = [];
-        while (i < array.length) {
+        for (i = _i = 0, _len = curValue.length; _i < _len; i = ++_i) {
+          cell = curValue[i];
           from = this.from || target[this._saveProperty];
-          array[i] = this._tweenValue(this._elapsed, from[i], this.to[i], this.duration);
-          _results.push(++i);
+          _results.push(curValue[i] = this._tweenValue(this._elapsed, from[i], this.to[i], this.duration));
         }
         return _results;
       } else if (U.isNumber(curValue)) {
         tweenedValue = this._tweenValue(this._elapsed, this.from, this.to, this.duration);
         return this._setProperty(target, this.property, tweenedValue);
+      } else {
+        throw new Error("Tween can only operate on numbers or arrays of numbers");
       }
     };
 

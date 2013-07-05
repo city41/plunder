@@ -25,6 +25,9 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
 
         value = if @from? then @from else target[@property]
 
+        if curValue? && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, @to))
+          throw new Error("Tween: mismatched types between from/to and targets current value")
+
         value = value.slice(0)  if U.isArray(value)
         @_setProperty target, @property, value
 
@@ -53,7 +56,7 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
       paths = propertyPath.split(".")
 
       target = target[path] for path in paths
-      target
+      return target
 
     _setProperty: (target, propertyPath, value) ->
       paths = propertyPath.split(".")
@@ -73,20 +76,20 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
 
     _tween: (target) ->
       curValue = @_getProperty(target, @property)
-      if U.isArray(curValue)
-        array = @_getProperty(target, @property)
-        i = 0
 
-        while i < array.length
+      if U.isArray(curValue)
+        for cell, i in curValue
           from = @from or target[@_saveProperty]
-          array[i] = @_tweenValue(@_elapsed, from[i], @to[i], @duration)
-          ++i
+          curValue[i] = @_tweenValue(@_elapsed, from[i], @to[i], @duration)
+
       else if U.isNumber(curValue)
         tweenedValue = @_tweenValue(@_elapsed, @from, @to, @duration)
         @_setProperty target, @property, tweenedValue
+      else
+        throw new Error("Tween can only operate on numbers or arrays of numbers")
 
     _tweenValue: (elapsed, from, to, duration) ->
       position = @easeFunc(elapsed, from, to - from, duration)
       position += U.rand(@jitterMin, @jitterMax or 0)  if U.isNumber(@jitterMin)
-      position
+      return position
 

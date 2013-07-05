@@ -4,12 +4,16 @@ define 'Util', ->
 
   Util =
     rand: (minOrMax, maxOrUndefined, dontFloor) ->
-      dontFloor = false  if Util.isUndefined(dontFloor)
-      min = (if Util.isNumber(maxOrUndefined) then minOrMax else 0)
-      max = (if Util.isNumber(maxOrUndefined) then maxOrUndefined else minOrMax)
+      dontFloor ?= false
+      shouldFloor = !dontFloor
+
+      min = if Util.isNumber(maxOrUndefined) then minOrMax else 0
+      max = if Util.isNumber(maxOrUndefined) then maxOrUndefined else minOrMax
       range = max - min
+
       result = Math.random() * range + min
-      if _isInteger(min) and _isInteger(max) and not dontFloor
+
+      if _isInteger(min) and _isInteger(max) and shouldFloor
         Math.floor result
       else
         result
@@ -26,9 +30,14 @@ define 'Util', ->
     isFunction: (f) ->
       typeof f == "function"
 
+    areSameTypes: (a, b) ->
+      if @isArray(a) then return @isArray(b)
+      if @isArray(b) then return @isArray(a)
+      return typeof a == typeof b
+
     extend: (target, incoming) ->
-      for key of incoming
-        target[key] = incoming[key]  if incoming.hasOwnProperty(key)
+      for own key, value of incoming
+        target[key] = value
 
   Util.isArray = Array.isArray or (obj) ->
     toString.call(obj) == "[object Array]"

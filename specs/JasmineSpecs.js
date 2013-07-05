@@ -1,28 +1,64 @@
 (function() {
   require(['Tween', 'Easing'], function(Tween, Easing) {
-    return describe("@tween", function() {
-      beforeEach(function() {
-        this.startingValue = 12;
-        this.target = {
-          foo: this.startingValue
+    return describe("Tween", function() {
+      var getArrayTween, getNoFromTween, getNumericTween, getTween;
+      getTween = function(options, initial, from, to) {
+        var property, target, tween, _ref, _ref1;
+        if (options == null) {
+          options = {};
+        }
+        target = (_ref = options.target) != null ? _ref : {
+          foo: initial
         };
-        return this.tween = new Tween({
-          targets: [this.target],
-          property: "foo",
-          from: 1,
-          to: 10,
-          duration: 1000
+        property = (_ref1 = options.property) != null ? _ref1 : 'foo';
+        tween = new Tween({
+          targets: [target],
+          property: property,
+          from: from,
+          to: to,
+          duration: 1000,
+          easing: options.easing
         });
-      });
+        return {
+          tween: tween,
+          target: target
+        };
+      };
+      getNumericTween = function(options, initial) {
+        if (initial == null) {
+          initial = 12;
+        }
+        return getTween(options, initial, 1, 10);
+      };
+      getArrayTween = function(options, initial) {
+        if (initial == null) {
+          initial = [0, 0, 0];
+        }
+        return getTween(options, initial, [1, 2, 3], [4, 5, 6]);
+      };
+      getNoFromTween = function(options) {
+        return getTween(options, 12, void 0, 10);
+      };
       describe('#constructor', function() {
         it("should set the property to the from value", function() {
-          return expect(this.target.foo).toEqual(this.tween.from);
+          var target, tween, _ref;
+          _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+          return expect(target.foo).toEqual(tween.from);
+        });
+        it("should keep the property as is if there is no from provided", function() {
+          var target, tween, _ref;
+          _ref = getNoFromTween(), tween = _ref.tween, target = _ref.target;
+          return expect(target.foo).toEqual(12);
         });
         it("should not be done", function() {
-          return expect(this.tween.done).toBe(false);
+          var target, tween, _ref;
+          _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+          return expect(tween.done).toBe(false);
         });
         return it("should default to linearTwean for easing", function() {
-          return expect(this.tween.easeFunc).toBe(Easing.linearTween);
+          var target, tween, _ref;
+          _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+          return expect(tween.easeFunc).toBe(Easing.linearTween);
         });
       });
       return describe('#update', function() {
@@ -46,76 +82,71 @@
           return _results;
         });
         it("should update nested properties", function() {
-          var target, tween;
-          target = {
-            foo: {
-              bar: 1
-            }
-          };
-          tween = new Tween({
-            targets: [target],
-            property: 'foo.bar',
-            from: 3,
-            to: 5,
-            duration: 1000
-          });
-          expect(target.foo.bar).toBe(3);
+          var target, tween, _ref;
+          _ref = getNumericTween({
+            target: {
+              foo: {
+                bar: 1
+              }
+            },
+            property: 'foo.bar'
+          }), tween = _ref.tween, target = _ref.target;
+          expect(target.foo.bar).toBe(1);
           tween.update(tween.duration + 10);
-          return expect(target.foo.bar).toBe(5);
+          return expect(target.foo.bar).toBe(10);
         });
         it("should update each element of the array", function() {
-          var originalValue, target, tween;
-          originalValue = [1, 2, 3];
-          target = {
-            foo: originalValue
-          };
-          tween = new Tween({
-            targets: [target],
-            property: 'foo',
-            from: [0, 0, 0],
-            to: [4, 5, 6],
-            duration: 1000
-          });
-          expect(originalValue[0]).toBe(1);
-          expect(originalValue[1]).toBe(2);
-          expect(originalValue[2]).toBe(3);
-          expect(target.foo[0]).toBe(0);
-          expect(target.foo[1]).toBe(0);
-          expect(target.foo[2]).toBe(0);
+          var originalValue, target, tween, _ref;
+          originalValue = [12, 13, 14];
+          _ref = getArrayTween({}, originalValue), tween = _ref.tween, target = _ref.target;
+          expect(originalValue[0]).toBe(12);
+          expect(originalValue[1]).toBe(13);
+          expect(originalValue[2]).toBe(14);
+          expect(target.foo[0]).toBe(1);
+          expect(target.foo[1]).toBe(2);
+          expect(target.foo[2]).toBe(3);
           tween.update(tween.duration + 10);
           expect(target.foo[0]).toBe(4);
           expect(target.foo[1]).toBe(5);
           expect(target.foo[2]).toBe(6);
-          expect(originalValue[0]).toBe(1);
-          expect(originalValue[1]).toBe(2);
-          return expect(originalValue[2]).toBe(3);
+          expect(originalValue[0]).toBe(12);
+          expect(originalValue[1]).toBe(13);
+          return expect(originalValue[2]).toBe(14);
         });
         describe("once finished", function() {
           it("should indicate it is done", function() {
-            this.tween.update(this.tween.duration + 10);
-            return expect(this.tween.done).toBeTruthy();
+            var target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.update(tween.duration + 10);
+            return expect(tween.done).toBeTruthy();
           });
           it("should set the property to the to value", function() {
-            this.tween.update(this.tween.duration + 10);
-            return expect(this.target.foo).toEqual(this.tween.to);
+            var target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.update(tween.duration + 10);
+            return expect(target.foo).toEqual(tween.to);
           });
           it("should reset to the original value if @restoreAfter is set", function() {
-            this.tween.restoreAfter = true;
-            this.tween.update(this.tween.duration / 2);
-            expect(this.target.foo).not.toEqual(this.tween.to);
-            expect(this.tween.done).toBeFalsy();
-            this.tween.update(this.tween.duration + 10);
-            expect(this.target.foo).toEqual(this.startingValue);
-            return expect(this.tween.done).toBeTruthy();
+            var target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.restoreAfter = true;
+            tween.update(tween.duration / 2);
+            expect(target.foo).not.toEqual(tween.to);
+            expect(tween.done).toBeFalsy();
+            tween.update(tween.duration + 10);
+            expect(target.foo).toEqual(12);
+            return expect(tween.done).toBeTruthy();
           });
           return it("shouldn't leave behind and temporary properties", function() {
-            this.tween.update(this.tween.duration + 10);
-            return expect(this.target).toEqual({
+            var target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.update(tween.duration + 10);
+            return expect(target).toEqual({
               foo: 10
             });
           });
         });
-        return describe('easing functions', function() {
+        describe("tweening", function() {
           beforeEach(function() {
             var _this = this;
             this.easingFunc = 'testEasingFunc';
@@ -127,18 +158,74 @@
           afterEach(function() {
             return delete Easing[this.easingFunc];
           });
-          return it("should use the specified easing function", function() {
-            var tween;
+          it("should tween values", function() {
+            var target, tween, _ref;
+            _ref = getNumericTween({
+              easing: this.easingFunc
+            }), tween = _ref.tween, target = _ref.target;
+            tween.update(100);
+            return expect(target.foo).toEqual(this.easedValue);
+          });
+          return it("should tween arrays", function() {
+            var target, tween, _ref;
+            _ref = getArrayTween({
+              easing: this.easingFunc
+            }), tween = _ref.tween, target = _ref.target;
+            tween.update(100);
+            expect(target.foo[0]).toEqual(this.easedValue);
+            expect(target.foo[1]).toEqual(this.easedValue);
+            return expect(target.foo[2]).toEqual(this.easedValue);
+          });
+        });
+        return describe("error conditions", function() {
+          it("should throw an error if asked to tween a non numeric value", function() {
+            var fn, target, tween;
+            target = {
+              foo: 'hello'
+            };
             tween = new Tween({
-              targets: [this.target],
-              property: "foo",
-              easing: this.easingFunc,
-              from: 1,
-              to: 10,
+              targets: [target],
+              property: 'foo',
+              from: 'not',
+              to: 'gonna happen',
               duration: 2000
             });
-            tween.update(100);
-            return expect(this.target.foo).toEqual(this.easedValue);
+            fn = function() {
+              return tween.update(10);
+            };
+            return expect(fn).toThrow();
+          });
+          it("should throw an error if existing property and from are of different types", function() {
+            var fn, target;
+            target = {
+              foo: 1
+            };
+            fn = function() {
+              var tween;
+              return tween = new Tween({
+                targets: [target],
+                property: 'foo',
+                from: [0, 0, 0],
+                to: [1, 1, 1],
+                duration: 2000
+              });
+            };
+            return expect(fn).toThrow();
+          });
+          return it("should not throw an error if there is no existing property", function() {
+            var fn, target;
+            target = {};
+            fn = function() {
+              var tween;
+              return tween = new Tween({
+                targets: [target],
+                property: 'foo',
+                from: [0, 0, 0],
+                to: [1, 1, 1],
+                duration: 2000
+              });
+            };
+            return expect(fn).not.toThrow();
           });
         });
       });

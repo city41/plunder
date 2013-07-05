@@ -49,48 +49,16 @@ module.exports = (grunt) ->
             baseUrl: 'built/'
         # helpers: 'specs/helpers/*.js'
 
-    jshint:
-      gruntfile:
-        options:
-          jshintrc: ".jshintrc"
-
-        src: "Gruntfile.js"
-
-      src:
-        options:
-          jshintrc: "src/.jshintrc"
-
-        src: ["src/**/*.js"]
-
-      spec:
-        options:
-          jshintrc: "specs/.jshintrc"
-
-        src: ["specs/**/*.js"]
-
-    watch:
-      gruntfile:
-        files: "<%= jshint.gruntfile.src %>"
-        tasks: ["jshint:gruntfile"]
-
-      src:
-        files: "<%= jshint.src.src %>"
-        tasks: ["jshint:src", "qunit"]
-
-      spec:
-        files: "<%= jshint.test.src %>"
-        tasks: ["jshint:spec", "jasmine"]
-
   
   # These plugins provide necessary tasks.
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
-  grunt.loadNpmTasks "grunt-contrib-jshint"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   
   # Default task.
-  grunt.registerTask "default", ["jshint", "jasmine", "clean", "concat", "uglify"]
-  grunt.registerTask "spec", ["clean", "coffee", "jshint:spec", "jasmine"]
+  grunt.registerTask "default", ["jasmine", "clean", "concat", "uglify"]
+  grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
+

@@ -1,24 +1,48 @@
 require ['Tween', 'Easing'], (Tween, Easing) ->
-  describe "@tween", ->
-    beforeEach ->
-      @startingValue = 12
-      @target = foo: @startingValue
-      @tween = new Tween
-        targets: [@target]
-        property: "foo"
-        from: 1
-        to: 10
+  describe "Tween", ->
+
+    getTween = (options = {}, initial, from, to) ->
+      target = options.target ? { foo: initial }
+      property = options.property ? 'foo'
+
+      tween = new Tween
+        targets: [target]
+        property: property
+        from: from
+        to: to
         duration: 1000
+        easing: options.easing
+
+      return { tween, target }
+
+    getNumericTween = (options, initial=12) ->
+      getTween(options, initial, 1, 10)
+
+    getArrayTween = (options, initial=[0,0,0]) ->
+      getTween(options, initial, [1,2,3], [4,5,6])
+
+    getNoFromTween = (options) ->
+      getTween(options, 12, undefined, 10)
+
+
+
 
     describe '#constructor', ->
       it "should set the property to the from value", ->
-        expect(@target.foo).toEqual @tween.from
+        { tween, target } = getNumericTween()
+        expect(target.foo).toEqual tween.from
+
+      it "should keep the property as is if there is no from provided", ->
+        { tween, target } = getNoFromTween()
+        expect(target.foo).toEqual 12
 
       it "should not be done", ->
-        expect(@tween.done).toBe false
+        { tween, target } = getNumericTween()
+        expect(tween.done).toBe false
 
       it "should default to linearTwean for easing", ->
-        expect(@tween.easeFunc).toBe Easing.linearTween
+        { tween, target } = getNumericTween()
+        expect(tween.easeFunc).toBe Easing.linearTween
 
     describe '#update', ->
       it "should tween all targets", ->
@@ -39,41 +63,29 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
           expect(target.foo).toEqual fromValue
 
       it "should update nested properties", ->
-        target = 
-          foo:
-            bar: 1
-
-        tween = new Tween
-          targets: [target]
+        { tween, target } = getNumericTween
+          target:
+            foo:
+              bar: 1
           property: 'foo.bar'
-          from: 3
-          to: 5
-          duration: 1000
 
-        expect(target.foo.bar).toBe 3
+        expect(target.foo.bar).toBe 1
         tween.update(tween.duration + 10)
-        expect(target.foo.bar).toBe 5
+        expect(target.foo.bar).toBe 10
 
       it "should update each element of the array", ->
-        originalValue = [1,2,3]
-        target = 
-          foo: originalValue
-
-        tween = new Tween
-          targets: [target]
-          property: 'foo'
-          from: [0,0,0]
-          to: [4,5,6]
-          duration: 1000
+        originalValue = [12,13,14]
+        { tween, target } = getArrayTween({}, originalValue)
+          
 
         # original array should be untouched
-        expect(originalValue[0]).toBe 1
-        expect(originalValue[1]).toBe 2
-        expect(originalValue[2]).toBe 3
+        expect(originalValue[0]).toBe 12
+        expect(originalValue[1]).toBe 13
+        expect(originalValue[2]).toBe 14
 
-        expect(target.foo[0]).toBe 0
-        expect(target.foo[1]).toBe 0
-        expect(target.foo[2]).toBe 0
+        expect(target.foo[0]).toBe 1
+        expect(target.foo[1]).toBe 2
+        expect(target.foo[2]).toBe 3
 
         tween.update(tween.duration + 10)
         expect(target.foo[0]).toBe 4
@@ -81,34 +93,38 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         expect(target.foo[2]).toBe 6
 
         # double check original array is untouched
-        expect(originalValue[0]).toBe 1
-        expect(originalValue[1]).toBe 2
-        expect(originalValue[2]).toBe 3
+        expect(originalValue[0]).toBe 12
+        expect(originalValue[1]).toBe 13
+        expect(originalValue[2]).toBe 14
 
       describe "once finished", ->
         it "should indicate it is done", ->
-          @tween.update @tween.duration + 10
-          expect(@tween.done).toBeTruthy()
+          { tween, target } = getNumericTween()
+          tween.update tween.duration + 10
+          expect(tween.done).toBeTruthy()
 
         it "should set the property to the to value", ->
-          @tween.update @tween.duration + 10
-          expect(@target.foo).toEqual @tween.to
+          { tween, target } = getNumericTween()
+          tween.update tween.duration + 10
+          expect(target.foo).toEqual tween.to
 
         it "should reset to the original value if @restoreAfter is set", ->
-          @tween.restoreAfter = true
-          @tween.update @tween.duration / 2
-          expect(@target.foo).not.toEqual @tween.to
-          expect(@tween.done).toBeFalsy()
+          { tween, target } = getNumericTween()
+          tween.restoreAfter = true
+          tween.update tween.duration / 2
+          expect(target.foo).not.toEqual tween.to
+          expect(tween.done).toBeFalsy()
 
-          @tween.update @tween.duration + 10
-          expect(@target.foo).toEqual @startingValue
-          expect(@tween.done).toBeTruthy()
+          tween.update tween.duration + 10
+          expect(target.foo).toEqual 12
+          expect(tween.done).toBeTruthy()
 
         it "shouldn't leave behind and temporary properties", ->
-          @tween.update @tween.duration + 10
-          expect(@target).toEqual { foo: 10 }
+          { tween, target } = getNumericTween()
+          tween.update tween.duration + 10
+          expect(target).toEqual { foo: 10 }
 
-      describe 'easing functions', ->
+      describe "tweening", ->
         beforeEach ->
           @easingFunc = 'testEasingFunc'
           @easedValue = 12
@@ -117,15 +133,62 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         afterEach ->
           delete Easing[@easingFunc]
 
-        it "should use the specified easing function", ->
-          tween = new Tween
-            targets: [@target]
-            property: "foo"
+        it "should tween values", ->
+          { tween, target } = getNumericTween
             easing: @easingFunc
-            from: 1
-            to: 10
-            duration: 2000
-            
+
           tween.update 100
-          expect(@target.foo).toEqual @easedValue
+          expect(target.foo).toEqual @easedValue
+
+        it "should tween arrays", ->
+          { tween, target } = getArrayTween
+            easing: @easingFunc
+
+          tween.update 100
+          
+          expect(target.foo[0]).toEqual @easedValue
+          expect(target.foo[1]).toEqual @easedValue
+          expect(target.foo[2]).toEqual @easedValue
+
+      describe "error conditions", ->
+        it "should throw an error if asked to tween a non numeric value", ->
+          target = foo: 'hello'
+
+          tween = new Tween
+            targets: [target]
+            property: 'foo'
+            from: 'not'
+            to: 'gonna happen'
+            duration: 2000
+
+          fn = ->
+            tween.update(10)
+
+          expect(fn).toThrow()
+
+        it "should throw an error if existing property and from are of different types", ->
+          target = foo: 1
+
+          fn = ->
+            tween = new Tween
+              targets: [target]
+              property: 'foo'
+              from: [0,0,0]
+              to: [1,1,1]
+              duration: 2000
+
+          expect(fn).toThrow()
+
+        it "should not throw an error if there is no existing property", ->
+          target = {}
+
+          fn = ->
+            tween = new Tween
+              targets: [target]
+              property: 'foo'
+              from: [0,0,0]
+              to: [1,1,1]
+              duration: 2000
+
+          expect(fn).not.toThrow()
 
