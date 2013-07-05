@@ -52,6 +52,16 @@ define('Util', function() {
         _results.push(target[key] = value);
       }
       return _results;
+    },
+    toArray: function(obj) {
+      if (obj == null) {
+        return [];
+      }
+      if (this.isArray(obj)) {
+        return obj;
+      } else {
+        return [obj];
+      }
     }
   };
   Util.isArray = Array.isArray || function(obj) {

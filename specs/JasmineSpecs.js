@@ -1,4 +1,74 @@
 (function() {
+  require(['Util'], function(U) {
+    return describe("Util", function() {
+      describe("#toArray", function() {
+        it("should pass arrays through", function() {
+          var a, b;
+          a = [1, 2, 3];
+          b = U.toArray(a);
+          return expect(b).toBe(a);
+        });
+        it("should wrap non arrays into an array", function() {
+          return expect(U.toArray(12)).toEqual([12]);
+        });
+        it("should convert null into an empty array", function() {
+          return expect(U.toArray(null)).toEqual([]);
+        });
+        return it("should convert undefined into an empty array", function() {
+          return expect(U.toArray()).toEqual([]);
+        });
+      });
+      describe("#isNumber", function() {
+        it("should say an integer is a number", function() {
+          return expect(U.isNumber(81)).toBeTruthy();
+        });
+        it("should say a float is a number", function() {
+          return expect(U.isNumber(12.344)).toBeTruthy();
+        });
+        return it("should not say non numbers are numbers", function() {
+          expect(U.isNumber()).toBeFalsy();
+          expect(U.isNumber("hello")).toBeFalsy();
+          expect(U.isNumber({})).toBeFalsy();
+          return expect(U.isNumber(null)).toBeFalsy();
+        });
+      });
+      describe("#isFunction", function() {
+        it("should say a function is a function", function() {
+          var fn, obj;
+          expect(U.isFunction(function() {})).toBeTruthy();
+          fn = function() {};
+          expect(U.isFunction(fn)).toBeTruthy();
+          obj = {
+            foo: function() {}
+          };
+          return expect(U.isFunction(obj.foo)).toBeTruthy();
+        });
+        return it("should say non functions are not functions", function() {
+          expect(U.isFunction()).toBeFalsy();
+          expect(U.isFunction(12)).toBeFalsy();
+          expect(U.isFunction({})).toBeFalsy();
+          expect(U.isFunction(null)).toBeFalsy();
+          return expect(U.isFunction("foo")).toBeFalsy();
+        });
+      });
+      return describe("#isUndefined", function() {
+        it("should say undefined is undefined", function() {
+          expect(U.isUndefined(void 0)).toBeTruthy();
+          return expect(U.isUndefined()).toBeTruthy();
+        });
+        return it("should say defined things are not undefined", function() {
+          expect(U.isUndefined({})).toBeFalsy();
+          expect(U.isUndefined(12)).toBeFalsy();
+          expect(U.isUndefined(function() {})).toBeFalsy();
+          return expect(U.isUndefined("hello")).toBeFalsy();
+        });
+      });
+    });
+  });
+
+}).call(this);
+
+(function() {
   require(['Tween', 'Easing'], function(Tween, Easing) {
     return describe("Tween", function() {
       var getArrayTween, getNoFromTween, getNumericTween, getTween;

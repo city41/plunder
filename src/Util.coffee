@@ -36,11 +36,18 @@ define 'Util', ->
       return typeof a == typeof b
 
     extend: (target, incoming) ->
-      for own key, value of incoming
-        target[key] = value
+      if target?
+        for own key, value of incoming
+          target[key] = value
+
+    toArray: (obj) ->
+      if !obj?
+        return []
+
+      if @isArray(obj) then obj else [obj]
 
   Util.isArray = Array.isArray or (obj) ->
     toString.call(obj) == "[object Array]"
 
-  Util
+  return Util
 
