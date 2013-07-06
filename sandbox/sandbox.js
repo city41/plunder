@@ -1,18 +1,35 @@
 require(['Timeline'], function(Timeline) {
-  var Entity, context, entity, lastTimestamp, update;
+  var Entity, context, entity, lastTimestamp, tl, update;
   Entity = (function() {
     function Entity() {
-      this.timeline = new Timeline(this);
       this.anis = [];
-      this.x = 10;
-      this.y = 10;
+      this._x = 10;
+      this._y = 10;
+      Object.defineProperties(this, {
+        x: {
+          get: function() {
+            return this._x;
+          },
+          set: function(x) {
+            return this._x = x;
+          }
+        },
+        y: {
+          get: function() {
+            return this._y;
+          },
+          set: function(y) {
+            return this._y = y;
+          }
+        }
+      });
     }
 
-    Entity.prototype._addAni = function(ani) {
+    Entity.prototype.addAni = function(ani) {
       return this.anis.push(ani);
     };
 
-    Entity.prototype._clearAnis = function() {
+    Entity.prototype.clearAnis = function() {
       return this.anis = [];
     };
 
@@ -28,6 +45,7 @@ require(['Timeline'], function(Timeline) {
     };
 
     Entity.prototype.draw = function(context) {
+      debugger;
       context.fillStyle = 'red';
       return context.fillRect(this.x, this.y, 10, 10);
     };
@@ -36,7 +54,8 @@ require(['Timeline'], function(Timeline) {
 
   })();
   entity = new Entity();
-  entity.timeline.repeat(2, function(tl) {
+  tl = new Timeline(entity);
+  tl.repeat(2, function(tl) {
     tl.together(function(tl) {
       tl.tween({
         property: 'y',

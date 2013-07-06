@@ -448,15 +448,11 @@
         return getTween(options, 12, void 0, 10);
       };
       describe('#constructor', function() {
-        it("should set the property to the from value", function() {
-          var target, tween, _ref;
-          _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
-          return expect(target.foo).toEqual(tween.from);
-        });
-        it("should keep the property as is if there is no from provided", function() {
-          var target, tween, _ref;
-          _ref = getNoFromTween(), tween = _ref.tween, target = _ref.target;
-          return expect(target.foo).toEqual(12);
+        it("should not set the property to the from value", function() {
+          var initial, target, tween, _ref;
+          initial = 88;
+          _ref = getNumericTween({}, initial), tween = _ref.tween, target = _ref.target;
+          return expect(target.foo).toEqual(initial);
         });
         it("should not be done", function() {
           var target, tween, _ref;
@@ -507,19 +503,13 @@
           var originalValue, target, tween, _ref;
           originalValue = [12, 13, 14];
           _ref = getArrayTween({}, originalValue), tween = _ref.tween, target = _ref.target;
+          tween.update(tween.duration + 10);
           expect(originalValue[0]).toBe(12);
           expect(originalValue[1]).toBe(13);
           expect(originalValue[2]).toBe(14);
-          expect(target.foo[0]).toBe(1);
-          expect(target.foo[1]).toBe(2);
-          expect(target.foo[2]).toBe(3);
-          tween.update(tween.duration + 10);
           expect(target.foo[0]).toBe(4);
           expect(target.foo[1]).toBe(5);
-          expect(target.foo[2]).toBe(6);
-          expect(originalValue[0]).toBe(12);
-          expect(originalValue[1]).toBe(13);
-          return expect(originalValue[2]).toBe(14);
+          return expect(target.foo[2]).toBe(6);
         });
         describe("once finished", function() {
           it("should indicate it is done", function() {
@@ -604,34 +594,34 @@
             return expect(fn).toThrow();
           });
           it("should throw an error if existing property and from are of different types", function() {
-            var fn, target;
+            var fn, target, tween;
             target = {
               foo: 1
             };
+            tween = new Tween({
+              targets: [target],
+              property: 'foo',
+              from: [0, 0, 0],
+              to: [1, 1, 1],
+              duration: 2000
+            });
             fn = function() {
-              var tween;
-              return tween = new Tween({
-                targets: [target],
-                property: 'foo',
-                from: [0, 0, 0],
-                to: [1, 1, 1],
-                duration: 2000
-              });
+              return tween.update(10);
             };
             return expect(fn).toThrow();
           });
           return it("should not throw an error if there is no existing property", function() {
-            var fn, target;
+            var fn, target, tween;
             target = {};
+            tween = new Tween({
+              targets: [target],
+              property: 'foo',
+              from: [0, 0, 0],
+              to: [1, 1, 1],
+              duration: 2000
+            });
             fn = function() {
-              var tween;
-              return tween = new Tween({
-                targets: [target],
-                property: 'foo',
-                from: [0, 0, 0],
-                to: [1, 1, 1],
-                duration: 2000
-              });
+              return tween.update(10);
             };
             return expect(fn).not.toThrow();
           });

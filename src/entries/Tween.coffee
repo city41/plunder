@@ -12,7 +12,7 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
     reset: ->
       @_elapsed = 0
       @done = @_elapsed >= @duration
-      @_initTargets()
+      @_targetsInitted = false
 
     _initTargets: ->
       for target in @targets
@@ -30,9 +30,13 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
 
         value = value.slice(0)  if U.isArray(value)
         @_setProperty target, @property, value
+      @_targetsInitted = true
 
     update: (delta) ->
       return  if @done or @disabled
+
+      # it's important for larger sequencing to only init targets once the animation is running
+      @_initTargets() if not @_targetsInitted
 
       @_elapsed += delta
 

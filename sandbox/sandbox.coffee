@@ -2,15 +2,21 @@ require ['Timeline'], (Timeline) ->
 
   class Entity
     constructor: ->
-      @timeline = new Timeline(this)
       @anis = []
-      @x = 10
-      @y = 10
+      @_x = 10
+      @_y = 10
+      Object.defineProperties this,
+        x:
+          get: -> @_x
+          set: (x) -> @_x = x
+        y:
+          get: -> @_y
+          set: (y) -> @_y = y
 
-    _addAni: (ani) ->
+    addAni: (ani) ->
       @anis.push(ani)
 
-    _clearAnis: ->
+    clearAnis: ->
       @anis = []
 
     update: (delta) ->
@@ -18,12 +24,15 @@ require ['Timeline'], (Timeline) ->
         ani.update(delta)
 
     draw: (context) ->
+      debugger
       context.fillStyle = 'red'
       context.fillRect(@x, @y, 10, 10)
 
 
+
   entity = new Entity()
-  entity.timeline.repeat 2, (tl) ->
+  tl = new Timeline(entity)
+  tl.repeat 2, (tl) ->
     tl.together (tl) ->
       tl.tween
         property: 'y'

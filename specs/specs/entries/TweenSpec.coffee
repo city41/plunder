@@ -26,15 +26,13 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
 
 
 
-
     describe '#constructor', ->
-      it "should set the property to the from value", ->
-        { tween, target } = getNumericTween()
-        expect(target.foo).toEqual tween.from
-
-      it "should keep the property as is if there is no from provided", ->
-        { tween, target } = getNoFromTween()
-        expect(target.foo).toEqual 12
+      it "should not set the property to the from value", ->
+        # initting targets during the constructor is bad when more than one
+        # tween is involved in an animation, they end up clobbering each other
+        initial = 88
+        { tween, target } = getNumericTween({}, initial)
+        expect(target.foo).toEqual initial
 
       it "should not be done", ->
         { tween, target } = getNumericTween()
@@ -77,25 +75,16 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         originalValue = [12,13,14]
         { tween, target } = getArrayTween({}, originalValue)
           
-
+        tween.update(tween.duration + 10)
+        
         # original array should be untouched
         expect(originalValue[0]).toBe 12
         expect(originalValue[1]).toBe 13
         expect(originalValue[2]).toBe 14
 
-        expect(target.foo[0]).toBe 1
-        expect(target.foo[1]).toBe 2
-        expect(target.foo[2]).toBe 3
-
-        tween.update(tween.duration + 10)
         expect(target.foo[0]).toBe 4
         expect(target.foo[1]).toBe 5
         expect(target.foo[2]).toBe 6
-
-        # double check original array is untouched
-        expect(originalValue[0]).toBe 12
-        expect(originalValue[1]).toBe 13
-        expect(originalValue[2]).toBe 14
 
       describe "once finished", ->
         it "should indicate it is done", ->
@@ -169,26 +158,30 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         it "should throw an error if existing property and from are of different types", ->
           target = foo: 1
 
+          tween = new Tween
+            targets: [target]
+            property: 'foo'
+            from: [0,0,0]
+            to: [1,1,1]
+            duration: 2000
+
           fn = ->
-            tween = new Tween
-              targets: [target]
-              property: 'foo'
-              from: [0,0,0]
-              to: [1,1,1]
-              duration: 2000
+            tween.update(10)
 
           expect(fn).toThrow()
 
         it "should not throw an error if there is no existing property", ->
           target = {}
 
+          tween = new Tween
+            targets: [target]
+            property: 'foo'
+            from: [0,0,0]
+            to: [1,1,1]
+            duration: 2000
+
           fn = ->
-            tween = new Tween
-              targets: [target]
-              property: 'foo'
-              from: [0,0,0]
-              to: [1,1,1]
-              duration: 2000
+            tween.update(10)
 
           expect(fn).not.toThrow()
 

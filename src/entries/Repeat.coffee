@@ -30,7 +30,6 @@ define "Repeat", ["Util"], (U) ->
           @done = @_curCount >= @count
 
           if not @done
-            for child in @children
-              child.reset()
+            child.reset() for child in @children
 
 

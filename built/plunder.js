@@ -82,16 +82,8 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this.tween(config);
     };
 
-    Timeline.prototype.copyProperty = function(config) {
-      return this._addAnimation(config, CopyProperty);
-    };
-
     Timeline.prototype.tween = function(config) {
       return this._addAnimation(config, Tween);
-    };
-
-    Timeline.prototype.frame = function(config) {
-      return this._addAnimation(config, Frame);
     };
 
     Timeline.prototype.fadeIn = function(config) {
@@ -148,10 +140,6 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
         func: func,
         context: context
       }, Invoke);
-    };
-
-    Timeline.prototype.setAnimation = function(config) {
-      return this._addAnimation(config, SetAnimation);
     };
 
     Timeline.prototype.end = function() {
@@ -606,13 +594,12 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
     Tween.prototype.reset = function() {
       this._elapsed = 0;
       this.done = this._elapsed >= this.duration;
-      return this._initTargets();
+      return this._targetsInitted = false;
     };
 
     Tween.prototype._initTargets = function() {
-      var curValue, target, value, _i, _len, _ref, _results;
+      var curValue, target, value, _i, _len, _ref;
       _ref = this.targets;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         curValue = this._getProperty(target, this.property);
@@ -628,15 +615,18 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
         if (U.isArray(value)) {
           value = value.slice(0);
         }
-        _results.push(this._setProperty(target, this.property, value));
+        this._setProperty(target, this.property, value);
       }
-      return _results;
+      return this._targetsInitted = true;
     };
 
     Tween.prototype.update = function(delta) {
       var target, _i, _len, _ref;
       if (this.done || this.disabled) {
         return;
+      }
+      if (!this._targetsInitted) {
+        this._initTargets();
       }
       this._elapsed += delta;
       if (this._elapsed > this.duration) {
