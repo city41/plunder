@@ -41,9 +41,9 @@
 	<div class="row-fluid">
 		<div class="span2"></div>
 		<div class="span4">
-<pre><code>tl = new Timeline(entity)
+<pre><code>tl = new Timeline(mySquare)
 tl.forever (tl) ->
-  group = tl.together { duration: 2000 }, (tl) ->
+  group = tl.together duration: 2000, (tl) ->
     tl.rotate
       from: 720
       to: 0
