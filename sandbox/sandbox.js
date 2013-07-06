@@ -75,8 +75,8 @@ require(['Timeline', 'Util'], function(Timeline, U) {
     tl.wait(500);
     return tl.together(function(tl) {
       tl.rotate({
-        from: 360,
-        to: 0,
+        from: 0,
+        to: 720,
         duration: 2000
       });
       tl.scale({

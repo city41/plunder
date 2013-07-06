@@ -15,6 +15,8 @@ module.exports = (grunt) ->
         files:
           'built/plunder.js': 'src/**/*.coffee'
       spec:
+        options:
+          bare: true
         files:
           'specs/JasmineSpecs.js': 'specs/specs/**/*Spec.coffee'
           'specs/helpers/helpers.js': 'specs/helpers/**/*.coffee'

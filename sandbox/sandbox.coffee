@@ -52,8 +52,8 @@ require ['Timeline', 'Util'], (Timeline, U) ->
     tl.wait 500
     tl.together (tl) ->
       tl.rotate
-        from: 360
-        to: 0
+        from: 0
+        to: 720
         duration: 2000
       tl.scale
         from: 10
