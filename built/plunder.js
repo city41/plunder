@@ -109,14 +109,23 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.scale = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._defaultTween('scale', config);
     };
 
-    Timeline.prototype.tint = function(config) {
+    Timeline.prototype.color = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._defaultTween('color', config, [0, 0, 0, 0]);
     };
 
     Timeline.prototype.rotate = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._defaultTween('angle', config);
     };
 

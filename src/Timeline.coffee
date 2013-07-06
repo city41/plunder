@@ -96,13 +96,13 @@ define "Timeline",
       fadeOut: (config) ->
         @_fade config, 1, 0
 
-      scale: (config) ->
+      scale: (config = {}) ->
         @_defaultTween 'scale', config
 
-      tint: (config) ->
+      color: (config = {}) ->
         @_defaultTween 'color', config, [0,0,0,0]
 
-      rotate: (config) ->
+      rotate: (config = {}) ->
         @_defaultTween 'angle', config
 
       move: (config) ->

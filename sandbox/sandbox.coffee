@@ -36,7 +36,7 @@ require ['Timeline', 'Util'], (Timeline, U) ->
 
   tl.forever (tl) ->
     tl.together (tl) ->
-      tl.tint
+      tl.color
         from: [255, 0, 0, 1]
         to: [0, 0, 255, 0]
         duration: 2000
@@ -59,7 +59,7 @@ require ['Timeline', 'Util'], (Timeline, U) ->
         from: 10
         to: 1
         duration: 2000
-      tl.tint
+      tl.color
         from: [0, 0, 255, 0]
         to: [255, 0, 0, 1]
         duration: 2000

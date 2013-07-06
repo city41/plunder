@@ -49,7 +49,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
   tl = new Timeline(entity);
   tl.forever(function(tl) {
     tl.together(function(tl) {
-      tl.tint({
+      tl.color({
         from: [255, 0, 0, 1],
         to: [0, 0, 255, 0],
         duration: 2000
@@ -84,7 +84,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
         to: 1,
         duration: 2000
       });
-      tl.tint({
+      tl.color({
         from: [0, 0, 255, 0],
         to: [255, 0, 0, 1],
         duration: 2000

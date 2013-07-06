@@ -1,4 +1,4 @@
-require(["Timeline", "Tween"], function(Timeline, Tween) {
+require(["Timeline", "Tween", "Easing"], function(Timeline, Tween, Easing) {
   return describe("Timeline", function() {
     var getOwner;
     getOwner = function() {
@@ -12,6 +12,10 @@ require(["Timeline", "Tween"], function(Timeline, Tween) {
         }
       };
     };
+    beforeEach(function() {
+      this.owner = getOwner();
+      return this.timeline = new Timeline(this.owner);
+    });
     describe("#constructor", function() {
       return it("should throw if no owner provided", function() {
         var fn;
@@ -27,47 +31,210 @@ require(["Timeline", "Tween"], function(Timeline, Tween) {
     });
     describe("targets", function() {
       it("should use the owner as a target if none specified", function() {
-        var owner, timeline;
-        owner = getOwner();
-        timeline = new Timeline(owner);
-        timeline.tween({
+        var tween;
+        tween = this.timeline.tween({
           property: 'x'
         });
-        return expect(owner.anis[0].targets[0]).toBe(owner);
+        return expect(tween.targets[0]).toBe(this.owner);
       });
       it("should convert a singular target into targets", function() {
-        var owner, target, timeline;
+        var target, tween;
         target = {};
-        owner = getOwner();
-        timeline = new Timeline(owner);
-        timeline.tween({
+        tween = this.timeline.tween({
           target: target,
           property: 'x'
         });
-        return expect(owner.anis[0].targets[0]).toBe(target);
+        return expect(tween.targets[0]).toBe(target);
       });
       return it("should use the targets", function() {
-        var owner, targets, timeline;
+        var targets, tween;
         targets = [{}, {}];
-        owner = getOwner();
-        timeline = new Timeline(owner);
-        timeline.tween({
+        tween = this.timeline.tween({
           targets: targets,
           property: 'x'
         });
-        expect(owner.anis[0].targets[0]).toBe(targets[0]);
-        return expect(owner.anis[0].targets[1]).toBe(targets[1]);
+        expect(tween.targets[0]).toBe(targets[0]);
+        return expect(tween.targets[1]).toBe(targets[1]);
       });
     });
-    return describe("#tween", function() {
-      return it("should build a tween object", function() {
-        var owner, timeline;
-        owner = getOwner();
-        timeline = new Timeline(owner);
-        timeline.tween({
+    describe("creating anis", function() {
+      return it("should add the ani to the owner", function() {
+        var tween;
+        tween = this.timeline.tween({
           property: 'x'
         });
-        return expect(owner.anis[0]).toBeInstanceOf(Tween);
+        expect(tween).toBeInstanceOf(Tween);
+        return expect(tween).toBe(this.owner.anis[0]);
+      });
+    });
+    describe("#move", function() {
+      it("should translate x/y correctly", function() {
+        var move;
+        move = this.timeline.move({
+          from: {
+            x: 10,
+            y: 20
+          },
+          to: {
+            x: 100,
+            y: 200
+          },
+          duration: 999
+        });
+        expect(move.children[0].property).toBe('x');
+        expect(move.children[0].from).toBe(10);
+        expect(move.children[0].to).toBe(100);
+        expect(move.children[1].property).toBe('y');
+        expect(move.children[1].from).toBe(20);
+        return expect(move.children[1].to).toBe(200);
+      });
+      it("should have the specified duration", function() {
+        var move;
+        move = this.timeline.move({
+          from: {
+            x: 10,
+            y: 10
+          },
+          to: {
+            x: 20,
+            y: 20
+          },
+          duration: 999
+        });
+        expect(move.children[0].duration).toBe(999);
+        return expect(move.children[1].duration).toBe(999);
+      });
+      it("should have the specified easing", function() {
+        var move;
+        move = this.timeline.move({
+          from: {
+            x: 10,
+            y: 20
+          },
+          to: {
+            x: 100,
+            y: 200
+          },
+          easing: 'easeInOutQuad'
+        });
+        expect(move.children[0].easeFunc).toBe(Easing.easeInOutQuad);
+        return expect(move.children[1].easeFunc).toBe(Easing.easeInOutQuad);
+      });
+      it("should translate easingX", function() {
+        var move;
+        move = this.timeline.move({
+          from: {
+            x: 10,
+            y: 20
+          },
+          to: {
+            x: 100,
+            y: 200
+          },
+          easingX: 'easeInOutQuad'
+        });
+        expect(move.children[0].easeFunc).toBe(Easing.easeInOutQuad);
+        return expect(move.children[1].easeFunc).toBe(Easing.linearTween);
+      });
+      return it("should translate easingY", function() {
+        var move;
+        move = this.timeline.move({
+          from: {
+            x: 10,
+            y: 20
+          },
+          to: {
+            x: 100,
+            y: 200
+          },
+          easingY: 'easeInOutQuad'
+        });
+        expect(move.children[0].easeFunc).toBe(Easing.linearTween);
+        return expect(move.children[1].easeFunc).toBe(Easing.easeInOutQuad);
+      });
+    });
+    describe("#scale", function() {
+      it("should specify the scale property", function() {
+        var scale;
+        scale = this.timeline.scale();
+        return expect(scale.property).toBe('scale');
+      });
+      it("should set the from and to properties", function() {
+        var scale;
+        scale = this.timeline.scale({
+          from: 1,
+          to: 10
+        });
+        expect(scale.from).toBe(1);
+        return expect(scale.to).toBe(10);
+      });
+      return it("should set the duration", function() {
+        var scale;
+        scale = this.timeline.scale({
+          duration: 1000
+        });
+        return expect(scale.duration).toBe(1000);
+      });
+    });
+    describe("#color", function() {
+      it("should specify the color property", function() {
+        var color;
+        color = this.timeline.color();
+        return expect(color.property).toBe("color");
+      });
+      it("should default to a 4 element array", function() {
+        var color;
+        color = this.timeline.color();
+        expect(color.from).toEqual([0, 0, 0, 0]);
+        expect(color.to).toEqual([0, 0, 0, 0]);
+        return expect(color.duration).toBe(0);
+      });
+      return it("should set the duration", function() {
+        var color;
+        color = this.timeline.color({
+          duration: 123
+        });
+        return expect(color.duration).toBe(123);
+      });
+    });
+    describe("#rotate", function() {
+      it("should specify the angle property", function() {
+        var rotate;
+        rotate = this.timeline.rotate();
+        return expect(rotate.property).toBe("angle");
+      });
+      it("should default to a number", function() {
+        var rotate;
+        rotate = this.timeline.rotate();
+        expect(rotate.from).toBe(0);
+        expect(rotate.to).toBe(0);
+        return expect(rotate.duration).toBe(0);
+      });
+      return it("should set the duration", function() {
+        var rotate;
+        rotate = this.timeline.rotate({
+          duration: 10
+        });
+        return expect(rotate.duration).toBe(10);
+      });
+    });
+    describe("#wait", function() {
+      return it("should set min and max to be the same", function() {
+        var wait;
+        wait = this.timeline.wait(500);
+        expect(wait.min).toBe(500);
+        return expect(wait.max).toBe(500);
+      });
+    });
+    return describe("#waitBetween", function() {
+      beforeEach(function() {
+        return this.wait = this.timeline.waitBetween(5, 10);
+      });
+      it("should set min", function() {
+        return expect(this.wait.min).toBe(5);
+      });
+      return it("should set max", function() {
+        return expect(this.wait.max).toBe(10);
       });
     });
   });
