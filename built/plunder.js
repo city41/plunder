@@ -1,4 +1,4 @@
-define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, Tween, Wait, Repeat, Together) {
+define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], function(U, Tween, Wait, Repeat, Together, Invoke) {
   var Timeline;
   return Timeline = (function() {
     function Timeline(owner) {
@@ -19,7 +19,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, 
 
     Timeline.prototype._addAnimationToOwner = function(ani) {
       this._addedAnis.push(ani);
-      return this._owner._addAni(ani);
+      return this._owner.addAni(ani);
     };
 
     Timeline.prototype._addParentAnimation = function(builder, targetOptions, AniConstructor, consArg) {
@@ -128,6 +128,10 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, 
       return this._addParentAnimation(builder, targetOptions, Repeat, count);
     };
 
+    Timeline.prototype.forever = function(targetOptionsOrBuilder, builderOrUndefined) {
+      return this.repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined);
+    };
+
     Timeline.prototype.wait = function(millis) {
       return this.waitBetween(millis, millis);
     };
@@ -139,9 +143,10 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, 
       }, Wait);
     };
 
-    Timeline.prototype.invoke = function(func) {
+    Timeline.prototype.invoke = function(func, context) {
       return this._addAnimation({
-        func: func
+        func: func,
+        context: context
       }, Invoke);
     };
 
@@ -150,19 +155,19 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together"], function(U, 
     };
 
     Timeline.prototype.end = function() {
-      var me, rootAni;
+      var rootAni,
+        _this = this;
       rootAni = this._buildStack.first;
       if (rootAni) {
-        me = this;
         return this.invoke(function() {
-          return me.die();
+          return _this.die();
         });
       }
     };
 
     Timeline.prototype.die = function() {
       var _ref;
-      return (_ref = this._owner) != null ? _ref._clearAnis() : void 0;
+      return (_ref = this._owner) != null ? _ref.clearAnis() : void 0;
     };
 
     return Timeline;
@@ -457,6 +462,31 @@ define('Easing', function() {
       return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
     }
   };
+});
+
+define('Invoke', ['Util'], function(U) {
+  var invoke;
+  return invoke = (function() {
+    function invoke(config) {
+      U.extend(this, config);
+      this.reset();
+    }
+
+    invoke.prototype.reset = function() {
+      return this.done = false;
+    };
+
+    invoke.prototype.update = function() {
+      if (this.done) {
+        return;
+      }
+      this.func.call(this.context);
+      return this.done = true;
+    };
+
+    return invoke;
+
+  })();
 });
 
 var __slice = [].slice;

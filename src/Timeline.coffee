@@ -5,7 +5,8 @@ define "Timeline",
     "Wait"
     "Repeat"
     "Together"
-  ], (U, Tween, Wait, Repeat, Together) ->
+    "Invoke"
+  ], (U, Tween, Wait, Repeat, Together, Invoke) ->
 
     class Timeline
       constructor: (owner) ->
@@ -23,7 +24,7 @@ define "Timeline",
 
       _addAnimationToOwner: (ani) ->
         @_addedAnis.push ani
-        @_owner._addAni ani
+        @_owner.addAni ani
 
       _addParentAnimation: (builder, targetOptions, AniConstructor, consArg) ->
         ani = new AniConstructor(consArg)
@@ -114,14 +115,17 @@ define "Timeline",
         
         @_addParentAnimation builder, targetOptions, Repeat, count
 
+      forever: (targetOptionsOrBuilder, builderOrUndefined) ->
+        @repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined)
+
       wait: (millis) ->
         @waitBetween millis, millis
 
       waitBetween: (min, max) ->
-        @_addAnimation { min: min, max: max }, Wait
+        @_addAnimation { min, max }, Wait
 
-      invoke: (func) ->
-        @_addAnimation { func: func }, Invoke
+      invoke: (func, context) ->
+        @_addAnimation { func, context }, Invoke
 
       setAnimation: (config) ->
         @_addAnimation config, SetAnimation
@@ -129,10 +133,9 @@ define "Timeline",
       end: ->
         rootAni = @_buildStack.first
         if rootAni
-          me = this
-          @invoke ->
-            me.die()
+          @invoke =>
+            @die()
 
       die: ->
-        @_owner?._clearAnis()
+        @_owner?.clearAnis()
 

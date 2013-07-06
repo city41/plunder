@@ -5,10 +5,10 @@
       getOwner = function() {
         return {
           anis: [],
-          _addAni: function(ani) {
+          addAni: function(ani) {
             return this.anis.push(ani);
           },
-          _clearAnis: function() {
+          clearAnis: function() {
             return this.anis = [];
           }
         };
@@ -234,6 +234,36 @@
           expect(obj.bar).toBeUndefined();
           return expect(obj.buz).toBeUndefined();
         });
+      });
+    });
+  });
+
+}).call(this);
+
+(function() {
+  require(['Invoke'], function(Invoke) {
+    return describe("Invoke", function() {
+      it("should invoke the provided function", function() {
+        var invoke, obj;
+        obj = {
+          func: function() {}
+        };
+        spyOn(obj, "func");
+        invoke = new Invoke({
+          func: obj.func
+        });
+        invoke.update();
+        expect(obj.func).toHaveBeenCalled();
+        return expect(invoke.done).toBe(true);
+      });
+      return it("should reset", function() {
+        var invoke;
+        invoke = new Invoke({
+          func: function() {}
+        });
+        invoke.done = true;
+        invoke.reset();
+        return expect(invoke.done).toBe(false);
       });
     });
   });

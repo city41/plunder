@@ -3,9 +3,9 @@ require ["Timeline", "Tween"], (Timeline, Tween) ->
     getOwner = ->
       {
         anis: [],
-        _addAni: (ani) ->
+        addAni: (ani) ->
           @anis.push(ani)
-        _clearAnis: ->
+        clearAnis: ->
           @anis = []
       }
 
