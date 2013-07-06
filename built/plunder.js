@@ -76,6 +76,20 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._addAnimation(config, Tween);
     };
 
+    Timeline.prototype._defaultTween = function(property, config, defaultValue) {
+      var _ref, _ref1, _ref2;
+      if (defaultValue == null) {
+        defaultValue = 0;
+      }
+      return this.tween({
+        property: property,
+        from: (_ref = config.from) != null ? _ref : defaultValue,
+        to: (_ref1 = config.to) != null ? _ref1 : defaultValue,
+        duration: (_ref2 = config.duration) != null ? _ref2 : 0,
+        easing: config.easing
+      });
+    };
+
     Timeline.prototype.setProperty = function(config) {
       config.duration = 0;
       config.from = config.to = config.value;
@@ -95,30 +109,26 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.scale = function(config) {
-      var _ref, _ref1, _ref2;
-      return this.tween({
-        property: 'scale',
-        from: (_ref = config.from) != null ? _ref : 0,
-        to: (_ref1 = config.to) != null ? _ref1 : 0,
-        duration: (_ref2 = config.duration) != null ? _ref2 : 0
-      });
+      return this._defaultTween('scale', config);
+    };
+
+    Timeline.prototype.tint = function(config) {
+      return this._defaultTween('color', config, [0, 0, 0, 0]);
     };
 
     Timeline.prototype.move = function(config) {
-      var _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-      this.tween({
-        property: 'x',
-        from: (_ref = (_ref1 = config.from) != null ? _ref1.x : void 0) != null ? _ref : 0,
-        to: (_ref2 = (_ref3 = config.to) != null ? _ref3.x : void 0) != null ? _ref2 : 0,
-        duration: (_ref4 = config.duration) != null ? _ref4 : 0,
-        easing: (_ref5 = config.easingX) != null ? _ref5 : config.easing
-      });
-      return this.tween({
-        property: 'y',
-        from: (_ref6 = (_ref7 = config.from) != null ? _ref7.y : void 0) != null ? _ref6 : 0,
-        to: (_ref8 = (_ref9 = config.to) != null ? _ref9.y : void 0) != null ? _ref8 : 0,
-        duration: (_ref10 = config.duration) != null ? _ref10 : 0,
-        easing: (_ref11 = config.easingY) != null ? _ref11 : config.easing
+      var xconfig, yconfig, _ref, _ref1;
+      xconfig = U.extend({}, config);
+      xconfig.easing = (_ref = config.easingX) != null ? _ref : config.easing;
+      xconfig.from = config.from.x;
+      xconfig.to = config.to.x;
+      yconfig = U.extend({}, config);
+      yconfig.easing = (_ref1 = config.easingY) != null ? _ref1 : config.easing;
+      yconfig.from = config.from.y;
+      yconfig.to = config.to.y;
+      return this.together(function(tl) {
+        tl._defaultTween('x', xconfig);
+        return tl._defaultTween('y', yconfig);
       });
     };
 
@@ -237,16 +247,15 @@ define('Util', function() {
       return typeof a === typeof b;
     },
     extend: function(target, incoming) {
-      var key, value, _results;
+      var key, value;
       if (target != null) {
-        _results = [];
         for (key in incoming) {
           if (!__hasProp.call(incoming, key)) continue;
           value = incoming[key];
-          _results.push(target[key] = value);
+          target[key] = value;
         }
-        return _results;
       }
+      return target;
     },
     toArray: function(obj) {
       if (obj == null) {

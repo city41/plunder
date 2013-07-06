@@ -6,6 +6,7 @@ require ['Timeline'], (Timeline) ->
       @x = 10
       @y = 10
       @alpha = 1
+      @color = [0,0,0,0]
 
     addAni: (ani) ->
       @anis.push(ani)
@@ -19,24 +20,32 @@ require ['Timeline'], (Timeline) ->
 
     draw: (context) ->
       context.save()
-      context.fillStyle = "rgba(255, 0, 0, #{@alpha})"
+      # context.fillStyle = "rgba(255, 0, 0, #{@alpha})"
+      context.fillStyle = "rgba(#{@color[0] | 0}, #{@color[1] | 0}, #{@color[2] | 0}, #{@color[3]})"
+
+      w = 10
+      h = 10
+
       if @scale?
-        context.scale(@scale, @scale)
+        w *= @scale
+        h *= @scale
 
-      context.fillRect(@x, @y, 10, 10)
+      context.fillRect(@x, @y, w, h)
       context.restore()
-
 
 
   entity = new Entity()
   tl = new Timeline(entity)
+
   tl.forever (tl) ->
     tl.together (tl) ->
-      tl.fadeOut
+      tl.tint
+        from: [255, 0, 0, 1]
+        to: [0, 0, 255, 0]
         duration: 2000
       tl.scale
         from: 1
-        to: 3
+        to: 10
         duration: 2000
       tl.move
         from: x: 10, y: 10
@@ -46,10 +55,12 @@ require ['Timeline'], (Timeline) ->
     tl.wait 500
     tl.together (tl) ->
       tl.scale
-        from: 3
+        from: 10
         to: 1
         duration: 2000
-      tl.fadeIn
+      tl.tint
+        from: [0, 0, 255, 0]
+        to: [255, 0, 0, 1]
         duration: 2000
       tl.move
         from: x: 300, y: 100

@@ -6,6 +6,7 @@ require(['Timeline'], function(Timeline) {
       this.x = 10;
       this.y = 10;
       this.alpha = 1;
+      this.color = [0, 0, 0, 0];
     }
 
     Entity.prototype.addAni = function(ani) {
@@ -28,12 +29,16 @@ require(['Timeline'], function(Timeline) {
     };
 
     Entity.prototype.draw = function(context) {
+      var h, w;
       context.save();
-      context.fillStyle = "rgba(255, 0, 0, " + this.alpha + ")";
+      context.fillStyle = "rgba(" + (this.color[0] | 0) + ", " + (this.color[1] | 0) + ", " + (this.color[2] | 0) + ", " + this.color[3] + ")";
+      w = 10;
+      h = 10;
       if (this.scale != null) {
-        context.scale(this.scale, this.scale);
+        w *= this.scale;
+        h *= this.scale;
       }
-      context.fillRect(this.x, this.y, 10, 10);
+      context.fillRect(this.x, this.y, w, h);
       return context.restore();
     };
 
@@ -44,12 +49,14 @@ require(['Timeline'], function(Timeline) {
   tl = new Timeline(entity);
   tl.forever(function(tl) {
     tl.together(function(tl) {
-      tl.fadeOut({
+      tl.tint({
+        from: [255, 0, 0, 1],
+        to: [0, 0, 255, 0],
         duration: 2000
       });
       tl.scale({
         from: 1,
-        to: 3,
+        to: 10,
         duration: 2000
       });
       return tl.move({
@@ -68,11 +75,13 @@ require(['Timeline'], function(Timeline) {
     tl.wait(500);
     return tl.together(function(tl) {
       tl.scale({
-        from: 3,
+        from: 10,
         to: 1,
         duration: 2000
       });
-      tl.fadeIn({
+      tl.tint({
+        from: [0, 0, 255, 0],
+        to: [255, 0, 0, 1],
         duration: 2000
       });
       return tl.move({

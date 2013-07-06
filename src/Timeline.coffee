@@ -72,6 +72,14 @@ define "Timeline",
         config.to = to
         @_addAnimation config, Tween
 
+      _defaultTween: (property, config, defaultValue = 0) ->
+        @tween
+          property: property
+          from: config.from ? defaultValue
+          to: config.to ? defaultValue
+          duration: config.duration ? 0
+          easing: config.easing
+
       ## Animations
 
       setProperty: (config) ->
@@ -89,26 +97,25 @@ define "Timeline",
         @_fade config, 1, 0
 
       scale: (config) ->
-        @tween
-          property: 'scale'
-          from: config.from ? 0
-          to: config.to ? 0
-          duration: config.duration ? 0
+        @_defaultTween 'scale', config
+
+      tint: (config) ->
+        @_defaultTween 'color', config, [0,0,0,0]
 
       move: (config) ->
-        @tween
-          property: 'x'
-          from: config.from?.x ? 0
-          to: config.to?.x ? 0
-          duration: config.duration ? 0
-          easing: config.easingX ? config.easing
+        xconfig = U.extend({}, config)
+        xconfig.easing = config.easingX ? config.easing
+        xconfig.from = config.from.x
+        xconfig.to = config.to.x
 
-        @tween
-          property: 'y'
-          from: config.from?.y ? 0
-          to: config.to?.y ? 0
-          duration: config.duration ? 0
-          easing: config.easingY ? config.easing
+        yconfig = U.extend({}, config)
+        yconfig.easing = config.easingY ? config.easing
+        yconfig.from = config.from.y
+        yconfig.to = config.to.y
+
+        @together (tl) ->
+          tl._defaultTween 'x', xconfig
+          tl._defaultTween 'y', yconfig
 
       sequence: (targetOptionsOrBuilder, builderOrUndefined) ->
         @repeat 1, targetOptionsOrBuilder, builderOrUndefined

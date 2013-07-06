@@ -40,6 +40,8 @@ define 'Util', ->
         for own key, value of incoming
           target[key] = value
 
+      return target
+
     toArray: (obj) ->
       if !obj?
         return []
