@@ -44,7 +44,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
       if (this.angle) {
         context.rotate(U.degreesToRadians(this.angle));
       }
-      context.fillRect(0, 0, 10, 10);
+      context.fillRect(-5, -5, 10, 10);
       return context.restore();
     };
 
@@ -79,8 +79,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
           x: 300,
           y: 100
         },
-        duration: 2000,
-        easingX: 'easeInOutQuad'
+        duration: 2000
       });
     });
     tl.wait(500);
@@ -109,8 +108,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
           x: 10,
           y: 10
         },
-        duration: 2000,
-        easingX: 'easeInOutQuad'
+        duration: 2000
       });
     });
   });
