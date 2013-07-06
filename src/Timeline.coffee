@@ -79,14 +79,8 @@ define "Timeline",
         config.from = config.to = config.value
         @tween config
 
-      copyProperty: (config) ->
-        @_addAnimation config, CopyProperty
-
       tween: (config) ->
         @_addAnimation config, Tween
-
-      frame: (config) ->
-        @_addAnimation config, Frame
 
       fadeIn: (config) ->
         @_fade config, 0, 1
@@ -126,9 +120,6 @@ define "Timeline",
 
       invoke: (func, context) ->
         @_addAnimation { func, context }, Invoke
-
-      setAnimation: (config) ->
-        @_addAnimation config, SetAnimation
 
       end: ->
         rootAni = @_buildStack.first
