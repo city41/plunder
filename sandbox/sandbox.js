@@ -1,4 +1,4 @@
-require(['Timeline'], function(Timeline) {
+require(['Timeline', 'Util'], function(Timeline, U) {
   var Entity, context, entity, lastTimestamp, tl, update;
   Entity = (function() {
     function Entity() {
@@ -29,16 +29,16 @@ require(['Timeline'], function(Timeline) {
     };
 
     Entity.prototype.draw = function(context) {
-      var h, w;
       context.save();
       context.fillStyle = "rgba(" + (this.color[0] | 0) + ", " + (this.color[1] | 0) + ", " + (this.color[2] | 0) + ", " + this.color[3] + ")";
-      w = 10;
-      h = 10;
+      context.translate(this.x, this.y);
       if (this.scale != null) {
-        w *= this.scale;
-        h *= this.scale;
+        context.scale(this.scale, this.scale);
       }
-      context.fillRect(this.x, this.y, w, h);
+      if (this.angle) {
+        context.rotate(U.degreesToRadians(this.angle));
+      }
+      context.fillRect(0, 0, 10, 10);
       return context.restore();
     };
 
@@ -74,6 +74,11 @@ require(['Timeline'], function(Timeline) {
     });
     tl.wait(500);
     return tl.together(function(tl) {
+      tl.rotate({
+        from: 360,
+        to: 0,
+        duration: 2000
+      });
       tl.scale({
         from: 10,
         to: 1,

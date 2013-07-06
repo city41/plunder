@@ -1,4 +1,4 @@
-require ['Timeline'], (Timeline) ->
+require ['Timeline', 'Util'], (Timeline, U) ->
 
   class Entity
     constructor: ->
@@ -20,17 +20,14 @@ require ['Timeline'], (Timeline) ->
 
     draw: (context) ->
       context.save()
-      # context.fillStyle = "rgba(255, 0, 0, #{@alpha})"
+
       context.fillStyle = "rgba(#{@color[0] | 0}, #{@color[1] | 0}, #{@color[2] | 0}, #{@color[3]})"
 
-      w = 10
-      h = 10
+      context.translate(@x, @y)
+      context.scale(@scale, @scale) if @scale?
+      context.rotate(U.degreesToRadians(@angle)) if @angle
+      context.fillRect(0, 0, 10, 10)
 
-      if @scale?
-        w *= @scale
-        h *= @scale
-
-      context.fillRect(@x, @y, w, h)
       context.restore()
 
 
@@ -54,6 +51,10 @@ require ['Timeline'], (Timeline) ->
         easingX: 'easeInOutQuad'
     tl.wait 500
     tl.together (tl) ->
+      tl.rotate
+        from: 360
+        to: 0
+        duration: 2000
       tl.scale
         from: 10
         to: 1

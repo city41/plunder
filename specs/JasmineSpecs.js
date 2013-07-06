@@ -96,6 +96,21 @@
           return expect(U.toArray()).toEqual([]);
         });
       });
+      describe("#degreesToRadians", function() {
+        return it("should convert to radians", function() {
+          expect(U.degreesToRadians(180)).toEqual(Math.PI);
+          expect(U.degreesToRadians(360)).toEqual(2 * Math.PI);
+          expect(U.degreesToRadians(0)).toEqual(0);
+          return expect(U.degreesToRadians(100)).toEqual(100 * Math.PI / 180);
+        });
+      });
+      describe("#radiansToDegrees", function() {
+        return it("should convert to degrees", function() {
+          expect(U.radiansToDegrees(Math.PI)).toEqual(180);
+          expect(U.radiansToDegrees(2 * Math.PI)).toEqual(360);
+          return expect(U.radiansToDegrees(100)).toEqual(100 * 180 / Math.PI);
+        });
+      });
       describe("#isNumber", function() {
         it("should say an integer is a number", function() {
           return expect(U.isNumber(81)).toBeTruthy();

@@ -102,6 +102,9 @@ define "Timeline",
       tint: (config) ->
         @_defaultTween 'color', config, [0,0,0,0]
 
+      rotate: (config) ->
+        @_defaultTween 'angle', config
+
       move: (config) ->
         xconfig = U.extend({}, config)
         xconfig.easing = config.easingX ? config.easing

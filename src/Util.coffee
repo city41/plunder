@@ -21,6 +21,12 @@ define 'Util', ->
     coin: ->
       @rand(0, 2) == 0
 
+    degreesToRadians: (degrees) ->
+      degrees * Math.PI / 180
+
+    radiansToDegrees: (radians) ->
+      radians * 180 / Math.PI
+
     isNumber: (n) ->
       typeof n == "number"
 

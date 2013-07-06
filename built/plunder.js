@@ -116,6 +116,10 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._defaultTween('color', config, [0, 0, 0, 0]);
     };
 
+    Timeline.prototype.rotate = function(config) {
+      return this._defaultTween('angle', config);
+    };
+
     Timeline.prototype.move = function(config) {
       var xconfig, yconfig, _ref, _ref1;
       xconfig = U.extend({}, config);
@@ -227,6 +231,12 @@ define('Util', function() {
     },
     coin: function() {
       return this.rand(0, 2) === 0;
+    },
+    degreesToRadians: function(degrees) {
+      return degrees * Math.PI / 180;
+    },
+    radiansToDegrees: function(radians) {
+      return radians * 180 / Math.PI;
     },
     isNumber: function(n) {
       return typeof n === "number";

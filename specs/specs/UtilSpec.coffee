@@ -17,6 +17,19 @@ require ['Util'], (U) ->
       it "should convert undefined into an empty array", ->
         expect(U.toArray()).toEqual []
 
+    describe "#degreesToRadians", ->
+      it "should convert to radians", ->
+        expect(U.degreesToRadians(180)).toEqual Math.PI
+        expect(U.degreesToRadians(360)).toEqual 2*Math.PI
+        expect(U.degreesToRadians(0)).toEqual 0
+        expect(U.degreesToRadians(100)).toEqual 100 * Math.PI / 180
+
+    describe "#radiansToDegrees", ->
+      it "should convert to degrees", ->
+        expect(U.radiansToDegrees(Math.PI)).toEqual 180
+        expect(U.radiansToDegrees(2*Math.PI)).toEqual 360
+        expect(U.radiansToDegrees(100)).toEqual 100 * 180 / Math.PI
+
     describe "#isNumber", ->
       it "should say an integer is a number", ->
         expect(U.isNumber(81)).toBeTruthy()
