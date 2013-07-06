@@ -139,6 +139,25 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
           expect(target.foo[1]).toEqual @easedValue
           expect(target.foo[2]).toEqual @easedValue
 
+      describe '#reset', ->
+        it 'should not change the property', ->
+          { tween, target } = getNumericTween()
+
+          tween.update(tween.duration + 10)
+          beforeResetValue = target.foo
+
+          tween.reset()
+
+          expect(target.foo).toEqual beforeResetValue
+
+        it 'should change the target upon updating', ->
+          { tween, target } = getNumericTween()
+
+          tween.update(tween.duration + 10)
+          tween.reset()
+          tween.update(0)
+          expect(target.foo).toEqual tween.from
+
       describe "error conditions", ->
         it "should throw an error if asked to tween a non numeric value", ->
           target = foo: 'hello'

@@ -575,6 +575,24 @@
             return expect(target.foo[2]).toEqual(this.easedValue);
           });
         });
+        describe('#reset', function() {
+          it('should not change the property', function() {
+            var beforeResetValue, target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.update(tween.duration + 10);
+            beforeResetValue = target.foo;
+            tween.reset();
+            return expect(target.foo).toEqual(beforeResetValue);
+          });
+          return it('should change the target upon updating', function() {
+            var target, tween, _ref;
+            _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+            tween.update(tween.duration + 10);
+            tween.reset();
+            tween.update(0);
+            return expect(target.foo).toEqual(tween.from);
+          });
+        });
         return describe("error conditions", function() {
           it("should throw an error if asked to tween a non numeric value", function() {
             var fn, target, tween;
