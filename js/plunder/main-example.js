@@ -1,4 +1,9 @@
 require(['Timeline', 'Util'], function(Timeline, U) {
+  window.raf = window.requestAnimationFrame
+	|| window.mozRequestAnimationFrame 
+	|| window.webkitRequestAnimationFrame
+	|| window.msRequestAnimationFrame;
+
   var Entity, context, entity, lastTimestamp, tl, update;
   var playing = true;
   Entity = (function() {
@@ -138,7 +143,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
     entity.update(delta);
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     entity.draw(context);
-    return window.requestAnimationFrame(update);
+    return window.raf(update);
   };
   return update(0);
 });
