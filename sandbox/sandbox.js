@@ -3,26 +3,9 @@ require(['Timeline'], function(Timeline) {
   Entity = (function() {
     function Entity() {
       this.anis = [];
-      this._x = 10;
-      this._y = 10;
-      Object.defineProperties(this, {
-        x: {
-          get: function() {
-            return this._x;
-          },
-          set: function(x) {
-            return this._x = x;
-          }
-        },
-        y: {
-          get: function() {
-            return this._y;
-          },
-          set: function(y) {
-            return this._y = y;
-          }
-        }
-      });
+      this.x = 10;
+      this.y = 10;
+      this.alpha = 1;
     }
 
     Entity.prototype.addAni = function(ani) {
@@ -45,8 +28,7 @@ require(['Timeline'], function(Timeline) {
     };
 
     Entity.prototype.draw = function(context) {
-      debugger;
-      context.fillStyle = 'red';
+      context.fillStyle = "rgba(255, 0, 0, " + this.alpha + ")";
       return context.fillRect(this.x, this.y, 10, 10);
     };
 
@@ -55,36 +37,40 @@ require(['Timeline'], function(Timeline) {
   })();
   entity = new Entity();
   tl = new Timeline(entity);
-  tl.repeat(2, function(tl) {
+  tl.forever(function(tl) {
     tl.together(function(tl) {
-      tl.tween({
-        property: 'y',
-        from: 10,
-        to: 50,
+      tl.fadeOut({
         duration: 2000
       });
-      return tl.tween({
-        property: 'x',
-        from: 10,
-        to: 100,
+      return tl.move({
+        from: {
+          x: 10,
+          y: 10
+        },
+        to: {
+          x: 300,
+          y: 100
+        },
         duration: 2000,
-        easing: 'easeInOutQuad'
+        easingX: 'easeInOutQuad'
       });
     });
     tl.wait(500);
     return tl.together(function(tl) {
-      tl.tween({
-        property: 'y',
-        from: 50,
-        to: 10,
+      tl.fadeIn({
         duration: 2000
       });
-      return tl.tween({
-        property: 'x',
-        from: 100,
-        to: 10,
+      return tl.move({
+        from: {
+          x: 300,
+          y: 100
+        },
+        to: {
+          x: 10,
+          y: 10
+        },
         duration: 2000,
-        easing: 'easeInOutQuad'
+        easingX: 'easeInOutQuad'
       });
     });
   });

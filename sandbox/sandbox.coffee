@@ -3,15 +3,9 @@ require ['Timeline'], (Timeline) ->
   class Entity
     constructor: ->
       @anis = []
-      @_x = 10
-      @_y = 10
-      Object.defineProperties this,
-        x:
-          get: -> @_x
-          set: (x) -> @_x = x
-        y:
-          get: -> @_y
-          set: (y) -> @_y = y
+      @x = 10
+      @y = 10
+      @alpha = 1
 
     addAni: (ani) ->
       @anis.push(ani)
@@ -24,41 +18,31 @@ require ['Timeline'], (Timeline) ->
         ani.update(delta)
 
     draw: (context) ->
-      debugger
-      context.fillStyle = 'red'
+      context.fillStyle = "rgba(255, 0, 0, #{@alpha})"
       context.fillRect(@x, @y, 10, 10)
 
 
 
   entity = new Entity()
   tl = new Timeline(entity)
-  tl.repeat 2, (tl) ->
+  tl.forever (tl) ->
     tl.together (tl) ->
-      tl.tween
-        property: 'y'
-        from: 10
-        to: 50
+      tl.fadeOut
         duration: 2000
-      tl.tween
-        property: 'x'
-        from: 10
-        to: 100
+      tl.move
+        from: x: 10, y: 10
+        to: x: 300, y: 100
         duration: 2000
-        easing: 'easeInOutQuad'
+        easingX: 'easeInOutQuad'
     tl.wait 500
     tl.together (tl) ->
-      tl.tween
-        property: 'y'
-        from: 50
-        to: 10
+      tl.fadeIn
         duration: 2000
-      tl.tween
-        property: 'x'
-        from: 100
-        to: 10
+      tl.move
+        from: x: 300, y: 100
+        to: x: 10, y: 10
         duration: 2000
-        easing: 'easeInOutQuad'
-
+        easingX: 'easeInOutQuad'
 
 
   context = document.getElementById('canvas').getContext('2d')

@@ -88,6 +88,21 @@ define "Timeline",
       fadeOut: (config) ->
         @_fade config, 1, 0
 
+      move: (config) ->
+        @tween
+          property: 'x'
+          from: config.from?.x ? 0
+          to: config.to?.x ? 0
+          duration: config.duration ? 0
+          easing: config.easingX ? config.easing
+
+        @tween
+          property: 'y'
+          from: config.from?.y ? 0
+          to: config.to?.y ? 0
+          duration: config.duration ? 0
+          easing: config.easingY ? config.easing
+
       sequence: (targetOptionsOrBuilder, builderOrUndefined) ->
         @repeat 1, targetOptionsOrBuilder, builderOrUndefined
 

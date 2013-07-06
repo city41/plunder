@@ -94,6 +94,24 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._fade(config, 1, 0);
     };
 
+    Timeline.prototype.move = function(config) {
+      var _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      this.tween({
+        property: 'x',
+        from: (_ref = (_ref1 = config.from) != null ? _ref1.x : void 0) != null ? _ref : 0,
+        to: (_ref2 = (_ref3 = config.to) != null ? _ref3.x : void 0) != null ? _ref2 : 0,
+        duration: (_ref4 = config.duration) != null ? _ref4 : 0,
+        easing: (_ref5 = config.easingX) != null ? _ref5 : config.easing
+      });
+      return this.tween({
+        property: 'y',
+        from: (_ref6 = (_ref7 = config.from) != null ? _ref7.y : void 0) != null ? _ref6 : 0,
+        to: (_ref8 = (_ref9 = config.to) != null ? _ref9.y : void 0) != null ? _ref8 : 0,
+        duration: (_ref10 = config.duration) != null ? _ref10 : 0,
+        easing: (_ref11 = config.easingY) != null ? _ref11 : config.easing
+      });
+    };
+
     Timeline.prototype.sequence = function(targetOptionsOrBuilder, builderOrUndefined) {
       return this.repeat(1, targetOptionsOrBuilder, builderOrUndefined);
     };
