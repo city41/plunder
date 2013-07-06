@@ -18,8 +18,13 @@ require ['Timeline'], (Timeline) ->
         ani.update(delta)
 
     draw: (context) ->
+      context.save()
       context.fillStyle = "rgba(255, 0, 0, #{@alpha})"
+      if @scale?
+        context.scale(@scale, @scale)
+
       context.fillRect(@x, @y, 10, 10)
+      context.restore()
 
 
 
@@ -29,6 +34,10 @@ require ['Timeline'], (Timeline) ->
     tl.together (tl) ->
       tl.fadeOut
         duration: 2000
+      tl.scale
+        from: 1
+        to: 3
+        duration: 2000
       tl.move
         from: x: 10, y: 10
         to: x: 300, y: 100
@@ -36,6 +45,10 @@ require ['Timeline'], (Timeline) ->
         easingX: 'easeInOutQuad'
     tl.wait 500
     tl.together (tl) ->
+      tl.scale
+        from: 3
+        to: 1
+        duration: 2000
       tl.fadeIn
         duration: 2000
       tl.move

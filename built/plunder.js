@@ -94,6 +94,16 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._fade(config, 1, 0);
     };
 
+    Timeline.prototype.scale = function(config) {
+      var _ref, _ref1, _ref2;
+      return this.tween({
+        property: 'scale',
+        from: (_ref = config.from) != null ? _ref : 0,
+        to: (_ref1 = config.to) != null ? _ref1 : 0,
+        duration: (_ref2 = config.duration) != null ? _ref2 : 0
+      });
+    };
+
     Timeline.prototype.move = function(config) {
       var _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       this.tween({

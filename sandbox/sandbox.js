@@ -28,8 +28,13 @@ require(['Timeline'], function(Timeline) {
     };
 
     Entity.prototype.draw = function(context) {
+      context.save();
       context.fillStyle = "rgba(255, 0, 0, " + this.alpha + ")";
-      return context.fillRect(this.x, this.y, 10, 10);
+      if (this.scale != null) {
+        context.scale(this.scale, this.scale);
+      }
+      context.fillRect(this.x, this.y, 10, 10);
+      return context.restore();
     };
 
     return Entity;
@@ -40,6 +45,11 @@ require(['Timeline'], function(Timeline) {
   tl.forever(function(tl) {
     tl.together(function(tl) {
       tl.fadeOut({
+        duration: 2000
+      });
+      tl.scale({
+        from: 1,
+        to: 3,
         duration: 2000
       });
       return tl.move({
@@ -57,6 +67,11 @@ require(['Timeline'], function(Timeline) {
     });
     tl.wait(500);
     return tl.together(function(tl) {
+      tl.scale({
+        from: 3,
+        to: 1,
+        duration: 2000
+      });
       tl.fadeIn({
         duration: 2000
       });

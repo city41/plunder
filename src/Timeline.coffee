@@ -88,6 +88,13 @@ define "Timeline",
       fadeOut: (config) ->
         @_fade config, 1, 0
 
+      scale: (config) ->
+        @tween
+          property: 'scale'
+          from: config.from ? 0
+          to: config.to ? 0
+          duration: config.duration ? 0
+
       move: (config) ->
         @tween
           property: 'x'
