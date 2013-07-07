@@ -38,7 +38,8 @@ define 'Util', ->
 
     areSameTypes: (a, b) ->
       if @isArray(a) then return @isArray(b)
-      if @isArray(b) then return @isArray(a)
+      if @isArray(b) then return false
+
       return typeof a == typeof b
 
     extend: (target, incoming) ->
@@ -65,6 +66,9 @@ define 'Util', ->
 
     isEmpty: (array) ->
       array && array.length == 0
+
+    any: (array) ->
+      array && array.length > 0
 
   Util.isArray = Array.isArray or (obj) ->
     toString.call(obj) == "[object Array]"

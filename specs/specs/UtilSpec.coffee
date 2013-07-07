@@ -109,6 +109,17 @@ require ['Util'], (U) ->
       it "should say a non empty array is not empty", ->
         expect(U.isEmpty([1,2,3])).toBeFalsy()
 
+    describe "#any", ->
+      it "should return true if array is not empty", ->
+        expect(U.any([1])).toBeTruthy()
+
+      it "should return falsy if array is empty", ->
+        expect(U.any([])).toBeFalsy()
+
+      it "should return falsy if array is not defined", ->
+        expect(U.any(null)).toBeFalsy()
+        expect(U.any()).toBeFalsy()
+
     describe "#first", ->
       it "should return the first element", ->
         expect(U.first([1,2,3])).toBe 1

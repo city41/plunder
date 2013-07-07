@@ -20,7 +20,7 @@ define "Timeline",
       _getTargets: (targetOptions, getOptions) ->
         defaultTarget = @owner
         
-        if getOptions?.useTargetStack && !U.isEmpty(@_targetStack)
+        if getOptions?.useTargetStack && U.any(@_targetStack)
           defaultTarget = U.last(@_targetStack)
 
         targets = targetOptions.targets ? targetOptions.target ?  defaultTarget

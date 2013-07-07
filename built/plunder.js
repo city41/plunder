@@ -13,7 +13,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     Timeline.prototype._getTargets = function(targetOptions, getOptions) {
       var defaultTarget, targets, _ref, _ref1;
       defaultTarget = this.owner;
-      if ((getOptions != null ? getOptions.useTargetStack : void 0) && !U.isEmpty(this._targetStack)) {
+      if ((getOptions != null ? getOptions.useTargetStack : void 0) && U.any(this._targetStack)) {
         defaultTarget = U.last(this._targetStack);
       }
       targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : defaultTarget;
@@ -235,7 +235,7 @@ define('Util', function() {
         return this.isArray(b);
       }
       if (this.isArray(b)) {
-        return this.isArray(a);
+        return false;
       }
       return typeof a === typeof b;
     },
@@ -271,6 +271,9 @@ define('Util', function() {
     },
     isEmpty: function(array) {
       return array && array.length === 0;
+    },
+    any: function(array) {
+      return array && array.length > 0;
     }
   };
   Util.isArray = Array.isArray || function(obj) {

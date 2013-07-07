@@ -368,6 +368,18 @@ require(['Util'], function(U) {
         return expect(U.isEmpty([1, 2, 3])).toBeFalsy();
       });
     });
+    describe("#any", function() {
+      it("should return true if array is not empty", function() {
+        return expect(U.any([1])).toBeTruthy();
+      });
+      it("should return falsy if array is empty", function() {
+        return expect(U.any([])).toBeFalsy();
+      });
+      return it("should return falsy if array is not defined", function() {
+        expect(U.any(null)).toBeFalsy();
+        return expect(U.any()).toBeFalsy();
+      });
+    });
     describe("#first", function() {
       it("should return the first element", function() {
         return expect(U.first([1, 2, 3])).toBe(1);
