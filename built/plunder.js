@@ -2,17 +2,17 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
   var Timeline;
   return Timeline = (function() {
     function Timeline(owner) {
-      if (!owner) {
+      this.owner = owner;
+      if (!this.owner) {
         throw new Error("Timeline requires an owner");
       }
-      this._owner = owner;
       this._buildStack = [];
       this._targetStack = [];
     }
 
     Timeline.prototype._getTargets = function(targetOptions, getOptions) {
       var defaultTarget, targets, _ref, _ref1;
-      defaultTarget = this._owner;
+      defaultTarget = this.owner;
       if ((getOptions != null ? getOptions.useTargetStack : void 0) && !U.isEmpty(this._targetStack)) {
         defaultTarget = U.last(this._targetStack);
       }
@@ -42,7 +42,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
 
     Timeline.prototype._pushAnimation = function(ani) {
       if (this._buildStack.length === 0) {
-        this._owner.addAni(ani);
+        this.owner.addAni(ani);
       } else {
         this._buildStack[this._buildStack.length - 1].children.push(ani);
       }
@@ -180,7 +180,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.stop = function() {
-      return this._owner.clearAnis();
+      return this.owner.clearAnis();
     };
 
     return Timeline;

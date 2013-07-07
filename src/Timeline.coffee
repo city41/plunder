@@ -11,16 +11,14 @@ define "Timeline",
     # TODO: Turn the targetStack into a configStack
     
     class Timeline
-      constructor: (owner) ->
-        unless owner
+      constructor: (@owner) ->
+        unless @owner
           throw new Error("Timeline requires an owner")
-
-        @_owner = owner
         @_buildStack = []
         @_targetStack = []
 
       _getTargets: (targetOptions, getOptions) ->
-        defaultTarget = @_owner
+        defaultTarget = @owner
         
         if getOptions?.useTargetStack && !U.isEmpty(@_targetStack)
           defaultTarget = U.last(@_targetStack)
@@ -49,7 +47,7 @@ define "Timeline",
 
       _pushAnimation: (ani) ->
         if @_buildStack.length is 0
-          @_owner.addAni ani
+          @owner.addAni ani
         else
           @_buildStack[@_buildStack.length - 1].children.push ani
 
@@ -148,5 +146,5 @@ define "Timeline",
       ## Animation maintenance
 
       stop: ->
-        @_owner.clearAnis()
+        @owner.clearAnis()
 
