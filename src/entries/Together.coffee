@@ -1,14 +1,17 @@
 define "Together", ->
 
   class Together
-    constructor: ->
-      @children = []
+    constructor: (children=[]) ->
+      @children = children
 
     reset: ->
       @done = false
       for child in @children
         child.reset()
 
+    reverse: ->
+      reversedChildren = (child.reverse() for child in @children)
+      new Together reversedChildren
 
     update: (args...)->
       return  if @done

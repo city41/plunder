@@ -6,7 +6,7 @@ require ['Timeline', 'Util'], (Timeline, U) ->
       @x = 10
       @y = 10
       @alpha = 1
-      @color = [0,0,0,0]
+      @color = [255, 0, 0, 1]
 
     addAni: (ani) ->
       @anis.push(ani)
@@ -24,9 +24,9 @@ require ['Timeline', 'Util'], (Timeline, U) ->
       context.fillStyle = "rgba(#{@color[0] | 0}, #{@color[1] | 0}, #{@color[2] | 0}, #{@color[3]})"
 
       context.translate(@x, @y)
-      context.scale(@scale, @scale) if @scale?
+      context.scale(@scale, @scale) if @scale
       context.rotate(U.degreesToRadians(@angle)) if @angle
-      context.fillRect(0, 0, 10, 10)
+      context.fillRect(-5, -5, 10, 10)
 
       context.restore()
 
@@ -35,7 +35,11 @@ require ['Timeline', 'Util'], (Timeline, U) ->
   tl = new Timeline(entity)
 
   tl.forever (tl) ->
-    tl.together (tl) ->
+    group = tl.together (tl) ->
+      tl.rotate
+        from: 0
+        to: 720
+        duration: 2000
       tl.color
         from: [255, 0, 0, 1]
         to: [0, 0, 255, 0]
@@ -50,25 +54,7 @@ require ['Timeline', 'Util'], (Timeline, U) ->
         duration: 2000
         easingX: 'easeInOutQuad'
     tl.wait 500
-    tl.together (tl) ->
-      tl.rotate
-        from: 0
-        to: 720
-        duration: 2000
-      tl.scale
-        from: 10
-        to: 1
-        duration: 2000
-      tl.color
-        from: [0, 0, 255, 0]
-        to: [255, 0, 0, 1]
-        duration: 2000
-      tl.move
-        from: x: 300, y: 100
-        to: x: 10, y: 10
-        duration: 2000
-        easingX: 'easeInOutQuad'
-
+    tl.reverse(group)
 
   context = document.getElementById('canvas').getContext('2d')
 

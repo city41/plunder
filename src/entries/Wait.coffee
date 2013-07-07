@@ -10,6 +10,12 @@ define 'Wait', ['Util'], (U) ->
       @_specifiedDuration = @duration
       @reset()
 
+    reverse: ->
+      new Wait
+        min: @min
+        max: @max
+        duration: @_specifiedDuration
+
     reset: ->
       @duration = @_specifiedDuration or U.rand(@min, @max)
       @_elapsed = 0

@@ -6,7 +6,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
       this.x = 10;
       this.y = 10;
       this.alpha = 1;
-      this.color = [0, 0, 0, 0];
+      this.color = [255, 0, 0, 1];
     }
 
     Entity.prototype.addAni = function(ani) {
@@ -32,13 +32,13 @@ require(['Timeline', 'Util'], function(Timeline, U) {
       context.save();
       context.fillStyle = "rgba(" + (this.color[0] | 0) + ", " + (this.color[1] | 0) + ", " + (this.color[2] | 0) + ", " + this.color[3] + ")";
       context.translate(this.x, this.y);
-      if (this.scale != null) {
+      if (this.scale) {
         context.scale(this.scale, this.scale);
       }
       if (this.angle) {
         context.rotate(U.degreesToRadians(this.angle));
       }
-      context.fillRect(0, 0, 10, 10);
+      context.fillRect(-5, -5, 10, 10);
       return context.restore();
     };
 
@@ -48,7 +48,13 @@ require(['Timeline', 'Util'], function(Timeline, U) {
   entity = new Entity();
   tl = new Timeline(entity);
   tl.forever(function(tl) {
-    tl.together(function(tl) {
+    var group;
+    group = tl.together(function(tl) {
+      tl.rotate({
+        from: 0,
+        to: 720,
+        duration: 2000
+      });
       tl.color({
         from: [255, 0, 0, 1],
         to: [0, 0, 255, 0],
@@ -73,35 +79,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
       });
     });
     tl.wait(500);
-    return tl.together(function(tl) {
-      tl.rotate({
-        from: 0,
-        to: 720,
-        duration: 2000
-      });
-      tl.scale({
-        from: 10,
-        to: 1,
-        duration: 2000
-      });
-      tl.color({
-        from: [0, 0, 255, 0],
-        to: [255, 0, 0, 1],
-        duration: 2000
-      });
-      return tl.move({
-        from: {
-          x: 300,
-          y: 100
-        },
-        to: {
-          x: 10,
-          y: 10
-        },
-        duration: 2000,
-        easingX: 'easeInOutQuad'
-      });
-    });
+    return tl.reverse(group);
   });
   context = document.getElementById('canvas').getContext('2d');
   lastTimestamp = null;

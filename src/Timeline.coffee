@@ -63,7 +63,8 @@ define "Timeline",
           @_addAnimationToOwner ani
         else
           @_buildStack[@_buildStack.length - 1].children.push ani
-        ani
+
+        return ani
 
       _fade: (config, from, to) ->
         config = duration: config  if U.isNumber(config)
@@ -81,6 +82,15 @@ define "Timeline",
           easing: config.easing
 
       ## Animations
+      
+      reverse: (ani) ->
+        reversed = ani.reverse()
+        if @_buildStack.length is 0
+          @_addAnimationToOwner reversed
+        else
+          @_buildStack[@_buildStack.length - 1].children.push reversed
+
+        return reversed
 
       setProperty: (config) ->
         config.duration = 0

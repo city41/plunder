@@ -14,6 +14,15 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
       @done = @_elapsed >= @duration
       @_targetsInitted = false
 
+    reverse: ->
+      new Tween
+        property: @property
+        targets: @targets
+        from: @to
+        to: @from
+        easing: @easing
+        duration: @duration
+
     _initTargets: ->
       for target in @targets
         curValue = @_getProperty(target, @property)

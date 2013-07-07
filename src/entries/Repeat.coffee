@@ -1,7 +1,7 @@
 define "Repeat", ["Util"], (U) ->
   class Repeat
-    constructor: (@count) ->
-      @children = []
+    constructor: (@count, children=[]) ->
+      @children = children
       @_currentChild = 0
       @_curCount = 0
 
@@ -12,6 +12,9 @@ define "Repeat", ["Util"], (U) ->
       for child in children
         child.reset()
 
+    reverse: ->
+      reversedChildren = (child.reverse() for child in @children)
+      new Repeat @count, reversedChildren
 
     update: (args...) ->
       @done = @_curCount >= @count

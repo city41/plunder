@@ -90,6 +90,17 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       });
     };
 
+    Timeline.prototype.reverse = function(ani) {
+      var reversed;
+      reversed = ani.reverse();
+      if (this._buildStack.length === 0) {
+        this._addAnimationToOwner(reversed);
+      } else {
+        this._buildStack[this._buildStack.length - 1].children.push(reversed);
+      }
+      return reversed;
+    };
+
     Timeline.prototype.setProperty = function(config) {
       config.duration = 0;
       config.from = config.to = config.value;
@@ -509,18 +520,25 @@ define('Easing', function() {
 });
 
 define('Invoke', ['Util'], function(U) {
-  var invoke;
-  return invoke = (function() {
-    function invoke(config) {
+  var Invoke;
+  return Invoke = (function() {
+    function Invoke(config) {
       U.extend(this, config);
       this.reset();
     }
 
-    invoke.prototype.reset = function() {
+    Invoke.prototype.reset = function() {
       return this.done = false;
     };
 
-    invoke.prototype.update = function() {
+    Invoke.prototype.reverse = function() {
+      return new Invoke({
+        func: this.func,
+        context: this.context
+      });
+    };
+
+    Invoke.prototype.update = function() {
       if (this.done) {
         return;
       }
@@ -528,7 +546,7 @@ define('Invoke', ['Util'], function(U) {
       return this.done = true;
     };
 
-    return invoke;
+    return Invoke;
 
   })();
 });
@@ -538,9 +556,12 @@ var __slice = [].slice;
 define("Repeat", ["Util"], function(U) {
   var Repeat;
   return Repeat = (function() {
-    function Repeat(count) {
+    function Repeat(count, children) {
       this.count = count;
-      this.children = [];
+      if (children == null) {
+        children = [];
+      }
+      this.children = children;
       this._currentChild = 0;
       this._curCount = 0;
     }
@@ -556,6 +577,21 @@ define("Repeat", ["Util"], function(U) {
         _results.push(child.reset());
       }
       return _results;
+    };
+
+    Repeat.prototype.reverse = function() {
+      var child, reversedChildren;
+      reversedChildren = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(child.reverse());
+        }
+        return _results;
+      }).call(this);
+      return new Repeat(this.count, reversedChildren);
     };
 
     Repeat.prototype.update = function() {
@@ -596,8 +632,11 @@ var __slice = [].slice;
 define("Together", function() {
   var Together;
   return Together = (function() {
-    function Together() {
-      this.children = [];
+    function Together(children) {
+      if (children == null) {
+        children = [];
+      }
+      this.children = children;
     }
 
     Together.prototype.reset = function() {
@@ -610,6 +649,21 @@ define("Together", function() {
         _results.push(child.reset());
       }
       return _results;
+    };
+
+    Together.prototype.reverse = function() {
+      var child, reversedChildren;
+      reversedChildren = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(child.reverse());
+        }
+        return _results;
+      }).call(this);
+      return new Together(reversedChildren);
     };
 
     Together.prototype.update = function() {
@@ -651,6 +705,17 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
       this._elapsed = 0;
       this.done = this._elapsed >= this.duration;
       return this._targetsInitted = false;
+    };
+
+    Tween.prototype.reverse = function() {
+      return new Tween({
+        property: this.property,
+        targets: this.targets,
+        from: this.to,
+        to: this.from,
+        easing: this.easing,
+        duration: this.duration
+      });
     };
 
     Tween.prototype._initTargets = function() {
@@ -786,6 +851,14 @@ define('Wait', ['Util'], function(U) {
       this._specifiedDuration = this.duration;
       this.reset();
     }
+
+    Wait.prototype.reverse = function() {
+      return new Wait({
+        min: this.min,
+        max: this.max,
+        duration: this._specifiedDuration
+      });
+    };
 
     Wait.prototype.reset = function() {
       this.duration = this._specifiedDuration || U.rand(this.min, this.max);
