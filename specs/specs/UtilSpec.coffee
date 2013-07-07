@@ -102,6 +102,27 @@ require ['Util'], (U) ->
         expect(U.isArray({})).toBeFalsy()
         expect(U.isArray({'0': 1, '1': 8, '2': 5})).toBeFalsy()
 
+    describe "#isEmpty", ->
+      it "should say an empty array is empty", ->
+        expect(U.isEmpty([])).toBeTruthy()
+
+      it "should say a non empty array is not empty", ->
+        expect(U.isEmpty([1,2,3])).toBeFalsy()
+
+    describe "#first", ->
+      it "should return the first element", ->
+        expect(U.first([1,2,3])).toBe 1
+
+      it "should return undefined if the array is empty", ->
+        expect(U.first([])).toBeUndefined()
+
+    describe "#last", ->
+      it "should return the last element", ->
+        expect(U.last([1,2,3])).toBe 3
+
+      it "should return undefined if the array is empty", ->
+        expect(U.last([])).toBeUndefined()
+
     describe "#extend", ->
       it "should extend an object", ->
         obj = {}
@@ -142,6 +163,17 @@ require ['Util'], (U) ->
         expect(obj.woah).toEqual 9
         expect(obj.bar).toBeUndefined()
         expect(obj.buz).toBeUndefined()
+
+    describe "#clone", ->
+      it "should clone an object", ->
+        obj = 
+          foo: 1
+          bar: 2
+
+        clone = U.clone(obj)
+
+        expect(clone).not.toBe obj
+        expect(clone).toEqual obj
 
 
 

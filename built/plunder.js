@@ -8,7 +8,6 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       this._owner = owner;
       this._buildStack = [];
       this._targetStack = [];
-      this._addedAnis = [];
     }
 
     Timeline.prototype._getTargets = function(targetOptions, getOptions) {
@@ -21,33 +20,28 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return U.toArray(targets);
     };
 
-    Timeline.prototype._addParentAnimation = function(builder, targetOptions, AniConstructor, consArg) {
-      var ani;
-      ani = new AniConstructor(consArg);
+    Timeline.prototype._addParentAnimation = function(builder, targetOptions, parentAni) {
       if (targetOptions) {
         this._targetStack.push(this._getTargets(targetOptions));
       }
-      this._buildStack.push(ani);
+      this._buildStack.push(parentAni);
       builder(this);
       this._buildStack.pop();
       if (targetOptions) {
         this._targetStack.pop();
       }
-      return this._pushAnimation(ani);
+      return this._pushAnimation(parentAni);
     };
 
-    Timeline.prototype._addAnimation = function(AniConstructor, config) {
-      var ani;
-      config.targets = this._getTargets(config, {
+    Timeline.prototype._addAnimation = function(ani) {
+      ani.targets = this._getTargets(ani, {
         useTargetStack: true
       });
-      ani = new AniConstructor(config);
       return this._pushAnimation(ani);
     };
 
     Timeline.prototype._pushAnimation = function(ani) {
       if (this._buildStack.length === 0) {
-        this._addedAnis.push(ani);
         this._owner.addAni(ani);
       } else {
         this._buildStack[this._buildStack.length - 1].children.push(ani);
@@ -64,7 +58,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       config.property = "alpha";
       config.from = from;
       config.to = to;
-      return this._addAnimation(Tween, config);
+      return this._addAnimation(new Tween(config));
     };
 
     Timeline.prototype._defaultTween = function(property, config, defaultValue) {
@@ -81,7 +75,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       });
     };
 
-    Timeline.prototype._createParent = function(targetOptionsOrBuilder, builderOrUndefined, AniConstructor, conArgs) {
+    Timeline.prototype._createParent = function(targetOptionsOrBuilder, builderOrUndefined, parentAni) {
       var builder, targetOptions;
       if (U.isFunction(targetOptionsOrBuilder)) {
         builder = targetOptionsOrBuilder;
@@ -89,7 +83,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
         targetOptions = targetOptionsOrBuilder;
         builder = builderOrUndefined;
       }
-      return this._addParentAnimation(builder, targetOptions, AniConstructor, conArgs);
+      return this._addParentAnimation(builder, targetOptions, parentAni);
     };
 
     Timeline.prototype.reverse = function(ani) {
@@ -103,7 +97,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.tween = function(config) {
-      return this._addAnimation(Tween, config);
+      return this._addAnimation(new Tween(config));
     };
 
     Timeline.prototype.fadeIn = function(config) {
@@ -137,11 +131,11 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
 
     Timeline.prototype.move = function(config) {
       var xconfig, yconfig, _ref, _ref1;
-      xconfig = U.extend({}, config);
+      xconfig = U.clone(config);
       xconfig.easing = (_ref = config.easingX) != null ? _ref : config.easing;
       xconfig.from = config.from.x;
       xconfig.to = config.to.x;
-      yconfig = U.extend({}, config);
+      yconfig = U.clone(config);
       yconfig.easing = (_ref1 = config.easingY) != null ? _ref1 : config.easing;
       yconfig.from = config.from.y;
       yconfig.to = config.to.y;
@@ -151,20 +145,20 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       });
     };
 
+    Timeline.prototype.together = function(targetOptionsOrBuilder, builderOrUndefined) {
+      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, new Together());
+    };
+
     Timeline.prototype.sequence = function(targetOptionsOrBuilder, builderOrUndefined) {
       return this.repeat(1, targetOptionsOrBuilder, builderOrUndefined);
     };
 
-    Timeline.prototype.together = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, Together);
+    Timeline.prototype.forever = function(targetOptionsOrBuilder, builderOrUndefined) {
+      return this.repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined);
     };
 
     Timeline.prototype.repeat = function(count, targetOptionsOrBuilder, builderOrUndefined) {
-      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, Repeat, count);
-    };
-
-    Timeline.prototype.forever = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this.repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined);
+      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, new Repeat(count));
     };
 
     Timeline.prototype.wait = function(millis) {
@@ -172,26 +166,17 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.waitBetween = function(min, max) {
-      return this._addAnimation(Wait, {
+      return this._addAnimation(new Wait({
         min: min,
         max: max
-      });
+      }));
     };
 
     Timeline.prototype.invoke = function(func, context) {
-      return this._addAnimation(Invoke, {
+      return this._addAnimation(new Invoke({
         func: func,
         context: context
-      });
-    };
-
-    Timeline.prototype.end = function() {
-      var _this = this;
-      if (!U.isEmpty(this._buildStack)) {
-        return this.invoke(function() {
-          return _this.stop();
-        });
-      }
+      }));
     };
 
     Timeline.prototype.stop = function() {
@@ -264,6 +249,9 @@ define('Util', function() {
         }
       }
       return target;
+    },
+    clone: function(obj) {
+      return this.extend({}, obj);
     },
     toArray: function(obj) {
       if (obj == null) {

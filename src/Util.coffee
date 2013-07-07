@@ -48,6 +48,9 @@ define 'Util', ->
 
       return target
 
+    clone: (obj) ->
+      @extend({}, obj)
+
     toArray: (obj) ->
       if !obj?
         return []

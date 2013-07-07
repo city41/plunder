@@ -18,7 +18,6 @@ define "Timeline",
         @_owner = owner
         @_buildStack = []
         @_targetStack = []
-        @_addedAnis = []
 
       _getTargets: (targetOptions, getOptions) ->
         defaultTarget = @_owner
@@ -29,13 +28,11 @@ define "Timeline",
         targets = targetOptions.targets ? targetOptions.target ?  defaultTarget
         return U.toArray(targets)
 
-      _addParentAnimation: (builder, targetOptions, AniConstructor, consArg) ->
-        ani = new AniConstructor(consArg)
-
+      _addParentAnimation: (builder, targetOptions, parentAni) ->
         if targetOptions
           @_targetStack.push @_getTargets(targetOptions)
 
-        @_buildStack.push ani
+        @_buildStack.push parentAni
 
         builder this
 
@@ -44,17 +41,14 @@ define "Timeline",
         if targetOptions
           @_targetStack.pop()
 
-        @_pushAnimation ani
+        @_pushAnimation parentAni
 
-      _addAnimation: (AniConstructor, config) ->
-        config.targets = @_getTargets config, useTargetStack: true
-        ani = new AniConstructor(config)
-
+      _addAnimation: (ani) ->
+        ani.targets = @_getTargets ani, useTargetStack: true
         @_pushAnimation ani
 
       _pushAnimation: (ani) ->
         if @_buildStack.length is 0
-          @_addedAnis.push ani
           @_owner.addAni ani
         else
           @_buildStack[@_buildStack.length - 1].children.push ani
@@ -68,7 +62,7 @@ define "Timeline",
         config.property = "alpha"
         config.from = from
         config.to = to
-        @_addAnimation Tween, config
+        @_addAnimation new Tween(config)
 
       _defaultTween: (property, config, defaultValue = 0) ->
         @tween
@@ -78,14 +72,14 @@ define "Timeline",
           duration: config.duration ? 0
           easing: config.easing
 
-      _createParent: (targetOptionsOrBuilder, builderOrUndefined, AniConstructor, conArgs) ->
+      _createParent: (targetOptionsOrBuilder, builderOrUndefined, parentAni) ->
         if U.isFunction(targetOptionsOrBuilder)
           builder = targetOptionsOrBuilder
         else
           targetOptions = targetOptionsOrBuilder
           builder = builderOrUndefined
 
-        @_addParentAnimation builder, targetOptions, AniConstructor, conArgs
+        @_addParentAnimation builder, targetOptions, parentAni
 
       ## Animations
       
@@ -98,7 +92,7 @@ define "Timeline",
         @tween config
 
       tween: (config) ->
-        @_addAnimation Tween, config
+        @_addAnimation new Tween(config)
 
       fadeIn: (config) ->
         @_fade config, 0, 1
@@ -116,12 +110,12 @@ define "Timeline",
         @_defaultTween 'angle', config
 
       move: (config) ->
-        xconfig = U.extend({}, config)
+        xconfig = U.clone(config)
         xconfig.easing = config.easingX ? config.easing
         xconfig.from = config.from.x
         xconfig.to = config.to.x
 
-        yconfig = U.extend({}, config)
+        yconfig = U.clone(config)
         yconfig.easing = config.easingY ? config.easing
         yconfig.from = config.from.y
         yconfig.to = config.to.y
@@ -130,31 +124,28 @@ define "Timeline",
           tl._defaultTween 'x', xconfig
           tl._defaultTween 'y', yconfig
 
+      together: (targetOptionsOrBuilder, builderOrUndefined) ->
+        @_createParent targetOptionsOrBuilder, builderOrUndefined, new Together()
+
       sequence: (targetOptionsOrBuilder, builderOrUndefined) ->
         @repeat 1, targetOptionsOrBuilder, builderOrUndefined
 
-      together: (targetOptionsOrBuilder, builderOrUndefined) ->
-        @_createParent targetOptionsOrBuilder, builderOrUndefined, Together
-
-      repeat: (count, targetOptionsOrBuilder, builderOrUndefined) ->
-        @_createParent targetOptionsOrBuilder, builderOrUndefined, Repeat, count
-
       forever: (targetOptionsOrBuilder, builderOrUndefined) ->
         @repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined)
+
+      repeat: (count, targetOptionsOrBuilder, builderOrUndefined) ->
+        @_createParent targetOptionsOrBuilder, builderOrUndefined, new Repeat(count)
 
       wait: (millis) ->
         @waitBetween millis, millis
 
       waitBetween: (min, max) ->
-        @_addAnimation Wait, { min, max }
+        @_addAnimation new Wait({ min, max })
 
       invoke: (func, context) ->
-        @_addAnimation Invoke, { func, context }
+        @_addAnimation new Invoke({ func, context })
 
-      end: ->
-        unless U.isEmpty(@_buildStack)
-          @invoke =>
-            @stop()
+      ## Animation maintenance
 
       stop: ->
         @_owner.clearAnis()

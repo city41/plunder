@@ -360,7 +360,31 @@ require(['Util'], function(U) {
         })).toBeFalsy();
       });
     });
-    return describe("#extend", function() {
+    describe("#isEmpty", function() {
+      it("should say an empty array is empty", function() {
+        return expect(U.isEmpty([])).toBeTruthy();
+      });
+      return it("should say a non empty array is not empty", function() {
+        return expect(U.isEmpty([1, 2, 3])).toBeFalsy();
+      });
+    });
+    describe("#first", function() {
+      it("should return the first element", function() {
+        return expect(U.first([1, 2, 3])).toBe(1);
+      });
+      return it("should return undefined if the array is empty", function() {
+        return expect(U.first([])).toBeUndefined();
+      });
+    });
+    describe("#last", function() {
+      it("should return the last element", function() {
+        return expect(U.last([1, 2, 3])).toBe(3);
+      });
+      return it("should return undefined if the array is empty", function() {
+        return expect(U.last([])).toBeUndefined();
+      });
+    });
+    describe("#extend", function() {
       it("should extend an object", function() {
         var incoming, obj;
         obj = {};
@@ -411,6 +435,18 @@ require(['Util'], function(U) {
         expect(obj.woah).toEqual(9);
         expect(obj.bar).toBeUndefined();
         return expect(obj.buz).toBeUndefined();
+      });
+    });
+    return describe("#clone", function() {
+      return it("should clone an object", function() {
+        var clone, obj;
+        obj = {
+          foo: 1,
+          bar: 2
+        };
+        clone = U.clone(obj);
+        expect(clone).not.toBe(obj);
+        return expect(clone).toEqual(obj);
       });
     });
   });
