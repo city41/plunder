@@ -165,8 +165,8 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._addParentAnimation(childConfigOrBuilder, builderOrUndefined, Repeat, count);
     };
 
-    Timeline.prototype.wait = function(millis) {
-      return this.waitBetween(millis, millis);
+    Timeline.prototype.wait = function(duration) {
+      return this.waitBetween(duration, duration);
     };
 
     Timeline.prototype.waitBetween = function(min, max) {

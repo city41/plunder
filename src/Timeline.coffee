@@ -128,8 +128,8 @@ define "Timeline",
       repeat: (count, childConfigOrBuilder, builderOrUndefined) ->
         @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Repeat, count
 
-      wait: (millis) ->
-        @waitBetween millis, millis
+      wait: (duration) ->
+        @waitBetween duration, duration
 
       waitBetween: (min, max) ->
         @_addAnimation  Wait, { min, max }
