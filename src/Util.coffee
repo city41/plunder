@@ -36,6 +36,12 @@ define 'Util', ->
     isFunction: (f) ->
       typeof f == "function"
 
+    isString: (s) ->
+      toString.call(s) == "[object String]"
+
+    isPrimitive: (o) ->
+      o == true || o == false || @isString(o) || @isNumber(o) 
+
     areSameTypes: (a, b) ->
       if @isArray(a) then return @isArray(b)
       if @isArray(b) then return false
@@ -50,10 +56,13 @@ define 'Util', ->
       return target
 
     clone: (obj) ->
+      if !obj || @isPrimitive(obj)
+        return obj
+
       if @isArray(obj)
         return obj.slice(0)
 
-      @extend({}, obj)
+      return @extend({}, obj)
 
     toArray: (obj) ->
       if !obj?

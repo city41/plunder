@@ -176,6 +176,23 @@ require ['Util'], (U) ->
         expect(obj.buz).toBeUndefined()
 
     describe "#clone", ->
+      it "should quietly return for non defined args", ->
+        expect(U.clone()).toBeUndefined()
+        expect(U.clone(null)).toBe(null)
+
+      it "should return primitives", ->
+        expect(U.clone(12)).toBe 12
+        expect(U.clone("hello")).toBe "hello"
+        expect(U.clone(false)).toBe false
+        expect(U.clone(true)).toBe true
+
+      it "should clone an array", ->
+        a = [1,2,3]
+        b = U.clone(a)
+
+        expect(b).not.toBe a
+        expect(b).toEqual a
+
       it "should clone an object", ->
         obj = 
           foo: 1

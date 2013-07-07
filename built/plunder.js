@@ -241,6 +241,12 @@ define('Util', function() {
     isFunction: function(f) {
       return typeof f === "function";
     },
+    isString: function(s) {
+      return toString.call(s) === "[object String]";
+    },
+    isPrimitive: function(o) {
+      return o === true || o === false || this.isString(o) || this.isNumber(o);
+    },
     areSameTypes: function(a, b) {
       if (this.isArray(a)) {
         return this.isArray(b);
@@ -262,6 +268,9 @@ define('Util', function() {
       return target;
     },
     clone: function(obj) {
+      if (!obj || this.isPrimitive(obj)) {
+        return obj;
+      }
       if (this.isArray(obj)) {
         return obj.slice(0);
       }
