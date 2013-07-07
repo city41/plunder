@@ -24,8 +24,14 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       }
     };
 
-    Timeline.prototype._addParentAnimation = function(builder, childConfig, AniConstructor, consArg) {
-      var parentAni;
+    Timeline.prototype._addParentAnimation = function(childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) {
+      var builder, childConfig, parentAni;
+      if (U.isFunction(childConfigOrBuilder)) {
+        builder = childConfigOrBuilder;
+      } else {
+        childConfig = childConfigOrBuilder;
+        builder = builderOrUndefined;
+      }
       parentAni = new AniConstructor(consArg);
       if (childConfig) {
         this._childConfigStack.push(childConfig);
@@ -67,36 +73,37 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       return this._addAnimation(Tween, config);
     };
 
-    Timeline.prototype._createParent = function(childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) {
-      var builder, childConfig;
-      if (U.isFunction(childConfigOrBuilder)) {
-        builder = childConfigOrBuilder;
-      } else {
-        childConfig = childConfigOrBuilder;
-        builder = builderOrUndefined;
-      }
-      return this._addParentAnimation(builder, childConfig, AniConstructor, consArg);
-    };
-
     Timeline.prototype.reverse = function(ani) {
       return this._pushAnimation(ani.reverse());
     };
 
     Timeline.prototype.setProperty = function(config) {
+      if (config == null) {
+        config = {};
+      }
       config.duration = 0;
       config.from = config.to = config.value;
       return this.tween(config);
     };
 
     Timeline.prototype.tween = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._addAnimation(Tween, config);
     };
 
     Timeline.prototype.fadeIn = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._fade(config, 0, 1);
     };
 
     Timeline.prototype.fadeOut = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._fade(config, 1, 0);
     };
 
@@ -143,7 +150,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.together = function(childConfigOrBuilder, builderOrUndefined) {
-      return this._createParent(childConfigOrBuilder, builderOrUndefined, Together);
+      return this._addParentAnimation(childConfigOrBuilder, builderOrUndefined, Together);
     };
 
     Timeline.prototype.sequence = function(childConfigOrBuilder, builderOrUndefined) {
@@ -155,7 +162,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.repeat = function(count, childConfigOrBuilder, builderOrUndefined) {
-      return this._createParent(childConfigOrBuilder, builderOrUndefined, Repeat, count);
+      return this._addParentAnimation(childConfigOrBuilder, builderOrUndefined, Repeat, count);
     };
 
     Timeline.prototype.wait = function(millis) {

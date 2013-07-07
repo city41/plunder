@@ -25,16 +25,20 @@ define "Timeline",
         else
           return config
 
-      _addParentAnimation: (builder, childConfig, AniConstructor, consArg) ->
+      _addParentAnimation: (childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) ->
+        if U.isFunction(childConfigOrBuilder)
+          builder = childConfigOrBuilder
+        else
+          childConfig = childConfigOrBuilder
+          builder = builderOrUndefined
+
         parentAni = new AniConstructor(consArg)
 
         if childConfig
           @_childConfigStack.push childConfig
 
         @_buildStack.push parentAni
-
         builder this
-
         @_buildStack.pop()
 
         if childConfig
@@ -64,32 +68,23 @@ define "Timeline",
         config.to = to
         @_addAnimation Tween, config
 
-      _createParent: (childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) ->
-        if U.isFunction(childConfigOrBuilder)
-          builder = childConfigOrBuilder
-        else
-          childConfig = childConfigOrBuilder
-          builder = builderOrUndefined
-
-        @_addParentAnimation builder, childConfig, AniConstructor, consArg
-
       ## Animations
       
       reverse: (ani) ->
         @_pushAnimation ani.reverse()
 
-      setProperty: (config) ->
+      setProperty: (config = {}) ->
         config.duration = 0
         config.from = config.to = config.value
         @tween config
 
-      tween: (config) ->
+      tween: (config = {}) ->
         @_addAnimation Tween, config
 
-      fadeIn: (config) ->
+      fadeIn: (config = {}) ->
         @_fade config, 0, 1
 
-      fadeOut: (config) ->
+      fadeOut: (config = {}) ->
         @_fade config, 1, 0
 
       scale: (config = {}) ->
@@ -122,7 +117,7 @@ define "Timeline",
           tl.tween(yconfig)
 
       together: (childConfigOrBuilder, builderOrUndefined) ->
-        @_createParent childConfigOrBuilder, builderOrUndefined, Together
+        @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Together
 
       sequence: (childConfigOrBuilder, builderOrUndefined) ->
         @repeat 1, childConfigOrBuilder, builderOrUndefined
@@ -131,7 +126,7 @@ define "Timeline",
         @repeat(Infinity, childConfigOrBuilder, builderOrUndefined)
 
       repeat: (count, childConfigOrBuilder, builderOrUndefined) ->
-        @_createParent childConfigOrBuilder, builderOrUndefined, Repeat, count
+        @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Repeat, count
 
       wait: (millis) ->
         @waitBetween millis, millis
