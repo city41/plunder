@@ -1,0 +1,472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="target-densitydpi=device-dpi">
+		<meta name="HandheldFriendly" content="true">
+		<link rel="canonical" href="http://city41.github.io/plunder">
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" href="../css/highlight/default.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+		<title>
+			docs - Plunder
+		</title>
+		<style type="text/css">
+ body {
+		 font-size: 14px;
+		 line-height: 22px;
+		 background: #f4f4f4 url(imgs/docs/background.png);
+		 color: #000;
+		 font-family: Helvetica Neue, Helvetica, Arial;
+		 }
+		 .logo {
+			font-size: 48px;
+			font-weight: bold;
+		}
+		 .interface {
+		 font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif !important;
+		 }
+		 .doc_disclaimer {
+		 font-style: italic;
+		 font-size: 0.8em;
+		 }
+		 div#sidebar {
+		 background: #fff;
+		 position: fixed;
+		 top: 0; left: 0; bottom: 0;
+		 width: 200px;
+		 overflow-y: auto;
+		 overflow-x: hidden;
+		 -webkit-overflow-scrolling: touch;
+		 padding: 15px 0 30px 30px;
+		 border-right: 1px solid #bbb;
+		 box-shadow: 0 0 20px #ccc; -webkit-box-shadow: 0 0 20px #ccc; -moz-box-shadow: 0 0 20px #ccc;
+		 }
+		 a.toc_title, a.toc_title:visited {
+		 display: block;
+		 color: black;
+		 font-weight: bold;
+		 margin-top: 15px;
+		 }
+		 a.toc_title:hover {
+		 text-decoration: underline;
+		 }
+		 #sidebar .version {
+		 font-size: 10px;
+		 font-weight: normal;
+		 }
+		 ul.toc_section {
+		 font-size: 11px;
+		 line-height: 14px;
+		 margin: 5px 0 0 0;
+		 padding-left: 0px;
+		 list-style-type: none;
+		 font-family: Lucida Grande;
+		 }
+		 .toc_section li {
+		 cursor: pointer;
+		 margin: 0 0 3px 0;
+		 }
+		 .toc_section li a {
+		 text-decoration: none;
+		 color: black;
+		 }
+		 .toc_section li a:hover {
+		 text-decoration: underline;
+		 }
+		 div.container {
+		 width: 550px;
+		 margin: 40px 0 50px 260px;
+		 }
+		 img#logo {
+		 width: 396px;
+		 height: 69px;
+		 }
+		 div.warning {
+		 margin-top: 15px;
+		 font: bold 11px Arial;
+		 color: #770000;
+		 }
+		 p {
+		 margin: 20px 0;
+		 width: 550px;
+		 }
+		 a, a:visited {
+		 color: #444;
+		 }
+		 a:active, a:hover {
+		 color: #000;
+		 }
+		 h1, h2, h3, h4, h5, h6 {
+		 padding-top: 20px;
+		 }
+		 h2 {
+		 font-size: 20px;
+		 }
+		 b.header {
+		 font-size: 16px;
+		 line-height: 30px;
+		 }
+		 span.alias {
+		 font-size: 14px;
+		 font-style: italic;
+		 margin-left: 20px;
+		 }
+		 table, tr, td {
+		 margin: 0; padding: 0;
+		 }
+		 td {
+		 padding: 2px 12px 2px 0;
+		 }
+		 table .rule {
+		 height: 1px;
+		 background: #ccc;
+		 margin: 5px 0;
+		 }
+		 ul {
+		 list-style-type: circle;
+		 padding: 0 0 0 20px;
+		 }
+		 li {
+		 width: 500px;
+		 margin-bottom: 10px;
+		 }
+		 code, pre, tt {
+		 font-family: Monaco, Consolas, "Lucida Console", monospace;
+		 font-size: 12px;
+		 line-height: 18px;
+		 font-style: normal;
+		 }
+		 tt {
+		 padding: 0px 3px;
+		 background: #fff;
+		 border: 1px solid #ddd;
+		 zoom: 1;
+		 }
+		 code {
+		 margin-left: 20px;
+		 }
+		 pre {
+		 font-size: 12px;
+		 padding: 2px 0 2px 15px;
+		 border-left: 5px solid #bbb;
+		 margin: 0px 0 30px;
+		 }
+		 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) and (max-width: 640px),
+		 only screen and (-o-min-device-pixel-ratio: 3/2) and (max-width: 640px),
+		 only screen and (min-device-pixel-ratio: 1.5) and (max-width: 640px) {
+		 img {
+		 max-width: 100%;
+		 }
+		 div#sidebar {
+		 -webkit-overflow-scrolling: initial;
+		 position: relative;
+		 width: 90%;
+		 height: 120px;
+		 left: 0;
+		 top: -7px;
+		 padding: 10px 0 10px 30px;
+		 border: 0;
+		 }
+		 img#logo {
+		 width: auto;
+		 height: auto;
+		 }
+		 div.container {
+		 margin: 0;
+		 width: 100%;
+		 }
+		 p, div.container ul {
+		 max-width: 98%;
+		 overflow-x: scroll;
+		 }
+		 pre {
+		 overflow: scroll;
+		 }
+		 }
+		</style>
+	</head>
+	<body>
+		<div id="sidebar" class="interface">
+			<a class="toc_title" href="#">Plunder <span class="version">(0.1.0)</span></a>
+			<ul class="toc_section">
+				<li>» <a href="http://github.com/city41/plunder">GitHub Repository</a></li>
+				<li>» <a href="http://twitter.com/cityfortyone">@cityfortyone</a></li>
+				<li>» <a href="mailto:matt.e.greer@gmail.com">matt.e.greer@gmail.com</a></li>								
+			</ul>
+			<a class="toc_title" href="#timeline">The Timeline</a>		
+			<a class="toc_title" href="#targeting">Targeting</a>			
+			<a class="toc_title" href="#animations">Animations</a>
+			<ul class="toc_section">
+				<li>- <a href="#tween">tween</a>
+				</li>
+				<li>- <a href="#move">move</a>
+				</li>
+				<li>- <a href="#scale">scale</a>
+				</li>
+				<li>- <a href="#color">color</a>
+				</li>
+				<li>- <a href="#rotate">rotate</a>
+				</li>
+				<li>- <a href="#fadeIn">fadeIn</a>
+				</li>
+				<li>- <a href="#fadeOut">fadeOut</a>
+				</li>
+				<li>- <a href="#wait">wait</a>
+				</li>
+				<li>- <a href="#waitBetween">waitBetween</a>
+				</li>
+				<li>- <a href="#invoke">invoke</a>
+				</li>
+				<li>- <a href="#reverse">reverse</a>
+				</li>
+				<li>- <a href="#setProperty">setProperty</a>
+				</li>
+				<li>- <a href="#bezier">bezier</a>
+				</li>
+			</ul><a class="toc_title" href="#parents">Parent Animations</a>
+			<ul class="toc_section">
+				<li>- <a href="#sequence">sequence</a>
+				</li>
+				<li>- <a href="#together">together</a>
+				</li>
+				<li>- <a href="#repeat">repeat</a>
+				</li>
+				<li>- <a href="#forever">forever</a>
+				</li>
+			</ul>
+			<a class="toc_title" href="#time">Time Units</a> 			
+			<a class="toc_title" href="#engines">Engine Integrations</a> 
+			<ul class="toc_section">
+				<li>- <a href="#standalone">Standalone (no engine)</a>
+				</li>
+			</ul>
+			<a class="toc_title" href="#changelog">Change Log</a>
+		</div>
+		<div class="container">
+			<p id="introduction">
+				<h1 class="logo">Plunder</h1>
+			</p>
+			<p>
+				<a href="http://github.com/city41/plunder">Plunder</a> is an animation system intended to be used with JavaScript game engines. Plunder can also be used on its own with a small amount of supporting canvas related code. See the <a href="#engines">Engine Integrations</a> section for more info on how to add Plunder to your game.
+			</p>
+			<p class="doc_disclaimer">
+				Plunder's documentation is based on <a href="http://underscorejs.org">Underscore's</a> documentation. Thanks to the Underscore team for such a great template.
+			</p>
+			<div id="documentation">
+				<h2 id="timeline">The Timeline</h2>
+				<p>
+					The <tt>Timeline</tt> type is the only public type in Plunder. All of the methods described here are found on a Timeline object.
+				</p>
+				<p>
+					Timelines need to be constructed with an <em>owner</em>, this is typically an entity/actor/element in your game world. 
+					This object needs to have a couple methods defined on it to work properly with Plunder, see the <a href="#engines">Engine Ifntegrations</a>
+					section for more information.
+				</p>
+				<p>
+					It is typical to instantiate one Timeline object per entity, for example:
+				
+<pre><code>
+var entity = new MyGameEntity();
+var timeline = new Timeline(entity);
+timeline.tween({
+	property: 'myProperty',
+	from: 10,
+	to: 100
+});
+<code></pre>				
+				</p>
+				
+				<h2 id="targeting">Targeting</h2>
+				<p>
+					All animations you invoke must have a target entity to run against. If you do not specify a target, then the timeline's owner
+					will be the target of the animation:
+				</p>
+<pre><code>
+var entity = new MyGameEntity();
+var timeline = new Timeline(entity);
+
+// this will tween entity, as no target was specified
+timeline.tween({
+	property: 'myProperty',
+	from: 10,
+	to: 100
+});
+</code></pre>
+				<p>
+					Not specifying a target and implicitly using owner is the most common use case. You can specify targets manually, all <tt>Timeline</tt>
+					animation methods accept a <tt>target</tt> or <tt>targets</tt> property to specify what object to run the animation against:
+				</p>
+<pre><code>
+var entity = new MyGameEntity();
+var timeline = new Timeline(entity);
+
+// this will tween someOtherEntity, not entity
+timeline.tween({
+	target: someOtherEntity,
+	property: 'myProperty',
+	from: 10,
+	to: 100
+});
+
+// this will tween entityA and entityB
+timeline.tween({
+	targets: [entityA, entityB],
+	property: 'myProperty',
+	from: 10,
+	to: 100
+});
+</code></pre>
+				<p>
+					It doesn't really matter if you use <tt>targets</tt> or <tt>target</tt>. It's likely <tt>targets</tt> will be
+					removed at some point.
+				</p>
+				<p>
+					When you use an array of entities as targets, it's functionally no different from individually calling an animation against each object:
+				</p>
+<pre><code>
+// this...
+timeline.tween({ targets: [entityA, entityB] });
+
+// is equivalent to this...
+timeline.tween({ target: entityA });
+timeline.tween({ target: entityB });
+<code></pre>
+					
+				
+				<h2 id="animations">Animations</h2>
+				<p id="each">
+					<b class="header">each</b><code>_.each(list, iterator, [context])</code> <span class="alias">Alias: <b>forEach</b></span><br>
+					Iterates over a <b>list</b> of elements, yielding each in turn to an <b>iterator</b> function. The <b>iterator</b> is bound to the <b>context</b> object, if one is passed. Each invocation of <b>iterator</b> is called with three arguments: <tt>(element, index, list)</tt>. If <b>list</b> is a JavaScript object, <b>iterator</b>'s arguments will be <tt>(value, key, list)</tt>. Delegates to the native <b>forEach</b> function if it exists.
+				</p>
+				<pre>
+_.each([1, 2, 3], alert);
+=&gt; alerts each number in turn...
+_.each({one : 1, two : 2, three : 3}, alert);
+=&gt; alerts each number value in turn...
+</pre>
+				<p>
+					<i>Note: Collection functions work on arrays, objects, and array-like objects such as</i> <tt>arguments</tt>, <tt>NodeList</tt> <i>and similar. But it works by duck-typing, so avoid passing objects with a numeric <tt>length</tt> property.</i>
+				</p>
+				
+				<h2 id="parents">Parent Animations</h2>
+				<p id="each">
+					<b class="header">each</b><code>_.each(list, iterator, [context])</code> <span class="alias">Alias: <b>forEach</b></span><br>
+					Iterates over a <b>list</b> of elements, yielding each in turn to an <b>iterator</b> function. The <b>iterator</b> is bound to the <b>context</b> object, if one is passed. Each invocation of <b>iterator</b> is called with three arguments: <tt>(element, index, list)</tt>. If <b>list</b> is a JavaScript object, <b>iterator</b>'s arguments will be <tt>(value, key, list)</tt>. Delegates to the native <b>forEach</b> function if it exists.
+				</p>
+				<pre>
+_.each([1, 2, 3], alert);
+=&gt; alerts each number in turn...
+_.each({one : 1, two : 2, three : 3}, alert);
+=&gt; alerts each number value in turn...
+</pre>
+				<p>
+					<i>Note: Collection functions work on arrays, objects, and array-like objects such as</i> <tt>arguments</tt>, <tt>NodeList</tt> <i>and similar. But it works by duck-typing, so avoid passing objects with a numeric <tt>length</tt> property.</i>
+				</p>				
+				
+				<h2 id="time">Time Units</h2>
+
+				<p>
+					Plunder is completely time unit agnostic. Milliseconds, seconds, fortnights... it doesn't matter as long as you are consistent. 
+					If your game typically uses milliseconds, then as long as you use milliseconds for all <tt>duration</tt> specifications <em>and</em> 
+					pass milliseconds as the <tt>delta</tt> parameter to each animation's <tt>update(delta)</tt> method, then Plunder will work correctly.
+				</p>
+<pre><code>
+timeline.tween({
+	property: 'myProperty',
+	duration: 1000  // <--- whatever units you use here
+});
+
+// ...
+
+MyEntity.prototype = {
+	update: function(delta) {
+		for(var i = 0; i < this.anis.length; ++i) {
+			this.anis[i].update(delta); // <---- use those same units here
+		}
+	}
+}
+</code></pre>
+
+				<p>
+					<b>Note:</b> See the <a href="#engines">Engine Integrations</a> section for more information on
+					the <tt>update</tt> method.
+				</p>
+				
+				<h2 id="engines">Engine Integrations</h2>
+				<p>
+					Plunder is designed to be as engine agnostic as possible. The hooks it needs to work with an engine are minimal:
+					<ul>
+						<li>The entities that Timeline and its animations work with need these methods:
+							<ul>
+								<li><tt>addAni(ani)</tt> - adds an animation for the entity to keep track of</li>
+								<li><tt>clearAnis()</tt> - remove all animations the entity is responsible for</li>								
+							</ul>
+						</li>
+						<li>The entity should call <tt>update(delta)</tt> against all animations it was given with <tt>addAni</tt></li>
+					</ul>
+				</p>
+				<p>
+					Here is an example entity implementation that meets Plunder's needs:
+					
+<pre><code>
+function Entity() {
+	this.anis = [];
+}
+
+Entity.prototype = {
+	addAni: function(ani) {
+		this.anis.push(ani);
+	},
+	clearAnis: function() {
+		this.anis = [];
+	},
+	update: function(delta) {
+		for(var i = 0, i < this.anis.length; ++i) {
+			this.anis[i].update(delta);
+		}
+	}
+}
+
+var entity = new Entity();
+var timeline = new Timeline(entity);
+timeline.move({
+	from: { x: 10, y: 10 },
+	to: { x: 100, y: 100 },
+	duration: 1000
+});
+
+// at this point entity.anis will contain one animation 
+// object that will move the entity as prescribed
+</code></pre>					
+				<p>
+					<b>Note:</b> for more info on what <tt>delta</tt> needs to be in <tt>update</tt>, see the <a href="#time">Time Units</a> section.
+				</p>
+
+				<p id="standalone">
+					<b class="header">Standalone (no engine)</b>
+				</p>
+				
+				<h2 id="changelog">
+					Change Log
+				</h2>
+				<p>
+					<b class="header">0.1.0</b> — <small><i>Jul. 7, 2013</i></small>
+				</p>
+				<ul>
+					<li>Initial release
+					</li>
+					<li>Added Timeline with <tt>tween</tt>, <tt>move</tt>, <tt>scale</tt>, <tt>color</tt>, <tt>rotate</tt>, 
+						<tt>fadeIn</tt>, <tt>fadeOut</tt>, <tt>wait</tt>, <tt>waitBetween</tt>, <tt>invoke</tt>, <tt>reverse</tt>, <tt>setProperty</tt>, 
+						<tt>bezier</tt>, <tt>sequence</tt>, <tt>together</tt>, <tt>repeat</tt> and <tt>forever</tt>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../js/highlight/highlight.pack.js"></script>
+		<script>
+			hljs.initHighlightingOnLoad();
+		</script>
+	</body>
+</html>

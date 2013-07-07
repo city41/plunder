@@ -1,0 +1,13 @@
+/node_modules/
+.DS_Store
+.*
+~*
+*.swp
+lib/impact/
+lib/weltmeister/
+weltmeister.html
+tools/
+README.html
+_SpecRunner.html
+JasmineSpecs.js
+
