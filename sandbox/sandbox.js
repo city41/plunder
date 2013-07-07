@@ -49,21 +49,20 @@ require(['Timeline', 'Util'], function(Timeline, U) {
   tl = new Timeline(entity);
   tl.forever(function() {
     var group;
-    group = tl.together(function() {
+    group = tl.together({
+      duration: 2000
+    }, function() {
       tl.rotate({
         from: 0,
-        to: 720,
-        duration: 2000
+        to: 720
       });
       tl.color({
         from: [255, 0, 0, 1],
-        to: [0, 0, 255, 0],
-        duration: 2000
+        to: [0, 0, 255, 0]
       });
       tl.scale({
         from: 1,
-        to: 10,
-        duration: 2000
+        to: 10
       });
       return tl.move({
         from: {
@@ -73,8 +72,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
         to: {
           x: 300,
           y: 200
-        },
-        duration: 2000
+        }
       });
     });
     tl.wait(500);

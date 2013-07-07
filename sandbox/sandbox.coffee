@@ -35,23 +35,19 @@ require ['Timeline', 'Util'], (Timeline, U) ->
   tl = new Timeline(entity)
 
   tl.forever ->
-    group = tl.together ->
+    group = tl.together duration: 2000, ->
       tl.rotate
         from: 0
         to: 720
-        duration: 2000
       tl.color
         from: [255, 0, 0, 1]
         to: [0, 0, 255, 0]
-        duration: 2000
       tl.scale
         from: 1
         to: 10
-        duration: 2000
       tl.move
         from: x: 10, y: 10
         to: x: 300, y: 200
-        duration: 2000
     tl.wait 500
     tl.reverse(group)
 

@@ -8,27 +8,28 @@ define "Timeline",
     "Invoke"
   ], (U, Tween, Wait, Repeat, Together, Invoke) ->
 
-    # TODO: Turn the targetStack into a configStack
-    
     class Timeline
       constructor: (@owner) ->
         unless @owner
           throw new Error("Timeline requires an owner")
         @_buildStack = []
-        @_targetStack = []
+        @_childConfigStack = []
 
-      _getTargets: (targetOptions, getOptions) ->
-        defaultTarget = @owner
-        
-        if getOptions?.useTargetStack && U.any(@_targetStack)
-          defaultTarget = U.last(@_targetStack)
-
-        targets = targetOptions.targets ? targetOptions.target ?  defaultTarget
+      _getTargets: (targetOptions) ->
+        targets = targetOptions.targets ? targetOptions.target ?  @owner
         return U.toArray(targets)
+  
+      _mergeConfig: (config) ->
+        if U.any(@_childConfigStack)
+          return U.extend(U.clone(U.last(@_childConfigStack)), config)
+        else
+          return config
 
-      _addParentAnimation: (builder, targetOptions, parentAni) ->
-        if targetOptions
-          @_targetStack.push @_getTargets(targetOptions)
+      _addParentAnimation: (builder, childConfig, AniConstructor, consArg) ->
+        parentAni = new AniConstructor(consArg)
+
+        if childConfig
+          @_childConfigStack.push childConfig
 
         @_buildStack.push parentAni
 
@@ -36,13 +37,14 @@ define "Timeline",
 
         @_buildStack.pop()
 
-        if targetOptions
-          @_targetStack.pop()
+        if childConfig
+          @_childConfigStack.pop()
 
         @_pushAnimation parentAni
 
-      _addAnimation: (ani) ->
-        ani.targets = @_getTargets ani, useTargetStack: true
+      _addAnimation: (AniConstructor, config) ->
+        ani = new AniConstructor(@_mergeConfig(config))
+        ani.targets = @_getTargets ani
         @_pushAnimation ani
 
       _pushAnimation: (ani) ->
@@ -60,24 +62,16 @@ define "Timeline",
         config.property = "alpha"
         config.from = from
         config.to = to
-        @_addAnimation new Tween(config)
+        @_addAnimation Tween, config
 
-      _defaultTween: (property, config, defaultValue = 0) ->
-        @tween
-          property: property
-          from: config.from ? defaultValue
-          to: config.to ? defaultValue
-          duration: config.duration ? 0
-          easing: config.easing
-
-      _createParent: (targetOptionsOrBuilder, builderOrUndefined, parentAni) ->
-        if U.isFunction(targetOptionsOrBuilder)
-          builder = targetOptionsOrBuilder
+      _createParent: (childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) ->
+        if U.isFunction(childConfigOrBuilder)
+          builder = childConfigOrBuilder
         else
-          targetOptions = targetOptionsOrBuilder
+          childConfig = childConfigOrBuilder
           builder = builderOrUndefined
 
-        @_addParentAnimation builder, targetOptions, parentAni
+        @_addParentAnimation builder, childConfig, AniConstructor, consArg
 
       ## Animations
       
@@ -90,7 +84,7 @@ define "Timeline",
         @tween config
 
       tween: (config) ->
-        @_addAnimation new Tween(config)
+        @_addAnimation Tween, config
 
       fadeIn: (config) ->
         @_fade config, 0, 1
@@ -99,49 +93,54 @@ define "Timeline",
         @_fade config, 1, 0
 
       scale: (config = {}) ->
-        @_defaultTween 'scale', config
+        config.property = 'scale'
+        @tween(config)
 
       color: (config = {}) ->
-        @_defaultTween 'color', config, [0,0,0,0]
+        config.property = 'color'
+        @tween(config)
 
       rotate: (config = {}) ->
-        @_defaultTween 'angle', config
+        config.property = 'angle'
+        @tween(config)
 
       move: (config) ->
         xconfig = U.clone(config)
         xconfig.easing = config.easingX ? config.easing
         xconfig.from = config.from.x
         xconfig.to = config.to.x
+        xconfig.property = 'x'
 
         yconfig = U.clone(config)
         yconfig.easing = config.easingY ? config.easing
         yconfig.from = config.from.y
         yconfig.to = config.to.y
+        yconfig.property = 'y'
 
         @together (tl) ->
-          tl._defaultTween 'x', xconfig
-          tl._defaultTween 'y', yconfig
+          tl.tween(xconfig)
+          tl.tween(yconfig)
 
-      together: (targetOptionsOrBuilder, builderOrUndefined) ->
-        @_createParent targetOptionsOrBuilder, builderOrUndefined, new Together()
+      together: (childConfigOrBuilder, builderOrUndefined) ->
+        @_createParent childConfigOrBuilder, builderOrUndefined, Together
 
-      sequence: (targetOptionsOrBuilder, builderOrUndefined) ->
-        @repeat 1, targetOptionsOrBuilder, builderOrUndefined
+      sequence: (childConfigOrBuilder, builderOrUndefined) ->
+        @repeat 1, childConfigOrBuilder, builderOrUndefined
 
-      forever: (targetOptionsOrBuilder, builderOrUndefined) ->
-        @repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined)
+      forever: (childConfigOrBuilder, builderOrUndefined) ->
+        @repeat(Infinity, childConfigOrBuilder, builderOrUndefined)
 
-      repeat: (count, targetOptionsOrBuilder, builderOrUndefined) ->
-        @_createParent targetOptionsOrBuilder, builderOrUndefined, new Repeat(count)
+      repeat: (count, childConfigOrBuilder, builderOrUndefined) ->
+        @_createParent childConfigOrBuilder, builderOrUndefined, Repeat, count
 
       wait: (millis) ->
         @waitBetween millis, millis
 
       waitBetween: (min, max) ->
-        @_addAnimation new Wait({ min, max })
+        @_addAnimation  Wait, { min, max }
 
       invoke: (func, context) ->
-        @_addAnimation new Invoke({ func, context })
+        @_addAnimation Invoke, { func, context }
 
       ## Animation maintenance
 

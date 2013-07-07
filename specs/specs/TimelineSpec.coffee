@@ -1,4 +1,4 @@
-require ["Timeline", "Tween", "Easing"], (Timeline, Tween, Easing) ->
+require ["Timeline", "Tween", "Repeat", "Easing"], (Timeline, Tween, Repeat, Easing) ->
   describe "Timeline", ->
     getOwner = ->
       {
@@ -127,12 +127,6 @@ require ["Timeline", "Tween", "Easing"], (Timeline, Tween, Easing) ->
         color = @timeline.color()
         expect(color.property).toBe "color"
 
-      it "should default to a 4 element array", ->
-        color = @timeline.color()
-        expect(color.from).toEqual [0,0,0,0]
-        expect(color.to).toEqual [0,0,0,0]
-        expect(color.duration).toBe 0
-
       it "should set the duration", ->
         color = @timeline.color duration: 123
         expect(color.duration).toBe 123
@@ -141,12 +135,6 @@ require ["Timeline", "Tween", "Easing"], (Timeline, Tween, Easing) ->
       it "should specify the angle property", ->
         rotate = @timeline.rotate()
         expect(rotate.property).toBe "angle"
-
-      it "should default to a number", ->
-        rotate = @timeline.rotate()
-        expect(rotate.from).toBe 0
-        expect(rotate.to).toBe 0
-        expect(rotate.duration).toBe 0
 
       it "should set the duration", ->
         rotate = @timeline.rotate duration: 10
@@ -183,5 +171,83 @@ require ["Timeline", "Tween", "Easing"], (Timeline, Tween, Easing) ->
         expect(reversed.duration).toEqual tween.duration
         expect(reversed.property).toEqual tween.property
 
+    describe "#together", ->
+      it "should pass the default config down to children", ->
+        together = @timeline.together duration: 123, =>
+          @timeline.tween
+            property: 'x'
+          @timeline.rotate()
+
+        expect(together.children[0].duration).toBe 123
+        expect(together.children[1].duration).toBe 123
+
+      it "should let children override the default config", ->
+        together = @timeline.together duration: 123, =>
+          @timeline.tween
+            property: 'x'
+            duration: 456
+          @timeline.rotate()
+
+        expect(together.children[0].duration).toBe 456
+        expect(together.children[1].duration).toBe 123
+
+
+      it "should work without a default config", ->
+        together = @timeline.together =>
+          @timeline.tween
+            property: 'x'
+            duration: 80
+          @timeline.rotate
+            duration: 123
+
+        expect(together.children[0].duration).toBe 80
+        expect(together.children[1].duration).toBe 123
+
+    describe "#repeat", ->
+      it "should set the number of times to repeat", ->
+        repeat = @timeline.repeat 3, ->
+        expect(repeat.count).toBe 3
+
+      it "should pass the default config down to children", ->
+        repeat = @timeline.repeat 2, duration: 123, =>
+          @timeline.tween
+            property: 'x'
+          @timeline.rotate()
+
+        expect(repeat.children[0].duration).toBe 123
+        expect(repeat.children[1].duration).toBe 123
+
+      it "should let children override the default config", ->
+        repeat = @timeline.repeat 2, duration: 123, =>
+          @timeline.tween
+            property: 'x'
+            duration: 456
+          @timeline.rotate()
+
+        expect(repeat.children[0].duration).toBe 456
+        expect(repeat.children[1].duration).toBe 123
+
+      it "should work without a default config", ->
+        repeat = @timeline.repeat 2, =>
+          @timeline.tween
+            property: 'x'
+            duration: 80
+          @timeline.rotate
+            duration: 123
+
+        expect(repeat.children[0].duration).toBe 80
+        expect(repeat.children[1].duration).toBe 123
+
+    describe "#forever", ->
+      it "should be a Repeat with count of Infinity", ->
+        forever = @timeline.forever ->
+        expect(forever).toBeInstanceOf Repeat
+        expect(forever.count).toBe Infinity
+
+    describe "#sequence", ->
+      it "should be a Repeat with count of 1", ->
+        sequence = @timeline.sequence ->
+        expect(sequence).toBeInstanceOf Repeat
+        expect(sequence.count).toBe 1
       
 

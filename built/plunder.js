@@ -7,36 +7,42 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
         throw new Error("Timeline requires an owner");
       }
       this._buildStack = [];
-      this._targetStack = [];
+      this._childConfigStack = [];
     }
 
-    Timeline.prototype._getTargets = function(targetOptions, getOptions) {
-      var defaultTarget, targets, _ref, _ref1;
-      defaultTarget = this.owner;
-      if ((getOptions != null ? getOptions.useTargetStack : void 0) && U.any(this._targetStack)) {
-        defaultTarget = U.last(this._targetStack);
-      }
-      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : defaultTarget;
+    Timeline.prototype._getTargets = function(targetOptions) {
+      var targets, _ref, _ref1;
+      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this.owner;
       return U.toArray(targets);
     };
 
-    Timeline.prototype._addParentAnimation = function(builder, targetOptions, parentAni) {
-      if (targetOptions) {
-        this._targetStack.push(this._getTargets(targetOptions));
+    Timeline.prototype._mergeConfig = function(config) {
+      if (U.any(this._childConfigStack)) {
+        return U.extend(U.clone(U.last(this._childConfigStack)), config);
+      } else {
+        return config;
+      }
+    };
+
+    Timeline.prototype._addParentAnimation = function(builder, childConfig, AniConstructor, consArg) {
+      var parentAni;
+      parentAni = new AniConstructor(consArg);
+      if (childConfig) {
+        this._childConfigStack.push(childConfig);
       }
       this._buildStack.push(parentAni);
       builder(this);
       this._buildStack.pop();
-      if (targetOptions) {
-        this._targetStack.pop();
+      if (childConfig) {
+        this._childConfigStack.pop();
       }
       return this._pushAnimation(parentAni);
     };
 
-    Timeline.prototype._addAnimation = function(ani) {
-      ani.targets = this._getTargets(ani, {
-        useTargetStack: true
-      });
+    Timeline.prototype._addAnimation = function(AniConstructor, config) {
+      var ani;
+      ani = new AniConstructor(this._mergeConfig(config));
+      ani.targets = this._getTargets(ani);
       return this._pushAnimation(ani);
     };
 
@@ -58,32 +64,18 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       config.property = "alpha";
       config.from = from;
       config.to = to;
-      return this._addAnimation(new Tween(config));
+      return this._addAnimation(Tween, config);
     };
 
-    Timeline.prototype._defaultTween = function(property, config, defaultValue) {
-      var _ref, _ref1, _ref2;
-      if (defaultValue == null) {
-        defaultValue = 0;
-      }
-      return this.tween({
-        property: property,
-        from: (_ref = config.from) != null ? _ref : defaultValue,
-        to: (_ref1 = config.to) != null ? _ref1 : defaultValue,
-        duration: (_ref2 = config.duration) != null ? _ref2 : 0,
-        easing: config.easing
-      });
-    };
-
-    Timeline.prototype._createParent = function(targetOptionsOrBuilder, builderOrUndefined, parentAni) {
-      var builder, targetOptions;
-      if (U.isFunction(targetOptionsOrBuilder)) {
-        builder = targetOptionsOrBuilder;
+    Timeline.prototype._createParent = function(childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) {
+      var builder, childConfig;
+      if (U.isFunction(childConfigOrBuilder)) {
+        builder = childConfigOrBuilder;
       } else {
-        targetOptions = targetOptionsOrBuilder;
+        childConfig = childConfigOrBuilder;
         builder = builderOrUndefined;
       }
-      return this._addParentAnimation(builder, targetOptions, parentAni);
+      return this._addParentAnimation(builder, childConfig, AniConstructor, consArg);
     };
 
     Timeline.prototype.reverse = function(ani) {
@@ -97,7 +89,7 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.tween = function(config) {
-      return this._addAnimation(new Tween(config));
+      return this._addAnimation(Tween, config);
     };
 
     Timeline.prototype.fadeIn = function(config) {
@@ -112,21 +104,24 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       if (config == null) {
         config = {};
       }
-      return this._defaultTween('scale', config);
+      config.property = 'scale';
+      return this.tween(config);
     };
 
     Timeline.prototype.color = function(config) {
       if (config == null) {
         config = {};
       }
-      return this._defaultTween('color', config, [0, 0, 0, 0]);
+      config.property = 'color';
+      return this.tween(config);
     };
 
     Timeline.prototype.rotate = function(config) {
       if (config == null) {
         config = {};
       }
-      return this._defaultTween('angle', config);
+      config.property = 'angle';
+      return this.tween(config);
     };
 
     Timeline.prototype.move = function(config) {
@@ -135,30 +130,32 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       xconfig.easing = (_ref = config.easingX) != null ? _ref : config.easing;
       xconfig.from = config.from.x;
       xconfig.to = config.to.x;
+      xconfig.property = 'x';
       yconfig = U.clone(config);
       yconfig.easing = (_ref1 = config.easingY) != null ? _ref1 : config.easing;
       yconfig.from = config.from.y;
       yconfig.to = config.to.y;
+      yconfig.property = 'y';
       return this.together(function(tl) {
-        tl._defaultTween('x', xconfig);
-        return tl._defaultTween('y', yconfig);
+        tl.tween(xconfig);
+        return tl.tween(yconfig);
       });
     };
 
-    Timeline.prototype.together = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, new Together());
+    Timeline.prototype.together = function(childConfigOrBuilder, builderOrUndefined) {
+      return this._createParent(childConfigOrBuilder, builderOrUndefined, Together);
     };
 
-    Timeline.prototype.sequence = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this.repeat(1, targetOptionsOrBuilder, builderOrUndefined);
+    Timeline.prototype.sequence = function(childConfigOrBuilder, builderOrUndefined) {
+      return this.repeat(1, childConfigOrBuilder, builderOrUndefined);
     };
 
-    Timeline.prototype.forever = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this.repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined);
+    Timeline.prototype.forever = function(childConfigOrBuilder, builderOrUndefined) {
+      return this.repeat(Infinity, childConfigOrBuilder, builderOrUndefined);
     };
 
-    Timeline.prototype.repeat = function(count, targetOptionsOrBuilder, builderOrUndefined) {
-      return this._createParent(targetOptionsOrBuilder, builderOrUndefined, new Repeat(count));
+    Timeline.prototype.repeat = function(count, childConfigOrBuilder, builderOrUndefined) {
+      return this._createParent(childConfigOrBuilder, builderOrUndefined, Repeat, count);
     };
 
     Timeline.prototype.wait = function(millis) {
@@ -166,17 +163,17 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
     };
 
     Timeline.prototype.waitBetween = function(min, max) {
-      return this._addAnimation(new Wait({
+      return this._addAnimation(Wait, {
         min: min,
         max: max
-      }));
+      });
     };
 
     Timeline.prototype.invoke = function(func, context) {
-      return this._addAnimation(new Invoke({
+      return this._addAnimation(Invoke, {
         func: func,
         context: context
-      }));
+      });
     };
 
     Timeline.prototype.stop = function() {
