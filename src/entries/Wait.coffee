@@ -11,10 +11,9 @@ define 'Wait', ['Util'], (U) ->
       @reset()
 
     reverse: ->
+      # specifically keeping the same random between min/max
       new Wait
-        min: @min
-        max: @max
-        duration: @_specifiedDuration
+        duration: @duration
 
     reset: ->
       @duration = @_specifiedDuration or U.rand(@min, @max)

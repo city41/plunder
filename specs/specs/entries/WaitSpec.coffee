@@ -37,4 +37,28 @@ require ["Wait"], (Wait) ->
         wait.update(1)
         expect(wait.done).toBeTruthy()
 
+    describe "#reverse", ->
+      it "should be a different animation", ->
+        wait = getWait()
+        reversed = wait.reverse()
+
+        expect(reversed).not.toBe wait
+
+      it "should wait the same for a static wait", ->
+        wait = getWait()
+        reversed = wait.reverse()
+
+        expect(reversed.min).toEqual wait.min
+        expect(reversed.max).toEqual wait.max
+        expect(reversed.duration).toEqual wait.duration
+
+      it "should have the same duration for a variable wait", ->
+        # ie: it should not reroll a new duration
+        wait = getMinMaxWait()
+        reversed = wait.reverse()
+
+        expect(reversed.min).toBeUndefined()
+        expect(reversed.max).toBeUndefined()
+        expect(reversed.duration).toEqual wait.duration
+
 

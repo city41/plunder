@@ -168,5 +168,20 @@ require ["Timeline", "Tween", "Easing"], (Timeline, Tween, Easing) ->
       it "should set max", ->
         expect(@wait.max).toBe 10
 
+    describe "#reverse", ->
+      it "should reverse the tween", ->
+        tween = @timeline.tween
+          from: 8
+          to: 4
+          duration: 1000
+          property: 'x'
+
+        reversed = @timeline.reverse(tween)
+
+        expect(reversed.from).toEqual tween.to
+        expect(reversed.to).toEqual tween.from
+        expect(reversed.duration).toEqual tween.duration
+        expect(reversed.property).toEqual tween.property
+
       
 

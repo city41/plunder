@@ -158,6 +158,19 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
           tween.update(0)
           expect(target.foo).toEqual tween.from
 
+      describe "#reverse", ->
+        it "should reverse the tween", ->
+          { tween, target } = getNumericTween()
+          reversed = tween.reverse()
+
+          expect(tween.to).not.toEqual tween.from
+
+          expect(reversed.to).toEqual tween.from
+          expect(reversed.from).toEqual tween.to
+          expect(reversed.targets).toEqual tween.targets
+          expect(reversed.duration).toEqual tween.duration
+          expect(reversed.easeFunc).toEqual tween.easeFunc
+
       describe "error conditions", ->
         it "should throw an error if asked to tween a non numeric value", ->
           target = foo: 'hello'

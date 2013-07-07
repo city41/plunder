@@ -826,9 +826,7 @@ define('Wait', ['Util'], function(U) {
 
     Wait.prototype.reverse = function() {
       return new Wait({
-        min: this.min,
-        max: this.max,
-        duration: this._specifiedDuration
+        duration: this.duration
       });
     };
 

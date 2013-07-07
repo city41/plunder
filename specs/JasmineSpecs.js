@@ -226,7 +226,7 @@ require(["Timeline", "Tween", "Easing"], function(Timeline, Tween, Easing) {
         return expect(wait.max).toBe(500);
       });
     });
-    return describe("#waitBetween", function() {
+    describe("#waitBetween", function() {
       beforeEach(function() {
         return this.wait = this.timeline.waitBetween(5, 10);
       });
@@ -235,6 +235,22 @@ require(["Timeline", "Tween", "Easing"], function(Timeline, Tween, Easing) {
       });
       return it("should set max", function() {
         return expect(this.wait.max).toBe(10);
+      });
+    });
+    return describe("#reverse", function() {
+      return it("should reverse the tween", function() {
+        var reversed, tween;
+        tween = this.timeline.tween({
+          from: 8,
+          to: 4,
+          duration: 1000,
+          property: 'x'
+        });
+        reversed = this.timeline.reverse(tween);
+        expect(reversed.from).toEqual(tween.to);
+        expect(reversed.to).toEqual(tween.from);
+        expect(reversed.duration).toEqual(tween.duration);
+        return expect(reversed.property).toEqual(tween.property);
       });
     });
   });
@@ -466,27 +482,49 @@ require(['Util'], function(U) {
 
 require(['Invoke'], function(Invoke) {
   return describe("Invoke", function() {
-    it("should invoke the provided function", function() {
-      var invoke, obj;
-      obj = {
-        func: function() {}
-      };
-      spyOn(obj, "func");
-      invoke = new Invoke({
-        func: obj.func
+    describe("#update", function() {
+      return it("should invoke the provided function", function() {
+        var invoke, obj;
+        obj = {
+          func: function() {}
+        };
+        spyOn(obj, "func");
+        invoke = new Invoke({
+          func: obj.func
+        });
+        invoke.update();
+        expect(obj.func).toHaveBeenCalled();
+        return expect(invoke.done).toBe(true);
       });
-      invoke.update();
-      expect(obj.func).toHaveBeenCalled();
-      return expect(invoke.done).toBe(true);
     });
-    return it("should reset", function() {
-      var invoke;
-      invoke = new Invoke({
-        func: function() {}
+    describe("#reset", function() {
+      return it("should reset", function() {
+        var invoke;
+        invoke = new Invoke({
+          func: function() {}
+        });
+        invoke.done = true;
+        invoke.reset();
+        return expect(invoke.done).toBe(false);
       });
-      invoke.done = true;
-      invoke.reset();
-      return expect(invoke.done).toBe(false);
+    });
+    return describe("#reverse", function() {
+      beforeEach(function() {
+        this.invoke = new Invoke({
+          func: function() {},
+          context: {}
+        });
+        return this.reversed = this.invoke.reverse();
+      });
+      it("should be a different animation", function() {
+        return expect(this.reversed).not.toBe(this.invoke);
+      });
+      it("should have the same function", function() {
+        return expect(this.reversed.func).toBe(this.invoke.func);
+      });
+      return it("should have the same context", function() {
+        return expect(this.reversed.context).toBe(this.invoke.context);
+      });
     });
   });
 });
@@ -504,7 +542,8 @@ require(["Repeat"], function(Repeat) {
           }
           return ++this.update.called;
         },
-        reset: function() {}
+        reset: function() {},
+        reverse: function() {}
       };
     };
     beforeEach(function() {
@@ -512,41 +551,66 @@ require(["Repeat"], function(Repeat) {
       this.repeat = new Repeat(2);
       return this.repeat.children = this.children;
     });
-    it("should update the @children in sequence", function() {
-      var child, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        spyOn(child, "reset");
-      }
-      this.repeat.update();
-      expect(this.children[0].update.called).toBe(1);
-      expect(this.children[1].update.called).toBeUndefined();
-      delete this.children[0].update.called;
-      this.repeat.update();
-      expect(this.children[0].update.called).toBeUndefined();
-      expect(this.children[1].update.called).toBe(1);
-      _ref1 = this.children;
-      _results = [];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        child = _ref1[_j];
-        _results.push(expect(child.reset).toHaveBeenCalled());
-      }
-      return _results;
+    describe("#update", function() {
+      it("should update the children in sequence", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reset");
+        }
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBeUndefined();
+        delete this.children[0].update.called;
+        this.repeat.update();
+        expect(this.children[0].update.called).toBeUndefined();
+        expect(this.children[1].update.called).toBe(1);
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reset).toHaveBeenCalled());
+        }
+        return _results;
+      });
+      return it("should repeat the cycle", function() {
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBeUndefined();
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(1);
+        expect(this.children[1].update.called).toBe(1);
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(2);
+        expect(this.children[1].update.called).toBe(1);
+        this.repeat.update();
+        expect(this.children[0].update.called).toBe(2);
+        return expect(this.children[1].update.called).toBe(2);
+      });
     });
-    return it("should @repeat the cycle", function() {
-      this.repeat.update();
-      expect(this.children[0].update.called).toBe(1);
-      expect(this.children[1].update.called).toBeUndefined();
-      this.repeat.update();
-      expect(this.children[0].update.called).toBe(1);
-      expect(this.children[1].update.called).toBe(1);
-      this.repeat.update();
-      expect(this.children[0].update.called).toBe(2);
-      expect(this.children[1].update.called).toBe(1);
-      this.repeat.update();
-      expect(this.children[0].update.called).toBe(2);
-      return expect(this.children[1].update.called).toBe(2);
+    return describe("#reverse", function() {
+      it("should not be the same animation", function() {
+        var reversed;
+        reversed = this.repeat.reverse();
+        return expect(reversed).not.toBe(this.repeat);
+      });
+      return it("should call reverse() on all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reverse");
+        }
+        this.repeat.reverse();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reverse).toHaveBeenCalled());
+        }
+        return _results;
+      });
     });
   });
 });
@@ -557,7 +621,8 @@ require(["Together"], function(Together) {
     getChild = function() {
       return {
         reset: function() {},
-        update: function() {}
+        update: function() {},
+        reverse: function() {}
       };
     };
     beforeEach(function() {
@@ -565,58 +630,85 @@ require(["Together"], function(Together) {
       this.together = new Together();
       return this.together.children = this.children;
     });
-    it("should reset all its children", function() {
-      var child, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        spyOn(child, "reset");
-      }
-      this.together.reset();
-      _ref1 = this.children;
-      _results = [];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        child = _ref1[_j];
-        _results.push(expect(child.reset).toHaveBeenCalled());
-      }
-      return _results;
+    describe("#reset", function() {
+      return it("should reset all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reset");
+        }
+        this.together.reset();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reset).toHaveBeenCalled());
+        }
+        return _results;
+      });
     });
-    it("should update all its children", function() {
-      var child, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        spyOn(child, "update");
-      }
-      this.together.update();
-      _ref1 = this.children;
-      _results = [];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        child = _ref1[_j];
-        _results.push(expect(child.update).toHaveBeenCalled());
-      }
-      return _results;
+    describe("#update", function() {
+      it("should update all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "update");
+        }
+        this.together.update();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.update).toHaveBeenCalled());
+        }
+        return _results;
+      });
+      it("should report its done if all its children are done", function() {
+        var child, _i, _len, _ref;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          child.done = true;
+        }
+        this.together.update();
+        return expect(this.together.done).toBeTruthy();
+      });
+      return it("should not report its done if all its @children are not done", function() {
+        var child, _i, _len, _ref;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          child.done = true;
+        }
+        this.children[1].done = false;
+        this.together.update();
+        return expect(this.together.done).toBeFalsy();
+      });
     });
-    it("should report its done if all its children are done", function() {
-      var child, _i, _len, _ref;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        child.done = true;
-      }
-      this.together.update();
-      return expect(this.together.done).toBeTruthy();
-    });
-    return it("should not report its done if all its @children are not done", function() {
-      var child, _i, _len, _ref;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        child.done = true;
-      }
-      this.children[1].done = false;
-      this.together.update();
-      return expect(this.together.done).toBeFalsy();
+    return describe("#reverse", function() {
+      it("should not be the same animation", function() {
+        var reversed;
+        reversed = this.together.reverse();
+        return expect(reversed).not.toBe(this.together);
+      });
+      return it("should call reverse() on all its children", function() {
+        var child, _i, _j, _len, _len1, _ref, _ref1, _results;
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          spyOn(child, "reverse");
+        }
+        this.together.reverse();
+        _ref1 = this.children;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          _results.push(expect(child.reverse).toHaveBeenCalled());
+        }
+        return _results;
+      });
     });
   });
 });
@@ -807,6 +899,19 @@ require(['Tween', 'Easing'], function(Tween, Easing) {
           return expect(target.foo).toEqual(tween.from);
         });
       });
+      describe("#reverse", function() {
+        return it("should reverse the tween", function() {
+          var reversed, target, tween, _ref;
+          _ref = getNumericTween(), tween = _ref.tween, target = _ref.target;
+          reversed = tween.reverse();
+          expect(tween.to).not.toEqual(tween.from);
+          expect(reversed.to).toEqual(tween.from);
+          expect(reversed.from).toEqual(tween.to);
+          expect(reversed.targets).toEqual(tween.targets);
+          expect(reversed.duration).toEqual(tween.duration);
+          return expect(reversed.easeFunc).toEqual(tween.easeFunc);
+        });
+      });
       return describe("error conditions", function() {
         it("should throw an error if asked to tween a non numeric value", function() {
           var fn, target, tween;
@@ -902,7 +1007,7 @@ require(["Wait"], function(Wait) {
         return expect(fn).toThrow();
       });
     });
-    return describe("#update", function() {
+    describe("#update", function() {
       return it("should wait for the specified duration", function() {
         var i, wait, _i;
         wait = getWait();
@@ -912,6 +1017,30 @@ require(["Wait"], function(Wait) {
         }
         wait.update(1);
         return expect(wait.done).toBeTruthy();
+      });
+    });
+    return describe("#reverse", function() {
+      it("should be a different animation", function() {
+        var reversed, wait;
+        wait = getWait();
+        reversed = wait.reverse();
+        return expect(reversed).not.toBe(wait);
+      });
+      it("should wait the same for a static wait", function() {
+        var reversed, wait;
+        wait = getWait();
+        reversed = wait.reverse();
+        expect(reversed.min).toEqual(wait.min);
+        expect(reversed.max).toEqual(wait.max);
+        return expect(reversed.duration).toEqual(wait.duration);
+      });
+      return it("should have the same duration for a variable wait", function() {
+        var reversed, wait;
+        wait = getMinMaxWait();
+        reversed = wait.reverse();
+        expect(reversed.min).toBeUndefined();
+        expect(reversed.max).toBeUndefined();
+        return expect(reversed.duration).toEqual(wait.duration);
       });
     });
   });
