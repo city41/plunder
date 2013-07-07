@@ -34,8 +34,8 @@ require ['Timeline', 'Util'], (Timeline, U) ->
   entity = new Entity()
   tl = new Timeline(entity)
 
-  tl.forever (tl) ->
-    group = tl.together (tl) ->
+  tl.forever ->
+    group = tl.together ->
       tl.rotate
         from: 0
         to: 720
@@ -50,9 +50,8 @@ require ['Timeline', 'Util'], (Timeline, U) ->
         duration: 2000
       tl.move
         from: x: 10, y: 10
-        to: x: 300, y: 100
+        to: x: 300, y: 200
         duration: 2000
-        easingX: 'easeInOutQuad'
     tl.wait 500
     tl.reverse(group)
 

@@ -1,7 +1,6 @@
 define "Repeat", ["Util"], (U) ->
   class Repeat
-    constructor: (@count, children=[]) ->
-      @children = children
+    constructor: (@count, @children=[]) ->
       @_currentChild = 0
       @_curCount = 0
 

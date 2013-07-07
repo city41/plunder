@@ -8,9 +8,11 @@ define "Timeline",
     "Invoke"
   ], (U, Tween, Wait, Repeat, Together, Invoke) ->
 
+    # TODO: Turn the targetStack into a configStack
+    
     class Timeline
       constructor: (owner) ->
-        if not owner
+        unless owner
           throw new Error("Timeline requires an owner")
 
         @_owner = owner
@@ -18,60 +20,55 @@ define "Timeline",
         @_targetStack = []
         @_addedAnis = []
 
-      _getTargets: (targetOptions) ->
-        targets = targetOptions.targets ? targetOptions.target ? @_owner
-        U.toArray(targets)
+      _getTargets: (targetOptions, getOptions) ->
+        defaultTarget = @_owner
+        
+        if getOptions?.useTargetStack && !U.isEmpty(@_targetStack)
+          defaultTarget = U.last(@_targetStack)
 
-      _addAnimationToOwner: (ani) ->
-        @_addedAnis.push ani
-        @_owner.addAni ani
+        targets = targetOptions.targets ? targetOptions.target ?  defaultTarget
+        return U.toArray(targets)
 
       _addParentAnimation: (builder, targetOptions, AniConstructor, consArg) ->
         ani = new AniConstructor(consArg)
 
         if targetOptions
-          targets = @_getTargets(targetOptions)
-          @_targetStack.push targets
+          @_targetStack.push @_getTargets(targetOptions)
 
         @_buildStack.push ani
 
         builder this
 
         @_buildStack.pop()
-        @_targetStack.pop() if targetOptions
 
-        if @_buildStack.length is 0
-          @_addAnimationToOwner ani
-        else
-          @_buildStack[@_buildStack.length - 1].children.push ani
-        ani
+        if targetOptions
+          @_targetStack.pop()
 
-      _addAnimation: (config, AniConstructor) ->
-        unless config.targets
-          if config.target
-            config.targets = config.target
-          else if @_targetStack.length > 0
-            config.targets = @_targetStack.last
-          else
-            config.targets = @_owner
+        @_pushAnimation ani
 
-        config.targets = U.toArray(config.targets)
-
+      _addAnimation: (AniConstructor, config) ->
+        config.targets = @_getTargets config, useTargetStack: true
         ani = new AniConstructor(config)
 
+        @_pushAnimation ani
+
+      _pushAnimation: (ani) ->
         if @_buildStack.length is 0
-          @_addAnimationToOwner ani
+          @_addedAnis.push ani
+          @_owner.addAni ani
         else
           @_buildStack[@_buildStack.length - 1].children.push ani
 
         return ani
+
+      ## Animation creation helpers
 
       _fade: (config, from, to) ->
         config = duration: config  if U.isNumber(config)
         config.property = "alpha"
         config.from = from
         config.to = to
-        @_addAnimation config, Tween
+        @_addAnimation Tween, config
 
       _defaultTween: (property, config, defaultValue = 0) ->
         @tween
@@ -81,16 +78,19 @@ define "Timeline",
           duration: config.duration ? 0
           easing: config.easing
 
+      _createParent: (targetOptionsOrBuilder, builderOrUndefined, AniConstructor, conArgs) ->
+        if U.isFunction(targetOptionsOrBuilder)
+          builder = targetOptionsOrBuilder
+        else
+          targetOptions = targetOptionsOrBuilder
+          builder = builderOrUndefined
+
+        @_addParentAnimation builder, targetOptions, AniConstructor, conArgs
+
       ## Animations
       
       reverse: (ani) ->
-        reversed = ani.reverse()
-        if @_buildStack.length is 0
-          @_addAnimationToOwner reversed
-        else
-          @_buildStack[@_buildStack.length - 1].children.push reversed
-
-        return reversed
+        @_pushAnimation ani.reverse()
 
       setProperty: (config) ->
         config.duration = 0
@@ -98,7 +98,7 @@ define "Timeline",
         @tween config
 
       tween: (config) ->
-        @_addAnimation config, Tween
+        @_addAnimation Tween, config
 
       fadeIn: (config) ->
         @_fade config, 0, 1
@@ -134,22 +134,10 @@ define "Timeline",
         @repeat 1, targetOptionsOrBuilder, builderOrUndefined
 
       together: (targetOptionsOrBuilder, builderOrUndefined) ->
-        if U.isFunction(targetOptionsOrBuilder)
-          builder = targetOptionsOrBuilder
-        else
-          targetOptions = targetOptionsOrBuilder
-          builder = builderOrUndefined
-        
-        @_addParentAnimation builder, targetOptions, Together
+        @_createParent targetOptionsOrBuilder, builderOrUndefined, Together
 
       repeat: (count, targetOptionsOrBuilder, builderOrUndefined) ->
-        if U.isFunction(targetOptionsOrBuilder)
-          builder = targetOptionsOrBuilder
-        else
-          targetOptions = targetOptionsOrBuilder
-          builder = builderOrUndefined
-        
-        @_addParentAnimation builder, targetOptions, Repeat, count
+        @_createParent targetOptionsOrBuilder, builderOrUndefined, Repeat, count
 
       forever: (targetOptionsOrBuilder, builderOrUndefined) ->
         @repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined)
@@ -158,17 +146,16 @@ define "Timeline",
         @waitBetween millis, millis
 
       waitBetween: (min, max) ->
-        @_addAnimation { min, max }, Wait
+        @_addAnimation Wait, { min, max }
 
       invoke: (func, context) ->
-        @_addAnimation { func, context }, Invoke
+        @_addAnimation Invoke, { func, context }
 
       end: ->
-        rootAni = @_buildStack.first
-        if rootAni
+        unless U.isEmpty(@_buildStack)
           @invoke =>
-            @die()
+            @stop()
 
-      die: ->
-        @_owner?.clearAnis()
+      stop: ->
+        @_owner.clearAnis()
 

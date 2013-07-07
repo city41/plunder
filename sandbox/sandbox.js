@@ -47,9 +47,9 @@ require(['Timeline', 'Util'], function(Timeline, U) {
   })();
   entity = new Entity();
   tl = new Timeline(entity);
-  tl.forever(function(tl) {
+  tl.forever(function() {
     var group;
-    group = tl.together(function(tl) {
+    group = tl.together(function() {
       tl.rotate({
         from: 0,
         to: 720,
@@ -72,10 +72,9 @@ require(['Timeline', 'Util'], function(Timeline, U) {
         },
         to: {
           x: 300,
-          y: 100
+          y: 200
         },
-        duration: 2000,
-        easingX: 'easeInOutQuad'
+        duration: 2000
       });
     });
     tl.wait(500);

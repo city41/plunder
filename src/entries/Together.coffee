@@ -1,8 +1,7 @@
 define "Together", ->
 
   class Together
-    constructor: (children=[]) ->
-      @children = children
+    constructor: (@children=[]) ->
 
     reset: ->
       @done = false

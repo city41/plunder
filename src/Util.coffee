@@ -54,6 +54,15 @@ define 'Util', ->
 
       if @isArray(obj) then obj else [obj]
 
+    last: (array) ->
+      array && array[array.length-1]
+
+    first: (array) ->
+      array && array[0]
+
+    isEmpty: (array) ->
+      array && array.length == 0
+
   Util.isArray = Array.isArray or (obj) ->
     toString.call(obj) == "[object Array]"
 
