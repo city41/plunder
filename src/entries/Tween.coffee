@@ -49,7 +49,7 @@ define 'Tween', ['Easing', 'Util'], (Easing, U) ->
 
       @_elapsed += delta
 
-      if @_elapsed > @duration
+      if @_elapsed >= @duration
         @_elapsed = @duration
         @done = true
       else

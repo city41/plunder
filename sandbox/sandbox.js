@@ -16,26 +16,43 @@ require(['Timeline', 'Util'], function(Timeline, U) {
       return tl.forever({
         duration: 2000
       }, function() {
-        var b;
-        b = tl.bezier({
-          points: [
-            {
-              x: 10,
-              y: 10
-            }, {
-              x: 10,
-              y: 60
-            }, {
-              x: 100,
-              y: 40
-            }, {
-              x: 100,
-              y: 100
-            }
-          ]
+        var t;
+        tl.wait(1000);
+        t = tl.together(function() {
+          tl.color({
+            from: [255, 0, 0, 1],
+            to: [0, 0, 255, 1]
+          });
+          tl.sequence({
+            duration: 1000
+          }, function() {
+            var s;
+            s = tl.scale({
+              from: 1,
+              to: 4
+            });
+            return tl.reverse(s);
+          });
+          return tl.bezier({
+            points: [
+              {
+                x: 10,
+                y: 10
+              }, {
+                x: 10,
+                y: 60
+              }, {
+                x: 100,
+                y: 40
+              }, {
+                x: 100,
+                y: 100
+              }
+            ]
+          });
         });
         tl.wait(1000);
-        return tl.reverse(b);
+        return tl.reverse(t);
       });
     };
 

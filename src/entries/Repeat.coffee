@@ -8,12 +8,14 @@ define "Repeat", ["Util"], (U) ->
       @done = false
       @_currentChild = 0
       @_curCount = 0
-      for child in children
+      for child in @children
         child.reset()
 
     reverse: ->
+      # TODO: reversing the array is not always the correct thing to do
+      
       reversedChildren = (child.reverse() for child in @children)
-      new Repeat @count, reversedChildren
+      new Repeat @count, reversedChildren.reverse()
 
     update: (args...) ->
       @done = @_curCount >= @count

@@ -12,15 +12,25 @@ require ['Timeline', 'Util'], (Timeline, U) ->
     bezier: ->
       tl = @timeline
       tl.forever duration: 2000, ->
-        b = tl.bezier
-          points: [
-            { x: 10, y: 10 }
-            { x: 10, y: 60 }
-            { x: 100, y: 40 }
-            { x: 100, y: 100 }
-          ]
         tl.wait 1000
-        tl.reverse(b)
+        t = tl.together ->
+          tl.color
+            from: [255, 0, 0, 1]
+            to: [0, 0, 255, 1]
+          tl.sequence duration: 1000, ->
+            s = tl.scale
+              from: 1
+              to: 4
+            tl.reverse(s)
+          tl.bezier
+            points: [
+              { x: 10, y: 10 }
+              { x: 10, y: 60 }
+              { x: 100, y: 40 }
+              { x: 100, y: 100 }
+            ]
+        tl.wait 1000
+        tl.reverse(t)
 
     standard: ->
       tl = @timeline

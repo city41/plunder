@@ -674,13 +674,14 @@ define("Repeat", ["Util"], function(U) {
     }
 
     Repeat.prototype.reset = function() {
-      var child, _i, _len, _results;
+      var child, _i, _len, _ref, _results;
       this.done = false;
       this._currentChild = 0;
       this._curCount = 0;
+      _ref = this.children;
       _results = [];
-      for (_i = 0, _len = children.length; _i < _len; _i++) {
-        child = children[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
         _results.push(child.reset());
       }
       return _results;
@@ -698,7 +699,7 @@ define("Repeat", ["Util"], function(U) {
         }
         return _results;
       }).call(this);
-      return new Repeat(this.count, reversedChildren);
+      return new Repeat(this.count, reversedChildren.reverse());
     };
 
     Repeat.prototype.update = function() {
@@ -854,7 +855,7 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
         this._initTargets();
       }
       this._elapsed += delta;
-      if (this._elapsed > this.duration) {
+      if (this._elapsed >= this.duration) {
         this._elapsed = this.duration;
         this.done = true;
       } else {
