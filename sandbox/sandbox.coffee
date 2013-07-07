@@ -2,11 +2,44 @@ require ['Timeline', 'Util'], (Timeline, U) ->
 
   class Entity
     constructor: ->
+      @timeline = new Timeline(this)
       @anis = []
       @x = 10
       @y = 10
       @alpha = 1
       @color = [255, 0, 0, 1]
+
+    bezier: ->
+      tl = @timeline
+      tl.forever duration: 2000, ->
+        b = tl.bezier
+          points: [
+            { x: 10, y: 10 }
+            { x: 10, y: 60 }
+            { x: 100, y: 40 }
+            { x: 100, y: 100 }
+          ]
+        tl.wait 1000
+        tl.reverse(b)
+
+    standard: ->
+      tl = @timeline
+      tl.forever ->
+        group = tl.together duration: 2000, ->
+          tl.rotate
+            from: 0
+            to: 720
+          tl.color
+            from: [255, 0, 0, 1]
+            to: [0, 0, 255, 0]
+          tl.scale
+            from: 1
+            to: 10
+          tl.move
+            from: x: 10, y: 10
+            to: x: 300, y: 200
+        tl.wait 500
+        tl.reverse(group)
 
     addAni: (ani) ->
       @anis.push(ani)
@@ -32,24 +65,10 @@ require ['Timeline', 'Util'], (Timeline, U) ->
 
 
   entity = new Entity()
-  tl = new Timeline(entity)
 
-  tl.forever ->
-    group = tl.together duration: 2000, ->
-      tl.rotate
-        from: 0
-        to: 720
-      tl.color
-        from: [255, 0, 0, 1]
-        to: [0, 0, 255, 0]
-      tl.scale
-        from: 1
-        to: 10
-      tl.move
-        from: x: 10, y: 10
-        to: x: 300, y: 200
-    tl.wait 500
-    tl.reverse(group)
+  # entity.standard()
+  entity.bezier()
+
 
   context = document.getElementById('canvas').getContext('2d')
 

@@ -1,12 +1,13 @@
 define "Timeline",
   [ 
     "Util"
+    "Bezier"
     "Tween"
     "Wait"
     "Repeat"
     "Together"
     "Invoke"
-  ], (U, Tween, Wait, Repeat, Together, Invoke) ->
+  ], (U, Bezier, Tween, Wait, Repeat, Together, Invoke) ->
 
     class Timeline
       constructor: (@owner) ->
@@ -77,6 +78,9 @@ define "Timeline",
         config.duration = 0
         config.from = config.to = config.value
         @tween config
+
+      bezier: (config = {}) ->
+        @_addAnimation Bezier, config
 
       tween: (config = {}) ->
         @_addAnimation Tween, config

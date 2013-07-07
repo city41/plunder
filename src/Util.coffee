@@ -50,6 +50,9 @@ define 'Util', ->
       return target
 
     clone: (obj) ->
+      if @isArray(obj)
+        return obj.slice(0)
+
       @extend({}, obj)
 
     toArray: (obj) ->

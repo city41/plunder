@@ -1,13 +1,79 @@
 require(['Timeline', 'Util'], function(Timeline, U) {
-  var Entity, context, entity, lastTimestamp, tl, update;
+  var Entity, context, entity, lastTimestamp, update;
   Entity = (function() {
     function Entity() {
+      this.timeline = new Timeline(this);
       this.anis = [];
       this.x = 10;
       this.y = 10;
       this.alpha = 1;
       this.color = [255, 0, 0, 1];
     }
+
+    Entity.prototype.bezier = function() {
+      var tl;
+      tl = this.timeline;
+      return tl.forever({
+        duration: 2000
+      }, function() {
+        var b;
+        b = tl.bezier({
+          points: [
+            {
+              x: 10,
+              y: 10
+            }, {
+              x: 10,
+              y: 60
+            }, {
+              x: 100,
+              y: 40
+            }, {
+              x: 100,
+              y: 100
+            }
+          ]
+        });
+        tl.wait(1000);
+        return tl.reverse(b);
+      });
+    };
+
+    Entity.prototype.standard = function() {
+      var tl;
+      tl = this.timeline;
+      return tl.forever(function() {
+        var group;
+        group = tl.together({
+          duration: 2000
+        }, function() {
+          tl.rotate({
+            from: 0,
+            to: 720
+          });
+          tl.color({
+            from: [255, 0, 0, 1],
+            to: [0, 0, 255, 0]
+          });
+          tl.scale({
+            from: 1,
+            to: 10
+          });
+          return tl.move({
+            from: {
+              x: 10,
+              y: 10
+            },
+            to: {
+              x: 300,
+              y: 200
+            }
+          });
+        });
+        tl.wait(500);
+        return tl.reverse(group);
+      });
+    };
 
     Entity.prototype.addAni = function(ani) {
       return this.anis.push(ani);
@@ -46,38 +112,7 @@ require(['Timeline', 'Util'], function(Timeline, U) {
 
   })();
   entity = new Entity();
-  tl = new Timeline(entity);
-  tl.forever(function() {
-    var group;
-    group = tl.together({
-      duration: 2000
-    }, function() {
-      tl.rotate({
-        from: 0,
-        to: 720
-      });
-      tl.color({
-        from: [255, 0, 0, 1],
-        to: [0, 0, 255, 0]
-      });
-      tl.scale({
-        from: 1,
-        to: 10
-      });
-      return tl.move({
-        from: {
-          x: 10,
-          y: 10
-        },
-        to: {
-          x: 300,
-          y: 200
-        }
-      });
-    });
-    tl.wait(500);
-    return tl.reverse(group);
-  });
+  entity.bezier();
   context = document.getElementById('canvas').getContext('2d');
   lastTimestamp = null;
   update = function(ts) {
