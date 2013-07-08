@@ -1,5 +1,20 @@
 require ['Timeline', 'Util'], (Timeline, U) ->
 
+  #
+  # Sandbox
+  # =======
+  # This is a minimal implemenation of Plunder, it gives an idea 
+  # of what games/engines will need to do to use Plunder
+  # and provides a testing ground for playing with Plunder
+  #
+  # Most of the implementation here will be hidden to games via 
+  # plugins or what not, allowing Plunder and the game engine to 
+  # work together with minimal effort from the developer
+  #
+
+  #
+  # define something that Plunder can manipulate
+  #
   class Entity
     constructor: ->
       @timeline = new Timeline(this)
@@ -9,6 +24,10 @@ require ['Timeline', 'Util'], (Timeline, U) ->
       @alpha = 1
       @color = [255, 0, 0, 1]
 
+    # have the entity run a bezier path animation
+    # this method and standard() below are just convenient
+    # places to dump Plunder animation calls, to play
+    # with the system.
     bezier: ->
       tl = @timeline
       tl.forever duration: 2000, ->
@@ -32,6 +51,8 @@ require ['Timeline', 'Util'], (Timeline, U) ->
         tl.wait 1000
         tl.reverse(t)
 
+    # have the entity run a standard animation
+    # this is the same animation currently featured on Plunder's website
     standard: ->
       tl = @timeline
       tl.forever ->
@@ -51,16 +72,26 @@ require ['Timeline', 'Util'], (Timeline, U) ->
         tl.wait 500
         tl.reverse(group)
 
+    # this method is required by Plunder, an ani
+    # is something like tween, bezier, scale, etc
     addAni: (ani) ->
       @anis.push(ani)
 
+    # also required by Plunder, but so far not really used
     clearAnis: ->
       @anis = []
 
+    # also required by Plunder, update the anis in each run of the
+    # game loop. delta is how much time has passed since the previous
+    # game loop call. Time units don't matter to Plunder, as long as
+    # delta here and duration in the Timeline calls are the same unit
     update: (delta) ->
       for ani in @anis
         ani.update(delta)
 
+    # when drawing the entity, Plunder has tweened various properties
+    # such as scale, color and angle. use those properties to determine
+    # how to draw the entity
     draw: (context) ->
       context.save()
 
@@ -76,9 +107,18 @@ require ['Timeline', 'Util'], (Timeline, U) ->
 
   entity = new Entity()
 
+  #
+  # decide which animation to run
+  #
+
   # entity.standard()
   entity.bezier()
 
+
+  #
+  # the rest is standard canvas and requestAnimationFrame stuff
+  # that most JS game engines have somewhere inside
+  #
 
   context = document.getElementById('canvas').getContext('2d')
 
