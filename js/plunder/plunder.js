@@ -1,63 +1,60 @@
-define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], function(U, Tween, Wait, Repeat, Together, Invoke) {
+define("Timeline", ["Util", "Bezier", "Tween", "Wait", "Repeat", "Together", "Invoke"], function(U, Bezier, Tween, Wait, Repeat, Together, Invoke) {
   var Timeline;
   return Timeline = (function() {
     function Timeline(owner) {
-      if (!owner) {
+      this.owner = owner;
+      if (!this.owner) {
         throw new Error("Timeline requires an owner");
       }
-      this._owner = owner;
       this._buildStack = [];
-      this._targetStack = [];
-      this._addedAnis = [];
+      this._childConfigStack = [];
     }
 
     Timeline.prototype._getTargets = function(targetOptions) {
       var targets, _ref, _ref1;
-      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this._owner;
+      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this.owner;
       return U.toArray(targets);
     };
 
-    Timeline.prototype._addAnimationToOwner = function(ani) {
-      this._addedAnis.push(ani);
-      return this._owner.addAni(ani);
+    Timeline.prototype._mergeConfig = function(config) {
+      if (U.any(this._childConfigStack)) {
+        return U.extend(U.clone(U.last(this._childConfigStack)), config);
+      } else {
+        return config;
+      }
     };
 
-    Timeline.prototype._addParentAnimation = function(builder, targetOptions, AniConstructor, consArg) {
-      var ani, targets;
-      ani = new AniConstructor(consArg);
-      if (targetOptions) {
-        targets = this._getTargets(targetOptions);
-        this._targetStack.push(targets);
+    Timeline.prototype._addParentAnimation = function(childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) {
+      var builder, childConfig, parentAni;
+      if (U.isFunction(childConfigOrBuilder)) {
+        builder = childConfigOrBuilder;
+      } else {
+        childConfig = childConfigOrBuilder;
+        builder = builderOrUndefined;
       }
-      this._buildStack.push(ani);
+      parentAni = new AniConstructor(consArg);
+      if (childConfig) {
+        this._childConfigStack.push(childConfig);
+      }
+      this._buildStack.push(parentAni);
       builder(this);
       this._buildStack.pop();
-      if (targetOptions) {
-        this._targetStack.pop();
+      if (childConfig) {
+        this._childConfigStack.pop();
       }
-      if (this._buildStack.length === 0) {
-        this._addAnimationToOwner(ani);
-      } else {
-        this._buildStack[this._buildStack.length - 1].children.push(ani);
-      }
-      return ani;
+      return this._pushAnimation(parentAni);
     };
 
-    Timeline.prototype._addAnimation = function(config, AniConstructor) {
+    Timeline.prototype._addAnimation = function(AniConstructor, config) {
       var ani;
-      if (!config.targets) {
-        if (config.target) {
-          config.targets = config.target;
-        } else if (this._targetStack.length > 0) {
-          config.targets = this._targetStack.last;
-        } else {
-          config.targets = this._owner;
-        }
-      }
-      config.targets = U.toArray(config.targets);
-      ani = new AniConstructor(config);
+      ani = new AniConstructor(this._mergeConfig(config));
+      ani.targets = this._getTargets(ani);
+      return this._pushAnimation(ani);
+    };
+
+    Timeline.prototype._pushAnimation = function(ani) {
       if (this._buildStack.length === 0) {
-        this._addAnimationToOwner(ani);
+        this.owner.addAni(ani);
       } else {
         this._buildStack[this._buildStack.length - 1].children.push(ani);
       }
@@ -73,131 +70,128 @@ define("Timeline", ["Util", "Tween", "Wait", "Repeat", "Together", "Invoke"], fu
       config.property = "alpha";
       config.from = from;
       config.to = to;
-      return this._addAnimation(config, Tween);
+      return this._addAnimation(Tween, config);
     };
 
-    Timeline.prototype._defaultTween = function(property, config, defaultValue) {
-      var _ref, _ref1, _ref2;
-      if (defaultValue == null) {
-        defaultValue = 0;
-      }
-      return this.tween({
-        property: property,
-        from: (_ref = config.from) != null ? _ref : defaultValue,
-        to: (_ref1 = config.to) != null ? _ref1 : defaultValue,
-        duration: (_ref2 = config.duration) != null ? _ref2 : 0,
-        easing: config.easing
-      });
+    Timeline.prototype.reverse = function(ani) {
+      return this._pushAnimation(ani.reverse());
     };
 
     Timeline.prototype.setProperty = function(config) {
+      if (config == null) {
+        config = {};
+      }
       config.duration = 0;
       config.from = config.to = config.value;
       return this.tween(config);
     };
 
+    Timeline.prototype.bezier = function(config) {
+      if (config == null) {
+        config = {};
+      }
+      return this._addAnimation(Bezier, config);
+    };
+
     Timeline.prototype.tween = function(config) {
-      return this._addAnimation(config, Tween);
+      if (config == null) {
+        config = {};
+      }
+      return this._addAnimation(Tween, config);
     };
 
     Timeline.prototype.fadeIn = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._fade(config, 0, 1);
     };
 
     Timeline.prototype.fadeOut = function(config) {
+      if (config == null) {
+        config = {};
+      }
       return this._fade(config, 1, 0);
     };
 
     Timeline.prototype.scale = function(config) {
-      return this._defaultTween('scale', config);
+      if (config == null) {
+        config = {};
+      }
+      config.property = 'scale';
+      return this.tween(config);
     };
 
-    Timeline.prototype.tint = function(config) {
-      return this._defaultTween('color', config, [0, 0, 0, 0]);
+    Timeline.prototype.color = function(config) {
+      if (config == null) {
+        config = {};
+      }
+      config.property = 'color';
+      return this.tween(config);
     };
 
     Timeline.prototype.rotate = function(config) {
-      return this._defaultTween('angle', config);
+      if (config == null) {
+        config = {};
+      }
+      config.property = 'angle';
+      return this.tween(config);
     };
 
     Timeline.prototype.move = function(config) {
       var xconfig, yconfig, _ref, _ref1;
-      xconfig = U.extend({}, config);
+      xconfig = U.clone(config);
       xconfig.easing = (_ref = config.easingX) != null ? _ref : config.easing;
       xconfig.from = config.from.x;
       xconfig.to = config.to.x;
-      yconfig = U.extend({}, config);
+      xconfig.property = 'x';
+      yconfig = U.clone(config);
       yconfig.easing = (_ref1 = config.easingY) != null ? _ref1 : config.easing;
       yconfig.from = config.from.y;
       yconfig.to = config.to.y;
+      yconfig.property = 'y';
       return this.together(function(tl) {
-        tl._defaultTween('x', xconfig);
-        return tl._defaultTween('y', yconfig);
+        tl.tween(xconfig);
+        return tl.tween(yconfig);
       });
     };
 
-    Timeline.prototype.sequence = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this.repeat(1, targetOptionsOrBuilder, builderOrUndefined);
+    Timeline.prototype.together = function(childConfigOrBuilder, builderOrUndefined) {
+      return this._addParentAnimation(childConfigOrBuilder, builderOrUndefined, Together);
     };
 
-    Timeline.prototype.together = function(targetOptionsOrBuilder, builderOrUndefined) {
-      var builder, targetOptions;
-      if (U.isFunction(targetOptionsOrBuilder)) {
-        builder = targetOptionsOrBuilder;
-      } else {
-        targetOptions = targetOptionsOrBuilder;
-        builder = builderOrUndefined;
-      }
-      return this._addParentAnimation(builder, targetOptions, Together);
+    Timeline.prototype.sequence = function(childConfigOrBuilder, builderOrUndefined) {
+      return this.repeat(1, childConfigOrBuilder, builderOrUndefined);
     };
 
-    Timeline.prototype.repeat = function(count, targetOptionsOrBuilder, builderOrUndefined) {
-      var builder, targetOptions;
-      if (U.isFunction(targetOptionsOrBuilder)) {
-        builder = targetOptionsOrBuilder;
-      } else {
-        targetOptions = targetOptionsOrBuilder;
-        builder = builderOrUndefined;
-      }
-      return this._addParentAnimation(builder, targetOptions, Repeat, count);
+    Timeline.prototype.forever = function(childConfigOrBuilder, builderOrUndefined) {
+      return this.repeat(Infinity, childConfigOrBuilder, builderOrUndefined);
     };
 
-    Timeline.prototype.forever = function(targetOptionsOrBuilder, builderOrUndefined) {
-      return this.repeat(Infinity, targetOptionsOrBuilder, builderOrUndefined);
+    Timeline.prototype.repeat = function(count, childConfigOrBuilder, builderOrUndefined) {
+      return this._addParentAnimation(childConfigOrBuilder, builderOrUndefined, Repeat, count);
     };
 
-    Timeline.prototype.wait = function(millis) {
-      return this.waitBetween(millis, millis);
+    Timeline.prototype.wait = function(duration) {
+      return this.waitBetween(duration, duration);
     };
 
     Timeline.prototype.waitBetween = function(min, max) {
-      return this._addAnimation({
+      return this._addAnimation(Wait, {
         min: min,
         max: max
-      }, Wait);
+      });
     };
 
     Timeline.prototype.invoke = function(func, context) {
-      return this._addAnimation({
+      return this._addAnimation(Invoke, {
         func: func,
         context: context
-      }, Invoke);
+      });
     };
 
-    Timeline.prototype.end = function() {
-      var rootAni,
-        _this = this;
-      rootAni = this._buildStack.first;
-      if (rootAni) {
-        return this.invoke(function() {
-          return _this.die();
-        });
-      }
-    };
-
-    Timeline.prototype.die = function() {
-      var _ref;
-      return (_ref = this._owner) != null ? _ref.clearAnis() : void 0;
+    Timeline.prototype.stop = function() {
+      return this.owner.clearAnis();
     };
 
     return Timeline;
@@ -247,12 +241,18 @@ define('Util', function() {
     isFunction: function(f) {
       return typeof f === "function";
     },
+    isString: function(s) {
+      return toString.call(s) === "[object String]";
+    },
+    isPrimitive: function(o) {
+      return o === true || o === false || this.isString(o) || this.isNumber(o);
+    },
     areSameTypes: function(a, b) {
       if (this.isArray(a)) {
         return this.isArray(b);
       }
       if (this.isArray(b)) {
-        return this.isArray(a);
+        return false;
       }
       return typeof a === typeof b;
     },
@@ -267,6 +267,15 @@ define('Util', function() {
       }
       return target;
     },
+    clone: function(obj) {
+      if (!obj || this.isPrimitive(obj)) {
+        return obj;
+      }
+      if (this.isArray(obj)) {
+        return obj.slice(0);
+      }
+      return this.extend({}, obj);
+    },
     toArray: function(obj) {
       if (obj == null) {
         return [];
@@ -276,12 +285,133 @@ define('Util', function() {
       } else {
         return [obj];
       }
+    },
+    last: function(array) {
+      return array && array[array.length - 1];
+    },
+    first: function(array) {
+      return array && array[0];
+    },
+    isEmpty: function(array) {
+      return array && array.length === 0;
+    },
+    any: function(array) {
+      return array && array.length > 0;
     }
   };
   Util.isArray = Array.isArray || function(obj) {
     return toString.call(obj) === "[object Array]";
   };
   return Util;
+});
+
+define('Bezier', ['Util'], function(U) {
+  var Bezier;
+  return Bezier = (function() {
+    function Bezier(config) {
+      U.extend(this, config);
+      this.reset();
+    }
+
+    Bezier.prototype.reset = function() {
+      this._elapsed = 0;
+      this.done = this._elapsed >= this.duration;
+      return this._targetsInitted = false;
+    };
+
+    Bezier.prototype.reverse = function() {
+      return new Bezier({
+        targets: this.targets,
+        points: this._reversePoints(this.points),
+        duration: this.duration
+      });
+    };
+
+    Bezier.prototype._reversePoints = function(points) {
+      points = U.clone(points);
+      this._swap(points, 0, 3);
+      this._swap(points, 1, 2);
+      return points;
+    };
+
+    Bezier.prototype._swap = function(array, a, b) {
+      var temp;
+      temp = array[a];
+      array[a] = array[b];
+      return array[b] = temp;
+    };
+
+    Bezier.prototype._initTargets = function() {
+      var target, _i, _len, _ref;
+      _ref = this.targets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        target.x = this.points[0].x;
+        target.y = this.points[0].y;
+      }
+      return this._targetsInitted = true;
+    };
+
+    Bezier.prototype.update = function(delta) {
+      var target, _i, _len, _ref, _results;
+      if (this.done || this.disabled) {
+        return;
+      }
+      if (!this._targetsInitted) {
+        this._initTargets();
+      }
+      this._elapsed += delta;
+      if (this._elapsed > this.duration) {
+        this._elapsed = this.duration;
+        return this.done = true;
+      } else {
+        _ref = this.targets;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          target = _ref[_i];
+          _results.push(this._move(target));
+        }
+        return _results;
+      }
+    };
+
+    Bezier.prototype._move = function(target) {
+      var percent, x, y, _ref;
+      percent = this._elapsed / this.duration;
+      _ref = this._computeBezier(0, percent), x = _ref.x, y = _ref.y;
+      target.x = x;
+      return target.y = y;
+    };
+
+    Bezier.prototype._computeBezier = function(index, time) {
+      var oneMinusT, oneMinusTCubed, p1, p2, p3, p4, t, tCubed, x, x1, x2, x3, x4, y, y1, y2, y3, y4;
+      t = time;
+      p1 = this.points[index];
+      p2 = this.points[index + 1];
+      p3 = this.points[index + 2];
+      p4 = this.points[index + 3];
+      oneMinusT = 1 - t;
+      oneMinusTCubed = oneMinusT * oneMinusT * oneMinusT;
+      tCubed = t * t * t;
+      x1 = oneMinusTCubed * p1.x;
+      x2 = 3 * t * oneMinusT * oneMinusT * p2.x;
+      x3 = 3 * t * t * oneMinusT * p3.x;
+      x4 = tCubed * p4.x;
+      x = x1 + x2 + x3 + x4;
+      y1 = oneMinusTCubed * p1.y;
+      y2 = 3 * t * oneMinusT * oneMinusT * p2.y;
+      y3 = 3 * t * t * oneMinusT * p3.y;
+      y4 = tCubed * p4.y;
+      y = y1 + y2 + y3 + y4;
+      return {
+        x: x,
+        y: y
+      };
+    };
+
+    return Bezier;
+
+  })();
 });
 
 define('Easing', function() {
@@ -500,18 +630,25 @@ define('Easing', function() {
 });
 
 define('Invoke', ['Util'], function(U) {
-  var invoke;
-  return invoke = (function() {
-    function invoke(config) {
+  var Invoke;
+  return Invoke = (function() {
+    function Invoke(config) {
       U.extend(this, config);
       this.reset();
     }
 
-    invoke.prototype.reset = function() {
+    Invoke.prototype.reset = function() {
       return this.done = false;
     };
 
-    invoke.prototype.update = function() {
+    Invoke.prototype.reverse = function() {
+      return new Invoke({
+        func: this.func,
+        context: this.context
+      });
+    };
+
+    Invoke.prototype.update = function() {
       if (this.done) {
         return;
       }
@@ -519,7 +656,7 @@ define('Invoke', ['Util'], function(U) {
       return this.done = true;
     };
 
-    return invoke;
+    return Invoke;
 
   })();
 });
@@ -529,24 +666,40 @@ var __slice = [].slice;
 define("Repeat", ["Util"], function(U) {
   var Repeat;
   return Repeat = (function() {
-    function Repeat(count) {
+    function Repeat(count, children) {
       this.count = count;
-      this.children = [];
+      this.children = children != null ? children : [];
       this._currentChild = 0;
       this._curCount = 0;
     }
 
     Repeat.prototype.reset = function() {
-      var child, _i, _len, _results;
+      var child, _i, _len, _ref, _results;
       this.done = false;
       this._currentChild = 0;
       this._curCount = 0;
+      _ref = this.children;
       _results = [];
-      for (_i = 0, _len = children.length; _i < _len; _i++) {
-        child = children[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
         _results.push(child.reset());
       }
       return _results;
+    };
+
+    Repeat.prototype.reverse = function() {
+      var child, reversedChildren;
+      reversedChildren = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(child.reverse());
+        }
+        return _results;
+      }).call(this);
+      return new Repeat(this.count, reversedChildren.reverse());
     };
 
     Repeat.prototype.update = function() {
@@ -587,8 +740,8 @@ var __slice = [].slice;
 define("Together", function() {
   var Together;
   return Together = (function() {
-    function Together() {
-      this.children = [];
+    function Together(children) {
+      this.children = children != null ? children : [];
     }
 
     Together.prototype.reset = function() {
@@ -601,6 +754,21 @@ define("Together", function() {
         _results.push(child.reset());
       }
       return _results;
+    };
+
+    Together.prototype.reverse = function() {
+      var child, reversedChildren;
+      reversedChildren = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(child.reverse());
+        }
+        return _results;
+      }).call(this);
+      return new Together(reversedChildren);
     };
 
     Together.prototype.update = function() {
@@ -644,6 +812,17 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
       return this._targetsInitted = false;
     };
 
+    Tween.prototype.reverse = function() {
+      return new Tween({
+        property: this.property,
+        targets: this.targets,
+        from: this.to,
+        to: this.from,
+        easing: this.easing,
+        duration: this.duration
+      });
+    };
+
     Tween.prototype._initTargets = function() {
       var curValue, target, value, _i, _len, _ref;
       _ref = this.targets;
@@ -676,7 +855,7 @@ define('Tween', ['Easing', 'Util'], function(Easing, U) {
         this._initTargets();
       }
       this._elapsed += delta;
-      if (this._elapsed > this.duration) {
+      if (this._elapsed >= this.duration) {
         this._elapsed = this.duration;
         this.done = true;
       } else {
@@ -777,6 +956,12 @@ define('Wait', ['Util'], function(U) {
       this._specifiedDuration = this.duration;
       this.reset();
     }
+
+    Wait.prototype.reverse = function() {
+      return new Wait({
+        duration: this.duration
+      });
+    };
 
     Wait.prototype.reset = function() {
       this.duration = this._specifiedDuration || U.rand(this.min, this.max);

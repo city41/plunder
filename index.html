@@ -4,7 +4,7 @@
 	<title>Plunder</title>
 	<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="css/bootstrap-responsive.css" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="css/highlight/default.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="css/highlight/tomorrow-night.css" type="text/css" media="screen" charset="utf-8" />
 	<style>
 		#canvas {
 			border: 1px solid gray;
@@ -22,7 +22,6 @@
 			<a class="brand" href="#">Plunder</a>
 			<div class="nav-collapse collapse">
 				<ul class="nav pull-right">
-					<li class="active"><a href="#">Home</a></li>
 					<li><a href="docs/index.html">Docs</a></li>
 					<li><a href="https://github.com/city41/plunder">Github</a></li>
 				</ul>
@@ -32,33 +31,37 @@
 
 	<div class="row-fluid">
 		<div class="span2"></div>
-		<div class="span8">
-			<h1>Plunder</h1>
+		<div class="span8" style="margin-bottom: 25px">
+			<h1>Plunder <span><small>awesome animation for JavaScript games</small></span></h1>
 		</div>
 		<div class="span2"></div>
 	</div>
 	<div class="row-fluid">
 		<div class="span2"></div>
-		<div class="span4">
-<pre><code>tl = new Timeline(mySquare)
-tl.forever ->
-  group = tl.together duration: 2000, ->
-    tl.rotate
-      from: 720
-      to: 0
-    tl.color
-      from: [255, 0, 0, 1]
-      to: [0, 0, 255, 0]
-    tl.scale
-      from: 1
-      to: 10
-    tl.move
-      from: x: 10, y: 10
-      to: x: 300, y: 100
-  tl.wait 500
-  tl.reverse(group)</code></pre>
+		<div class="span5">
+<pre><code>var t = new Timeline(mySquare);
+t.forever(function() {
+  var toRight = t.together({ duration: 2000 }, function() {
+
+    t.rotate({ from: 0, to: 360 });
+    t.scale({ from: 1, to: 10 });
+
+    t.color({
+      from: [255, 0, 0, 1],
+      to: [255, 255, 0, 0.2] 
+    });
+
+    t.move({
+      from: { x: 10, y: 10 },
+      to: { x: 250, y: 100 }
+    });
+
+  });
+  t.wait(1000);
+  t.reverse(toRight);
+});</pre></code>
 		</div>
-		<div class="span4">
+		<div class="span3">
 			<div>
 				<canvas id="canvas"></canvas>
 			</div>
@@ -67,12 +70,12 @@ tl.forever ->
 		<div class="span2"></div>
 	</div>
 	
-	<div class="row-fluid">
+	<div class="row-fluid" style="margin-top: 25px">
 		<div class="span2"></div>
 		<div class="span8">
 			<p><b>Plunder</b> is an animation system targeted at JavaScript game engines. It provides powerful tween based animations, is engine agnostic, 
 			and easily integrates into your game.</p>
-			<p><b>Plunder</b> is written in CoffeeScript, well tested and performant. It is in its infancy right now, but was extracted from a previous game engine I wrote, so will mature quickly. The goal is to make it easily compatible with all major game engines, like ImpactJS, FrozenJS, MelonJS and more.</p>
+			<p><b>Plunder</b> is well tested and performant. It is in its infancy right now, but was extracted from a previous game engine.</p>
 		</div>
 		<div class="span2"></div>
 	</div>

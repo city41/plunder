@@ -54,21 +54,18 @@ require(['Timeline', 'Util'], function(Timeline, U) {
   entity = new Entity();
   tl = new Timeline(entity);
   tl.forever(function(tl) {
-    tl.together(function(tl) {
+    var t = tl.together( { duration: 2000 }, function(tl) {
       tl.rotate({
-	from: 720,
-	to: 0,
-	duration: 2000
+	from: 0,
+	to: 360
       });
-      tl.tint({
+      tl.color({
         from: [255, 0, 0, 1],
-        to: [0, 0, 255, 0],
-        duration: 2000
+        to: [255, 255, 0, 0.3]
       });
       tl.scale({
         from: 1,
-        to: 10,
-        duration: 2000
+        to: 10
       });
       return tl.move({
         from: {
@@ -76,41 +73,13 @@ require(['Timeline', 'Util'], function(Timeline, U) {
           y: 10
         },
         to: {
-          x: 300,
+          x: 250,
           y: 100
-        },
-        duration: 2000
+        }
       });
     });
-    tl.wait(500);
-    return tl.together(function(tl) {
-      tl.rotate({
-        from: 0,
-        to: 720,
-        duration: 2000
-      });
-      tl.scale({
-        from: 10,
-        to: 1,
-        duration: 2000
-      });
-      tl.tint({
-        from: [0, 0, 255, 0],
-        to: [255, 0, 0, 1],
-        duration: 2000
-      });
-      return tl.move({
-        from: {
-          x: 300,
-          y: 100
-        },
-        to: {
-          x: 10,
-          y: 10
-        },
-        duration: 2000
-      });
-    });
+    tl.wait(1000);
+    tl.reverse(t);
   });
   context = document.getElementById('canvas').getContext('2d');
   var button= document.getElementById('play-main-example');
@@ -139,7 +108,8 @@ require(['Timeline', 'Util'], function(Timeline, U) {
     delta = ts - lastTimestamp;
     lastTimestamp = ts;
     entity.update(delta);
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.fillStyle = '#1d1f21';
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     entity.draw(context);
     return window.raf(update);
   };
