@@ -261,7 +261,7 @@
 				</p>
 				<p>
 					Timelines need to be constructed with an <em>owner</em>, this is typically an entity/actor/element in your game world. 
-					This object needs to have a couple methods defined on it to work properly with Plunder, see the <a href="#engines">Engine Ifntegrations</a>
+					This object needs to have a couple methods defined on it to work properly with Plunder, see the <a href="#engines">Engine Integrations</a>
 					section for more information.
 				</p>
 				<p>
@@ -567,7 +567,7 @@ var move = timeline.move({
 	to: { x: 100, y: 200 }
 });
 
-// the resulting animation will be a move from [100,200]->[10,10], ie the opposite of the above.
+// the resulting animation will be a move from (100,200)->(10,10), ie the opposite of the above.
 timeline.reverse(move);
 </code></pre>
 
@@ -609,9 +609,9 @@ timeline.bezier({
 	duration: 2000,
 	points: [
 		{ x: 10, y: 10 }, // the first point
-    	{ x: 10, y: 60 }, // the first point's handle
-    	{ x: 100, y: 40 }, // the second point's handle
-    	{ x: 100, y: 100 } // the second point
+		{ x: 10, y: 60 }, // the first point's handle
+		{ x: 100, y: 40 }, // the second point's handle
+		{ x: 100, y: 100 } // the second point
 	]
 });
 </code></pre>								
@@ -638,6 +638,7 @@ timeline.bezier({
 <pre><code>
 // the target object will move across the screen, 
 // rotate a full rotation, 
+// rotate back in the opposite direction,
 // then move back to its original location
 
 timeline.sequence( { duration: 2000 }, function() {
@@ -661,7 +662,7 @@ timeline.sequence( { duration: 2000 }, function() {
 						<li><tt>buildrFn</tt> - the function that builds the child animations
 					</ul>
 					
-					Runs the child animations all at the same time. The parent sequence animation is not considered done until all the children have finished.
+					Runs the child animations all at the same time. The parent together animation is not considered done until all the children have finished.
 				</p>
 <pre><code>
 // the target object will move across the screen, 
@@ -692,7 +693,9 @@ timeline.together( { duration: 2000 }, function() {
 <pre><code>
 	// the target object will move across the screen, 
 	// rotate a full rotation, 
+	// rotates back the opposite way,
 	// then move back to its original location
+	//
 	// this is repeated three times
 
 	timeline.repeat(3, { duration: 2000 }, function() {
@@ -721,7 +724,9 @@ timeline.together( { duration: 2000 }, function() {
 <pre><code>
 	// the target object will move across the screen, 
 	// rotate a full rotation, 
+	// rotates back the opposite way,
 	// then move back to its original location
+	//
 	// this is repeated forever
 
 	timeline.forever({ duration: 2000 }, function() {
@@ -739,7 +744,7 @@ timeline.together( { duration: 2000 }, function() {
 </code></pre>
 
 				<p>
-					<i>Note: this is just <tt>timeline.repeat(Infinity, [childDefaults], builderFn)</tt></i>
+					<i>Note: this is just sugar for <tt>timeline.repeat(Infinity, [childDefaults], builderFn)</tt></i>
 				</p>
 
 				<h2 id="easing">Easing</h2>
@@ -795,6 +800,9 @@ MyEntity.prototype = {
 						</li>
 						<li>The entity should call <tt>update(delta)</tt> against all animations it was given with <tt>addAni</tt></li>
 					</ul>
+				</p>
+				<p>
+					<b>TODO</b>: these methods will be renamed <tt>addPlunderAnimation</tt> and <tt>clearPlunderAnimations</tt> soon
 				</p>
 				<p>
 					Here is an example entity implementation that meets Plunder's needs:
