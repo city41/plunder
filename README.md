@@ -1,5 +1,7 @@
 # Plunder [![Build Status](https://secure.travis-ci.org/city41/plunder.png?branch=master)](http://travis-ci.org/city41/plunder)
 
+[![Stories in Ready](http://badge.waffle.io/city41/plunder.png)](http://waffle.io/city41/plunder)
+
 [Plunder's website](http://city41.github.io/plunder)
 
 A tween based animation system for JavaScript game engines. Ported over from my L7 engine and was used in my game Dragon Plunder. 
