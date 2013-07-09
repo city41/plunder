@@ -1,6 +1,4 @@
-# Plunder [![Build Status](https://secure.travis-ci.org/city41/plunder.png?branch=master)](http://travis-ci.org/city41/plunder)
-
-[![Stories in Ready](http://badge.waffle.io/city41/plunder.png)](http://waffle.io/city41/plunder)
+# Plunder [![Build Status](https://secure.travis-ci.org/city41/plunder.png?branch=master)](http://travis-ci.org/city41/plunder) [![Stories in Ready](http://badge.waffle.io/city41/plunder.png)](http://waffle.io/city41/plunder)
 
 [Plunder's website](http://city41.github.io/plunder)
 
