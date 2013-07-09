@@ -1,4 +1,4 @@
-define 'Invoke', ['Util'], (U) ->
+define ['Util'], (U) ->
 
   class Invoke
     constructor: (config) ->

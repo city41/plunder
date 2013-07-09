@@ -1,4 +1,4 @@
-define 'Bezier', ['Util'], (U) ->
+define ['Util'], (U) ->
 
   # TODO: support @restoreAfter
 

@@ -1,4 +1,4 @@
-define 'Easing', ->
+define ->
   #	  Easing Equations v1.5
   #	  May 1, 2003
   #	  (c) 2003 Robert Penner, all rights reserved. 

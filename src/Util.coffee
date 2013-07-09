@@ -1,4 +1,4 @@
-define 'Util', ->
+define ->
   _isInteger = (num) ->
     num == (num | 0)
 

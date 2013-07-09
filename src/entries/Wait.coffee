@@ -1,4 +1,4 @@
-define 'Wait', ['Util'], (U) ->
+define ['Util'], (U) ->
 
   class Wait
     constructor: (config) ->

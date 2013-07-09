@@ -1,4 +1,4 @@
-define "Together", ->
+define ->
 
   class Together
     constructor: (@children=[]) ->

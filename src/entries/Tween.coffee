@@ -1,4 +1,4 @@
-define 'Tween', ['Easing', 'Util'], (Easing, U) ->
+define ['Easing', 'Util'], (Easing, U) ->
   _idCounter = 0
 
   class Tween

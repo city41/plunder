@@ -1,4 +1,4 @@
-define "Repeat", ["Util"], (U) ->
+define ["Util"], (U) ->
   class Repeat
     constructor: (@count, @children=[]) ->
       @_currentChild = 0
