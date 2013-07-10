@@ -24,7 +24,7 @@ module.exports = (grunt) ->
         flatten: true
         cwd: "src"
         src: ["**/*.coffee"]
-        dest: "compiledjs"
+        dest: "dist/amd"
         ext: ".js"
       spec:
         options:
@@ -43,29 +43,34 @@ module.exports = (grunt) ->
         files: "integrations/impactjs/built/plunder-entity.js": "integrations/impactjs/src/**/*.coffee"
 
     clean:
-      files: ["compiledjs", "built", "specs/JasmineSpecs.js"]
+      files: ["dist/amd", "built", "specs/JasmineSpecs.js"]
 
     requirejs:
+      options:
+        baseUrl: "dist/amd"
+        name: "main"
+        almond: true
+        wrap:
+          startFile: "support/start.frag"
+          endFile: "support/end.frag"
       plunder:
         options:
-          baseUrl: "compiledjs"
-          out: "dist/<%= pkg.name %>.<%= pkg.version %>.js"
-          name: "main"
-          almond: true
+          out: "dist/<%= pkg.name %>.js"
           optimize: "none"
-          wrap:
-            startFile: "support/start.frag"
-            endFile: "support/end.frag"
+      min:
+        options:
+          out: "dist/<%= pkg.name %>.min.js"
+          optimize: "uglify"
 
     jasmine:
-      src: "compiledjs/**/*.js"
+      src: "dist/amd/**/*.js"
       options:
         keepRunner: true
         specs: "specs/JasmineSpecs.js"
         template: require("grunt-template-jasmine-requirejs")
         templateOptions:
           requireConfig:
-            baseUrl: "compiledjs/"
+            baseUrl: "dist/amd/"
         helpers: "specs/helpers/**/*.js"
 
     watch:
@@ -76,14 +81,14 @@ module.exports = (grunt) ->
 
   # These plugins provide necessary tasks.
   grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-requirejs"
 
   # Default task.
-  grunt.registerTask "default", ["jasmine", "clean", "concat", "uglify"]
+  grunt.registerTask "default", ["jasmine", "clean"]
+  grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
-  grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs:plunder"]
+  grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
 
