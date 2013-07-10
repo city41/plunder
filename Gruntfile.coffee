@@ -1,9 +1,9 @@
 "use strict"
 module.exports = (grunt) ->
-  
+
   # Project configuration.
   grunt.initConfig
-    
+
     # Metadata.
     pkg:
       name: "plunder"
@@ -13,7 +13,7 @@ module.exports = (grunt) ->
         name: "Matt Greer"
 
     banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" + "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" + "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n"
-    
+
 
     # Task configuration.
     coffee:
@@ -24,7 +24,7 @@ module.exports = (grunt) ->
         flatten: true
         cwd: "src"
         src: ["**/*.coffee"]
-        dest: "compiledjs"
+        dest: "dist/amd"
         ext: ".js"
       spec:
         options:
@@ -43,44 +43,52 @@ module.exports = (grunt) ->
         files: "integrations/impactjs/built/plunder-entity.js": "integrations/impactjs/src/**/*.coffee"
 
     clean:
-      files: ["compiledjs", "built", "specs/JasmineSpecs.js"]
+      files: ["dist/amd", "built", "specs/JasmineSpecs.js"]
 
     requirejs:
+      options:
+        baseUrl: "dist/amd"
+        name: "main"
+        almond: true
+        wrap:
+          startFile: "support/start.frag"
+          endFile: "support/end.frag"
       plunder:
         options:
-          baseUrl: "compiledjs"
-          out: "built/<%= pkg.name %>.<%= pkg.version %>.min.js"
-          name: "Timeline"
-          almond: true
-          wrap: false  # todo, get this to true, currently breaks main-example
+          out: "dist/<%= pkg.name %>.js"
+          optimize: "none"
+      min:
+        options:
+          out: "dist/<%= pkg.name %>.min.js"
+          optimize: "uglify"
 
     jasmine:
-      src: "compiledjs/**/*.js"
+      src: "dist/amd/**/*.js"
       options:
         keepRunner: true
         specs: "specs/JasmineSpecs.js"
         template: require("grunt-template-jasmine-requirejs")
         templateOptions:
           requireConfig:
-            baseUrl: "compiledjs/"
+            baseUrl: "dist/amd/"
         helpers: "specs/helpers/**/*.js"
-        
+
     watch:
       sandbox:
         files: ["sandbox/**/*.coffee", "src/**/*.coffee"]
-        tasks: ["coffee:sandbox", "coffee:src"]
+        tasks: ["sandbox"]
 
-  
+
   # These plugins provide necessary tasks.
   grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-requirejs"
-  
+
   # Default task.
-  grunt.registerTask "default", ["jasmine", "clean", "concat", "uglify"]
+  grunt.registerTask "default", ["spec"]
+  grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
-  grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs:plunder"]
+  grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
 

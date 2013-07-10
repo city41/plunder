@@ -1,4 +1,4 @@
-define ['Util'], (U) ->
+define ['./Util'], (U) ->
 
   class Invoke
     constructor: (config) ->
@@ -15,7 +15,7 @@ define ['Util'], (U) ->
 
     update: ->
       return  if @done
-      
+
       @func.call(@context)
       @done = true
 
