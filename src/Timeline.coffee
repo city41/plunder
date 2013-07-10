@@ -1,11 +1,11 @@
-define [ 
-  "Util"
-  "Bezier"
-  "Tween"
-  "Wait"
-  "Repeat"
-  "Together"
-  "Invoke"
+define [
+  "./Util"
+  "./Bezier"
+  "./Tween"
+  "./Wait"
+  "./Repeat"
+  "./Together"
+  "./Invoke"
 ], (U, Bezier, Tween, Wait, Repeat, Together, Invoke) ->
 
   class Timeline
@@ -69,7 +69,7 @@ define [
       @_addAnimation Tween, config
 
     ## Animations
-    
+
     reverse: (ani) ->
       @_pushAnimation ani.reverse()
 

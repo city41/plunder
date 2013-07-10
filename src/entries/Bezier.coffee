@@ -1,4 +1,4 @@
-define ['Util'], (U) ->
+define ['./Util'], (U) ->
 
   # TODO: support @restoreAfter
 
@@ -54,7 +54,7 @@ define ['Util'], (U) ->
 
     _move: (target) ->
       # TODO: suppoert more than the first index
-      
+
       percent = @_elapsed / @duration
       { x, y } = @_computeBezier(0, percent)
 
