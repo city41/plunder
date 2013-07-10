@@ -87,7 +87,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-requirejs"
 
   # Default task.
-  grunt.registerTask "default", ["spec"]
+  grunt.registerTask "default", ["build:plunder"]
   grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
   grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
