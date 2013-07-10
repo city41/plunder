@@ -1,4 +1,4 @@
-require ["Accessor"], (A) ->
+require ["Accessor"], (Accessor) ->
   describe "Accessor", ->
     beforeEach ->
       @obj =
@@ -7,49 +7,61 @@ require ["Accessor"], (A) ->
             down: 3
         first: 1
 
-    describe "#getProperty", ->
+    describe "#get", ->
       it "should get immediate properties", ->
-        expect(A.getProperty(@obj, "first")).toBe 1
+        accessor = new Accessor(@obj, "first")
+        expect(accessor.get()).toBe 1
 
       it "should quietly return non-existant immediate properties", ->
-        expect(A.getProperty(@obj, "doesntexist")).toBeUndefined()
+        accessor = new Accessor(@obj, "doesntexist")
+        expect(accessor.get()).toBeUndefined()
 
       it "should return nested properties", ->
-        expect(A.getProperty(@obj, "nested.three.down")).toBe 3
+        accessor = new Accessor(@obj, "nested.three.down")
+        expect(accessor.get()).toBe 3
         
       it "should quietly return non-existant nested properties", ->
-        expect(A.getProperty(@obj, "nested.nope")).toBeUndefined()
+        accessor = new Accessor(@obj, "nested.nope")
+        expect(accessor.get()).toBeUndefined()
 
-    describe "#setProperty", ->
+    describe "#set", ->
       it "should set immediate properties", ->
-        A.setProperty(@obj, "first", 2)
+        accessor = new Accessor(@obj, "first")
+        accessor.set(2);
         expect(@obj.first).toBe 2
 
       it "should set non-existant immediate properties", ->
-        A.setProperty(@obj, "nope", 4)
+        accessor = new Accessor(@obj, "nope")
+        accessor.set(4)
         expect(@obj.nope).toBe 4
 
       it "should set non-existant nested properties on the leaf object", ->
-        A.setProperty(@obj, "nested.three.nope", 5)
+        accessor = new Accessor(@obj, "nested.three.nope")
+        accessor.set(5)
         expect(@obj.nested.three.nope).toBe 5
 
       it "should set non-existant nested properties on new subobjects", ->
-        A.setProperty(@obj, "nested.nope.not", 6)
+        accessor = new Accessor(@obj, "nested.nope.not")
+        accessor.set(6)
         expect(@obj.nested.nope.not).toBe 6
 
-    describe "#deleteProperty", ->
+    describe "#del", ->
       it "should delete immediate properties", ->
-        A.deleteProperty(@obj, "first")
+        accessor = new Accessor(@obj, "first")
+        accessor.del()
         expect(@obj).not.toHaveProperty("first")
         expect(@obj).toHaveProperty("nested")
 
       it "should delete nested properties", ->
-        A.deleteProperty(@obj, "nested.three")
+        accessor = new Accessor(@obj, "nested.three")
+        accessor.del()
         expect(@obj.nested).not.toHaveProperty("three")
 
       it "should quietly ignore non-existant paths", ->
-        fn = =>
-          A.deleteProperty(@obj, "nested.nope.not")
+        accessor = new Accessor(@obj, "nested.nope.not")
+        fn = ->
+          accessor.del()
+
         expect(fn).not.toThrow()
 
 

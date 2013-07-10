@@ -1,10 +1,11 @@
-define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
+define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
   return Tween = (function() {
     function Tween(config) {
+      this.id = _idCounter++;
       U.extend(this, config);
-      this._saveProperty = this.property + "_save_" + (_idCounter++);
+      this._saveProperty = "" + this.property + "_save_" + this.id;
       this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
       this.reset();
     }
@@ -24,29 +25,6 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
         easing: this.easing,
         duration: this.duration
       });
-    };
-
-    Tween.prototype._initTargets = function() {
-      var curValue, target, value, _i, _len, _ref;
-      _ref = this.targets;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        target = _ref[_i];
-        curValue = A.getProperty(target, this.property);
-        if (U.isArray(curValue)) {
-          A.setProperty(target, this._saveProperty, curValue.slice(0));
-        } else {
-          A.setProperty(target, this._saveProperty, curValue);
-        }
-        value = this.from != null ? this.from : target[this.property];
-        if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
-          throw new Error("Tween: mismatched types between from/to and targets current value");
-        }
-        if (U.isArray(value)) {
-          value = value.slice(0);
-        }
-        A.setProperty(target, this.property, value);
-      }
-      return this._targetsInitted = true;
     };
 
     Tween.prototype.update = function(delta) {
@@ -73,33 +51,58 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
       }
     };
 
+    Tween.prototype._initTargets = function() {
+      var curValue, target, value, _i, _len, _ref, _ref1;
+      _ref = this.targets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        target["__prop" + this.id] = new Accessor(target, this.property);
+        target["__save" + this.id] = new Accessor(target, this._saveProperty);
+        curValue = this._get(target);
+        if (U.isArray(curValue)) {
+          this._set(target, curValue.slice(0), "save");
+        } else {
+          this._set(target, curValue, "save");
+        }
+        value = (_ref1 = this.from) != null ? _ref1 : curValue;
+        if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
+          throw new Error("Tween: mismatched types between from/to and targets current value");
+        }
+        if (U.isArray(value)) {
+          value = value.slice(0);
+        }
+        this._set(target, value);
+      }
+      return this._targetsInitted = true;
+    };
+
     Tween.prototype._finish = function() {
       var finalValue, target, _i, _len, _ref, _results;
       _ref = this.targets;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        finalValue = this.restoreAfter ? A.getProperty(target, this._saveProperty) : this.to;
-        A.setProperty(target, this.property, finalValue);
-        _results.push(A.deleteProperty(target, this._saveProperty));
+        finalValue = this.restoreAfter ? this._get(target, "save") : this.to;
+        this._set(target, finalValue);
+        _results.push(this._del(target));
       }
       return _results;
     };
 
     Tween.prototype._tween = function(target) {
-      var cell, curValue, from, i, tweenedValue, _i, _len, _results;
-      curValue = A.getProperty(target, this.property);
+      var cell, curValue, from, i, tweenedValue, _i, _len, _ref, _results;
+      curValue = this._get(target);
+      from = (_ref = this.from) != null ? _ref : this._get(target, "save");
       if (U.isArray(curValue)) {
         _results = [];
         for (i = _i = 0, _len = curValue.length; _i < _len; i = ++_i) {
           cell = curValue[i];
-          from = this.from || target[this._saveProperty];
           _results.push(curValue[i] = this._tweenValue(this._elapsed, from[i], this.to[i], this.duration));
         }
         return _results;
       } else if (U.isNumber(curValue)) {
-        tweenedValue = this._tweenValue(this._elapsed, this.from, this.to, this.duration);
-        return A.setProperty(target, this.property, tweenedValue);
+        tweenedValue = this._tweenValue(this._elapsed, from, this.to, this.duration);
+        return this._set(target, tweenedValue);
       } else {
         throw new Error("Tween can only operate on numbers or arrays of numbers");
       }
@@ -109,6 +112,26 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
       var position;
       position = this.easeFunc(elapsed, from, to - from, duration);
       return position;
+    };
+
+    Tween.prototype._get = function(target, type) {
+      if (type == null) {
+        type = "prop";
+      }
+      return target["__" + type + this.id].get();
+    };
+
+    Tween.prototype._set = function(target, value, type) {
+      if (type == null) {
+        type = "prop";
+      }
+      return target["__" + type + this.id].set(value);
+    };
+
+    Tween.prototype._del = function(target) {
+      target["__save" + this.id].del();
+      delete target["__save" + this.id];
+      return delete target["__prop" + this.id];
     };
 
     return Tween;

@@ -1,27 +1,27 @@
 define ['./Util'], (U) ->
-  Accessor =
-    getProperty: (obj, propertyPath) ->
-      paths = propertyPath.split(".")
+  class Accessor
+    constructor: (@obj, propertyPath) ->
+      @paths = propertyPath.split(".")
 
-      obj = obj[path] for path in paths
+    get: () ->
+      obj = @obj
+      obj = obj[path] for path in @paths
       return obj
 
-    setProperty: (obj, propertyPath, value) ->
-      paths = propertyPath.split(".")
+    set: (value) ->
+      obj = @obj
+      for i in [0...@paths.length-1] by 1
+        obj[@paths[i]] ?= {}
+        obj = obj[@paths[i]]
 
-      for i in [0...paths.length-1] by 1
-        obj[paths[i]] ?= {}
-        obj = obj[paths[i]]
+      obj[U.last(@paths)] = value
 
-      obj[U.last(paths)] = value
+    del: () ->
+      obj = @obj
+      for i in [0...@paths.length-1] by 1
+        return if not obj[@paths[i]]
 
-    deleteProperty: (obj, propertyPath) ->
-      paths = propertyPath.split(".")
+        obj = obj[@paths[i]]
 
-      for i in [0...paths.length-1] by 1
-        return if not obj[paths[i]]
-
-        obj = obj[paths[i]]
-
-      delete obj[U.last(paths)]
+      delete obj[U.last(@paths)]
 

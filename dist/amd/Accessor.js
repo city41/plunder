@@ -1,36 +1,47 @@
 define(['./Util'], function(U) {
   var Accessor;
-  return Accessor = {
-    getProperty: function(obj, propertyPath) {
-      var path, paths, _i, _len;
-      paths = propertyPath.split(".");
-      for (_i = 0, _len = paths.length; _i < _len; _i++) {
-        path = paths[_i];
+  return Accessor = (function() {
+    function Accessor(obj, propertyPath) {
+      this.obj = obj;
+      this.paths = propertyPath.split(".");
+    }
+
+    Accessor.prototype.get = function() {
+      var obj, path, _i, _len, _ref;
+      obj = this.obj;
+      _ref = this.paths;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        path = _ref[_i];
         obj = obj[path];
       }
       return obj;
-    },
-    setProperty: function(obj, propertyPath, value) {
-      var i, paths, _i, _name, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        if (obj[_name = paths[i]] == null) {
+    };
+
+    Accessor.prototype.set = function(value) {
+      var i, obj, _i, _name, _ref;
+      obj = this.obj;
+      for (i = _i = 0, _ref = this.paths.length - 1; _i < _ref; i = _i += 1) {
+        if (obj[_name = this.paths[i]] == null) {
           obj[_name] = {};
         }
-        obj = obj[paths[i]];
+        obj = obj[this.paths[i]];
       }
-      return obj[U.last(paths)] = value;
-    },
-    deleteProperty: function(obj, propertyPath) {
-      var i, paths, _i, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        if (!obj[paths[i]]) {
+      return obj[U.last(this.paths)] = value;
+    };
+
+    Accessor.prototype.del = function() {
+      var i, obj, _i, _ref;
+      obj = this.obj;
+      for (i = _i = 0, _ref = this.paths.length - 1; _i < _ref; i = _i += 1) {
+        if (!obj[this.paths[i]]) {
           return;
         }
-        obj = obj[paths[i]];
+        obj = obj[this.paths[i]];
       }
-      return delete obj[U.last(paths)];
-    }
-  };
+      return delete obj[U.last(this.paths)];
+    };
+
+    return Accessor;
+
+  })();
 });
