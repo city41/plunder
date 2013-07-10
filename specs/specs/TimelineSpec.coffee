@@ -40,10 +40,10 @@ require ["Timeline", "Tween", "Repeat", "Easing"], (Timeline, Tween, Repeat, Eas
 
         expect(tween.targets[0]).toBe target
 
-      it "should use the targets", ->
+      it "target should support an array of targets", ->
         targets = [{}, {}]
         tween = @timeline.tween
-          targets: targets
+          target: targets
           property: 'x'
 
         expect(tween.targets[0]).toBe targets[0]

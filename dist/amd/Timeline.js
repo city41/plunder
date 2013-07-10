@@ -11,8 +11,8 @@ define(["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Together", "./
     }
 
     Timeline.prototype._getTargets = function(targetOptions) {
-      var targets, _ref, _ref1;
-      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this.owner;
+      var targets, _ref;
+      targets = (_ref = targetOptions.target) != null ? _ref : this.owner;
       return U.toArray(targets);
     };
 

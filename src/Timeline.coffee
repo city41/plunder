@@ -16,7 +16,7 @@ define [
       @_childConfigStack = []
 
     _getTargets: (targetOptions) ->
-      targets = targetOptions.targets ? targetOptions.target ?  @owner
+      targets = targetOptions.target ?  @owner
       return U.toArray(targets)
 
     _mergeConfig: (config) ->
