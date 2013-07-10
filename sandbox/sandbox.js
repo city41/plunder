@@ -1,5 +1,7 @@
-require(['Timeline', 'Util'], function(Timeline, U) {
-  var Entity, context, entity, lastTimestamp, update;
+require(['../dist/plunder'], function(plunder) {
+  var Entity, Timeline, U, context, entity, lastTimestamp, update;
+  Timeline = plunder.Timeline;
+  U = plunder.Util;
   Entity = (function() {
     function Entity() {
       this.timeline = new Timeline(this);
