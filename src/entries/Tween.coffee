@@ -5,7 +5,6 @@ define ['./Easing', './Util'], (Easing, U) ->
     constructor: (config) ->
       U.extend this, config
       @_saveProperty = @property + "_save_" + (_idCounter++)
-      @_nonJitteredProperty = @property + "_nonJittered_" + (_idCounter++)
       @easeFunc = Easing[@easing || "linearTween"] || Easing.linearTween
       @reset()
 
@@ -63,7 +62,6 @@ define ['./Easing', './Util'], (Easing, U) ->
         finalValue = if @restoreAfter then @_getProperty(target, @_saveProperty) else @to
         @_setProperty target, @property, finalValue
         @_deleteProperty target, @_saveProperty
-        @_deleteProperty target, @_nonJitteredProperty
 
     _getProperty: (target, propertyPath) ->
       paths = propertyPath.split(".")
@@ -103,6 +101,5 @@ define ['./Easing', './Util'], (Easing, U) ->
 
     _tweenValue: (elapsed, from, to, duration) ->
       position = @easeFunc(elapsed, from, to - from, duration)
-      position += U.rand(@jitterMin, @jitterMax or 0)  if U.isNumber(@jitterMin)
       return position
 
