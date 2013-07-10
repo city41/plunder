@@ -1,6 +1,8 @@
-require(['Timeline', 'Util'], function(Timeline, U) {
+(function(){
+  var Timeline = Plunder.Timeline, U = Plunder.Util;
+
   window.raf = window.requestAnimationFrame
-	|| window.mozRequestAnimationFrame 
+	|| window.mozRequestAnimationFrame
 	|| window.webkitRequestAnimationFrame
 	|| window.msRequestAnimationFrame;
 
@@ -114,4 +116,4 @@ require(['Timeline', 'Util'], function(Timeline, U) {
     return window.raf(update);
   };
   return update(0);
-});
+})();
