@@ -1,6 +1,6 @@
 define(['./Util'], function(U) {
   var Bezier;
-  return Bezier = (function() {
+  Bezier = (function() {
     function Bezier(config) {
       U.extend(this, config);
       this.reset();
@@ -8,7 +8,6 @@ define(['./Util'], function(U) {
 
     Bezier.prototype.reset = function() {
       this._elapsed = 0;
-      this.done = this._elapsed >= this.duration;
       return this._targetsInitted = false;
     };
 
@@ -46,25 +45,18 @@ define(['./Util'], function(U) {
     };
 
     Bezier.prototype.update = function(delta) {
-      var target, _i, _len, _ref, _results;
+      var target, _i, _len, _ref;
+      this._elapsed += delta;
       if (this.done || this.disabled) {
         return;
       }
       if (!this._targetsInitted) {
         this._initTargets();
       }
-      this._elapsed += delta;
-      if (this._elapsed > this.duration) {
-        this._elapsed = this.duration;
-        return this.done = true;
-      } else {
-        _ref = this.targets;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          target = _ref[_i];
-          _results.push(this._move(target));
-        }
-        return _results;
+      _ref = this.targets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        this._move(target);
       }
     };
 
@@ -105,4 +97,10 @@ define(['./Util'], function(U) {
     return Bezier;
 
   })();
+  Object.defineProperty(Bezier.prototype, 'done', {
+    get: function() {
+      return this._elapsed >= this.duration;
+    }
+  });
+  return Bezier;
 });

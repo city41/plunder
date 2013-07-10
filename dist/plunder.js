@@ -524,7 +524,7 @@ define('Util',[],function() {
 
 define('Bezier',['./Util'], function(U) {
   var Bezier;
-  return Bezier = (function() {
+  Bezier = (function() {
     function Bezier(config) {
       U.extend(this, config);
       this.reset();
@@ -532,7 +532,6 @@ define('Bezier',['./Util'], function(U) {
 
     Bezier.prototype.reset = function() {
       this._elapsed = 0;
-      this.done = this._elapsed >= this.duration;
       return this._targetsInitted = false;
     };
 
@@ -570,25 +569,18 @@ define('Bezier',['./Util'], function(U) {
     };
 
     Bezier.prototype.update = function(delta) {
-      var target, _i, _len, _ref, _results;
+      var target, _i, _len, _ref;
+      this._elapsed += delta;
       if (this.done || this.disabled) {
         return;
       }
       if (!this._targetsInitted) {
         this._initTargets();
       }
-      this._elapsed += delta;
-      if (this._elapsed > this.duration) {
-        this._elapsed = this.duration;
-        return this.done = true;
-      } else {
-        _ref = this.targets;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          target = _ref[_i];
-          _results.push(this._move(target));
-        }
-        return _results;
+      _ref = this.targets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        this._move(target);
       }
     };
 
@@ -629,6 +621,12 @@ define('Bezier',['./Util'], function(U) {
     return Bezier;
 
   })();
+  Object.defineProperty(Bezier.prototype, 'done', {
+    get: function() {
+      return this._elapsed >= this.duration;
+    }
+  });
+  return Bezier;
 });
 
 define('Easing',[],function() {
@@ -897,7 +895,7 @@ define('Accessor',['./Util'], function(U) {
 define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
-  return Tween = (function() {
+  Tween = (function() {
     function Tween(config) {
       this.id = _idCounter++;
       U.extend(this, config);
@@ -908,7 +906,6 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
 
     Tween.prototype.reset = function() {
       this._elapsed = 0;
-      this.done = this._elapsed >= this.duration;
       return this._targetsInitted = false;
     };
 
@@ -932,18 +929,14 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
         this._initTargets();
       }
       this._elapsed += delta;
-      if (this._elapsed >= this.duration) {
-        this._elapsed = this.duration;
-        this.done = true;
+      if (this.done) {
+        this._finish();
       } else {
         _ref = this.targets;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
           this._tween(target);
         }
-      }
-      if (this.done) {
-        return this._finish();
       }
     };
 
@@ -1033,11 +1026,17 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
     return Tween;
 
   })();
+  Object.defineProperty(Tween.prototype, 'done', {
+    get: function() {
+      return this._elapsed >= this.duration;
+    }
+  });
+  return Tween;
 });
 
 define('Wait',['./Util'], function(U) {
   var Wait;
-  return Wait = (function() {
+  Wait = (function() {
     function Wait(config) {
       U.extend(this, config);
       if ((this.min != null) && (this.max != null) && this.min > this.max) {
@@ -1055,28 +1054,32 @@ define('Wait',['./Util'], function(U) {
 
     Wait.prototype.reset = function() {
       this.duration = this._specifiedDuration || U.rand(this.min, this.max);
-      this._elapsed = 0;
-      return this.done = this._elapsed >= this.duration;
+      return this._elapsed = 0;
     };
 
     Wait.prototype.update = function(delta) {
       if (this.done) {
         return;
       }
-      this._elapsed += delta;
-      return this.done = this._elapsed >= this.duration;
+      return this._elapsed += delta;
     };
 
     return Wait;
 
   })();
+  Object.defineProperty(Wait.prototype, 'done', {
+    get: function() {
+      return this._elapsed >= this.duration;
+    }
+  });
+  return Wait;
 });
 
 var __slice = [].slice;
 
 define('Repeat',["./Util"], function(U) {
   var Repeat;
-  return Repeat = (function() {
+  Repeat = (function() {
     function Repeat(count, children) {
       this.count = count;
       this.children = children != null ? children : [];
@@ -1116,7 +1119,6 @@ define('Repeat',["./Util"], function(U) {
     Repeat.prototype.update = function() {
       var args, child, curChild, _i, _len, _ref, _results;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      this.done = this._curCount >= this.count;
       if (this.done) {
         return;
       }
@@ -1127,7 +1129,6 @@ define('Repeat',["./Util"], function(U) {
         if (this._currentChild >= this.children.length) {
           this._currentChild = 0;
           ++this._curCount;
-          this.done = this._curCount >= this.count;
           if (!this.done) {
             _ref = this.children;
             _results = [];
@@ -1144,20 +1145,25 @@ define('Repeat',["./Util"], function(U) {
     return Repeat;
 
   })();
+  Object.defineProperty(Repeat.prototype, 'done', {
+    get: function() {
+      return this._curCount >= this.count;
+    }
+  });
+  return Repeat;
 });
 
 var __slice = [].slice;
 
 define('Together',[],function() {
   var Together;
-  return Together = (function() {
+  Together = (function() {
     function Together(children) {
       this.children = children != null ? children : [];
     }
 
     Together.prototype.reset = function() {
       var child, _i, _len, _ref, _results;
-      this.done = false;
       _ref = this.children;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1183,26 +1189,37 @@ define('Together',[],function() {
     };
 
     Together.prototype.update = function() {
-      var args, child, childNotDone, _i, _len, _ref;
+      var args, child, _i, _len, _ref, _results;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       if (this.done) {
         return;
       }
-      childNotDone = false;
       _ref = this.children;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         child = _ref[_i];
-        child.update.apply(child, args);
-        if (!child.done) {
-          childNotDone = true;
-        }
+        _results.push(child.update.apply(child, args));
       }
-      return this.done = !childNotDone;
+      return _results;
     };
 
     return Together;
 
   })();
+  Object.defineProperty(Together.prototype, 'done', {
+    get: function() {
+      var child, _i, _len, _ref;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
+        if (!child.done) {
+          return false;
+        }
+      }
+      return true;
+    }
+  });
+  return Together;
 });
 
 define('Invoke',['./Util'], function(U) {

@@ -11,18 +11,24 @@ define ['./Util'], (U) ->
       @reset()
 
     reverse: ->
-      # specifically keeping the same random between min/max
       new Wait
         duration: @duration
 
     reset: ->
       @duration = @_specifiedDuration or U.rand(@min, @max)
       @_elapsed = 0
-      @done = @_elapsed >= @duration
 
     update: (delta) ->
       return  if @done
       @_elapsed += delta
-      @done = @_elapsed >= @duration
+
+
+
+
+  Object.defineProperty Wait::, 'done', 
+    get: ->
+      @_elapsed >= @duration
+
+  return Wait
 
 
