@@ -59,34 +59,12 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, A) ->
 
     _finish: ->
       for target in @targets
-        finalValue = if @restoreAfter then @_getProperty(target, @_saveProperty) else @to
+        finalValue = if @restoreAfter then A.getProperty(target, @_saveProperty) else @to
         A.setProperty target, @property, finalValue
         A.deleteProperty target, @_saveProperty
 
-    _getProperty: (target, propertyPath) ->
-      paths = propertyPath.split(".")
-
-      target = target[path] for path in paths
-      return target
-
-    _setProperty: (target, propertyPath, value) ->
-      paths = propertyPath.split(".")
-
-      for i in [0...paths.length-1] by 1
-        target = target[paths[i]]
-
-      target[paths[paths.length-1]] = value
-
-    _deleteProperty: (target, propertyPath) ->
-      paths = propertyPath.split(".")
-
-      for i in [0...paths.length-1] by 1
-        target = target[paths[i]]
-
-      delete target[paths[paths.length-1]]
-
     _tween: (target) ->
-      curValue = @_getProperty(target, @property)
+      curValue = A.getProperty(target, @property)
 
       if U.isArray(curValue)
         for cell, i in curValue
@@ -95,7 +73,7 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, A) ->
 
       else if U.isNumber(curValue)
         tweenedValue = @_tweenValue(@_elapsed, @from, @to, @duration)
-        @_setProperty target, @property, tweenedValue
+        A.setProperty target, @property, tweenedValue
       else
         throw new Error("Tween can only operate on numbers or arrays of numbers")
 

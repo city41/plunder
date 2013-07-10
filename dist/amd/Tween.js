@@ -79,44 +79,16 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        finalValue = this.restoreAfter ? this._getProperty(target, this._saveProperty) : this.to;
+        finalValue = this.restoreAfter ? A.getProperty(target, this._saveProperty) : this.to;
         A.setProperty(target, this.property, finalValue);
         _results.push(A.deleteProperty(target, this._saveProperty));
       }
       return _results;
     };
 
-    Tween.prototype._getProperty = function(target, propertyPath) {
-      var path, paths, _i, _len;
-      paths = propertyPath.split(".");
-      for (_i = 0, _len = paths.length; _i < _len; _i++) {
-        path = paths[_i];
-        target = target[path];
-      }
-      return target;
-    };
-
-    Tween.prototype._setProperty = function(target, propertyPath, value) {
-      var i, paths, _i, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        target = target[paths[i]];
-      }
-      return target[paths[paths.length - 1]] = value;
-    };
-
-    Tween.prototype._deleteProperty = function(target, propertyPath) {
-      var i, paths, _i, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        target = target[paths[i]];
-      }
-      return delete target[paths[paths.length - 1]];
-    };
-
     Tween.prototype._tween = function(target) {
       var cell, curValue, from, i, tweenedValue, _i, _len, _results;
-      curValue = this._getProperty(target, this.property);
+      curValue = A.getProperty(target, this.property);
       if (U.isArray(curValue)) {
         _results = [];
         for (i = _i = 0, _len = curValue.length; _i < _len; i = ++_i) {
@@ -127,7 +99,7 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
         return _results;
       } else if (U.isNumber(curValue)) {
         tweenedValue = this._tweenValue(this._elapsed, this.from, this.to, this.duration);
-        return this._setProperty(target, this.property, tweenedValue);
+        return A.setProperty(target, this.property, tweenedValue);
       } else {
         throw new Error("Tween can only operate on numbers or arrays of numbers");
       }
