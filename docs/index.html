@@ -296,7 +296,7 @@ timeline.tween({
 </code></pre>
 				<p>
 					Not specifying a target and implicitly using owner is the most common use case. You can specify targets manually, all <tt>Timeline</tt>
-					animation methods accept a <tt>target</tt> or <tt>targets</tt> property to specify what object to run the animation against:
+					animation methods accept a <tt>target</tt> property to specify what object(s) to run the animation against:
 				</p>
 <pre><code>
 var entity = new MyGameEntity();
@@ -312,22 +312,18 @@ timeline.tween({
 
 // this will tween entityA and entityB
 timeline.tween({
-	targets: [entityA, entityB],
+	target: [entityA, entityB],
 	property: 'myProperty',
 	from: 10,
 	to: 100
 });
 </code></pre>
 				<p>
-					It doesn't really matter if you use <tt>targets</tt> or <tt>target</tt>. It's likely <tt>targets</tt> will be
-					removed at some point.
-				</p>
-				<p>
 					When you use an array of entities as targets, it's functionally no different from individually calling an animation against each object:
 				</p>
 <pre><code>
 // this...
-timeline.tween({ targets: [entityA, entityB] });
+timeline.tween({ target: [entityA, entityB] });
 
 // is equivalent to this...
 timeline.tween({ target: entityA });
