@@ -76,7 +76,7 @@ module.exports = (grunt) ->
     watch:
       sandbox:
         files: ["sandbox/**/*.coffee", "src/**/*.coffee"]
-        tasks: ["coffee:sandbox", "coffee:src"]
+        tasks: ["sandbox"]
 
 
   # These plugins provide necessary tasks.
@@ -87,7 +87,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-requirejs"
 
   # Default task.
-  grunt.registerTask "default", ["jasmine", "clean"]
+  grunt.registerTask "default", ["spec"]
   grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
   grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
