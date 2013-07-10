@@ -1,9 +1,9 @@
 "use strict"
 module.exports = (grunt) ->
-  
+
   # Project configuration.
   grunt.initConfig
-    
+
     # Metadata.
     pkg:
       name: "plunder"
@@ -13,7 +13,7 @@ module.exports = (grunt) ->
         name: "Matt Greer"
 
     banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" + "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" + "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n"
-    
+
 
     # Task configuration.
     coffee:
@@ -49,10 +49,13 @@ module.exports = (grunt) ->
       plunder:
         options:
           baseUrl: "compiledjs"
-          out: "built/<%= pkg.name %>.<%= pkg.version %>.min.js"
-          name: "Timeline"
+          out: "dist/<%= pkg.name %>.<%= pkg.version %>.js"
+          name: "main"
           almond: true
-          wrap: false  # todo, get this to true, currently breaks main-example
+          optimize: "none"
+          wrap:
+            startFile: "support/start.frag"
+            endFile: "support/end.frag"
 
     jasmine:
       src: "compiledjs/**/*.js"
@@ -64,13 +67,13 @@ module.exports = (grunt) ->
           requireConfig:
             baseUrl: "compiledjs/"
         helpers: "specs/helpers/**/*.js"
-        
+
     watch:
       sandbox:
         files: ["sandbox/**/*.coffee", "src/**/*.coffee"]
         tasks: ["coffee:sandbox", "coffee:src"]
 
-  
+
   # These plugins provide necessary tasks.
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-concat"
@@ -78,7 +81,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-requirejs"
-  
+
   # Default task.
   grunt.registerTask "default", ["jasmine", "clean", "concat", "uglify"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
