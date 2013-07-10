@@ -1,4 +1,4 @@
-require ['Util'], (U) ->
+require ["Util"], (U) ->
   describe "Util", ->
 
     describe "#toArray", ->
@@ -100,7 +100,7 @@ require ['Util'], (U) ->
         expect(U.isArray(12)).toBeFalsy()
         expect(U.isArray("not an array")).toBeFalsy()
         expect(U.isArray({})).toBeFalsy()
-        expect(U.isArray({'0': 1, '1': 8, '2': 5})).toBeFalsy()
+        expect(U.isArray({"0": 1, "1": 8, "2": 5})).toBeFalsy()
 
     describe "#isEmpty", ->
       it "should say an empty array is empty", ->

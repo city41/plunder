@@ -1,4 +1,4 @@
-define ['./Easing', './Util'], (Easing, U) ->
+define ['./Easing', './Util', './Accessor'], (Easing, U, A) ->
   _idCounter = 0
 
   class Tween
@@ -24,12 +24,12 @@ define ['./Easing', './Util'], (Easing, U) ->
 
     _initTargets: ->
       for target in @targets
-        curValue = @_getProperty(target, @property)
+        curValue = A.getProperty(target, @property)
 
         if U.isArray(curValue)
-          @_setProperty target, @_saveProperty, curValue.slice(0)
+          A.setProperty target, @_saveProperty, curValue.slice(0)
         else
-          @_setProperty target, @_saveProperty, curValue
+          A.setProperty target, @_saveProperty, curValue
 
         value = if @from? then @from else target[@property]
 
@@ -37,7 +37,7 @@ define ['./Easing', './Util'], (Easing, U) ->
           throw new Error("Tween: mismatched types between from/to and targets current value")
 
         value = value.slice(0)  if U.isArray(value)
-        @_setProperty target, @property, value
+        A.setProperty target, @property, value
       @_targetsInitted = true
 
     update: (delta) ->
@@ -60,8 +60,8 @@ define ['./Easing', './Util'], (Easing, U) ->
     _finish: ->
       for target in @targets
         finalValue = if @restoreAfter then @_getProperty(target, @_saveProperty) else @to
-        @_setProperty target, @property, finalValue
-        @_deleteProperty target, @_saveProperty
+        A.setProperty target, @property, finalValue
+        A.deleteProperty target, @_saveProperty
 
     _getProperty: (target, propertyPath) ->
       paths = propertyPath.split(".")

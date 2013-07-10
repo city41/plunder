@@ -1,11 +1,10 @@
-define(['./Easing', './Util'], function(Easing, U) {
+define(['./Easing', './Util', './Accessor'], function(Easing, U, A) {
   var Tween, _idCounter;
   _idCounter = 0;
   return Tween = (function() {
     function Tween(config) {
       U.extend(this, config);
       this._saveProperty = this.property + "_save_" + (_idCounter++);
-      this._nonJitteredProperty = this.property + "_nonJittered_" + (_idCounter++);
       this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
       this.reset();
     }
@@ -32,11 +31,11 @@ define(['./Easing', './Util'], function(Easing, U) {
       _ref = this.targets;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        curValue = this._getProperty(target, this.property);
+        curValue = A.getProperty(target, this.property);
         if (U.isArray(curValue)) {
-          this._setProperty(target, this._saveProperty, curValue.slice(0));
+          A.setProperty(target, this._saveProperty, curValue.slice(0));
         } else {
-          this._setProperty(target, this._saveProperty, curValue);
+          A.setProperty(target, this._saveProperty, curValue);
         }
         value = this.from != null ? this.from : target[this.property];
         if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
@@ -45,7 +44,7 @@ define(['./Easing', './Util'], function(Easing, U) {
         if (U.isArray(value)) {
           value = value.slice(0);
         }
-        this._setProperty(target, this.property, value);
+        A.setProperty(target, this.property, value);
       }
       return this._targetsInitted = true;
     };
@@ -81,9 +80,8 @@ define(['./Easing', './Util'], function(Easing, U) {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         finalValue = this.restoreAfter ? this._getProperty(target, this._saveProperty) : this.to;
-        this._setProperty(target, this.property, finalValue);
-        this._deleteProperty(target, this._saveProperty);
-        _results.push(this._deleteProperty(target, this._nonJitteredProperty));
+        A.setProperty(target, this.property, finalValue);
+        _results.push(A.deleteProperty(target, this._saveProperty));
       }
       return _results;
     };
@@ -138,9 +136,6 @@ define(['./Easing', './Util'], function(Easing, U) {
     Tween.prototype._tweenValue = function(elapsed, from, to, duration) {
       var position;
       position = this.easeFunc(elapsed, from, to - from, duration);
-      if (U.isNumber(this.jitterMin)) {
-        position += U.rand(this.jitterMin, this.jitterMax || 0);
-      }
       return position;
     };
 
