@@ -1,14 +1,16 @@
-require ['Timeline', 'Util'], (Timeline, U) ->
+require ['../dist/plunder'], (plunder) ->
 
+  Timeline = plunder.Timeline
+  U = plunder.Util
   #
   # Sandbox
   # =======
-  # This is a minimal implemenation of Plunder, it gives an idea 
+  # This is a minimal implemenation of Plunder, it gives an idea
   # of what games/engines will need to do to use Plunder
   # and provides a testing ground for playing with Plunder
   #
-  # Most of the implementation here will be hidden to games via 
-  # plugins or what not, allowing Plunder and the game engine to 
+  # Most of the implementation here will be hidden to games via
+  # plugins or what not, allowing Plunder and the game engine to
   # work together with minimal effort from the developer
   #
 

@@ -1,4 +1,4 @@
-define ["Util"], (U) ->
+define ["./Util"], (U) ->
   class Repeat
     constructor: (@count, @children=[]) ->
       @_currentChild = 0
@@ -13,14 +13,14 @@ define ["Util"], (U) ->
 
     reverse: ->
       # TODO: reversing the array is not always the correct thing to do
-      
+
       reversedChildren = (child.reverse() for child in @children)
       new Repeat @count, reversedChildren.reverse()
 
     update: (args...) ->
       @done = @_curCount >= @count
       return  if @done
-      
+
       curChild = @children[@_currentChild]
 
       curChild.update.apply curChild, args
