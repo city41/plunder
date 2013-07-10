@@ -376,10 +376,14 @@ timeline.tween({
 								<li><tt>to</tt> - the ending position of the object, ie <tt>{ x: 100, y: 200 }</tt></li>								
 								<li><tt>[target]</tt> - the object(s) to operate on</li>
 								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+								<li><tt>[easingX]</tt> - the easing equation to use for movement in the X direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
+								<li><tt>[easingY]</tt> - the easing equation to use for movement in the Y direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
 							</ul>
 						</li>
 					</ul>
-					Moves an object from one location to another, over the allotted duration and using the specified easing. 
+					Moves an object from one location to another, over the allotted duration and using the specified easing. X and Y movement
+					can have their own easing equations, by using <tt>easingX</tt> and/or <tt>easingY</tt>. This is pretty unusual though, and 
+					may be removed.
 				</p>
 <pre><code>
 timeline.move({
