@@ -16,12 +16,3 @@ define ['./Util'], (U) ->
 
       obj[U.last(@paths)] = value
 
-    del: () ->
-      obj = @obj
-      for i in [0...@paths.length-1] by 1
-        return if not obj[@paths[i]]
-
-        obj = obj[@paths[i]]
-
-      delete obj[U.last(@paths)]
-

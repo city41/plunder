@@ -45,23 +45,3 @@ require ["Accessor"], (Accessor) ->
         accessor.set(6)
         expect(@obj.nested.nope.not).toBe 6
 
-    describe "#del", ->
-      it "should delete immediate properties", ->
-        accessor = new Accessor(@obj, "first")
-        accessor.del()
-        expect(@obj).not.toHaveProperty("first")
-        expect(@obj).toHaveProperty("nested")
-
-      it "should delete nested properties", ->
-        accessor = new Accessor(@obj, "nested.three")
-        accessor.del()
-        expect(@obj.nested).not.toHaveProperty("three")
-
-      it "should quietly ignore non-existant paths", ->
-        accessor = new Accessor(@obj, "nested.nope.not")
-        fn = ->
-          accessor.del()
-
-        expect(fn).not.toThrow()
-
-

@@ -877,18 +877,6 @@ define('Accessor',['./Util'], function(U) {
       return obj[U.last(this.paths)] = value;
     };
 
-    Accessor.prototype.del = function() {
-      var i, obj, _i, _ref;
-      obj = this.obj;
-      for (i = _i = 0, _ref = this.paths.length - 1; _i < _ref; i = _i += 1) {
-        if (!obj[this.paths[i]]) {
-          return;
-        }
-        obj = obj[this.paths[i]];
-      }
-      return delete obj[U.last(this.paths)];
-    };
-
     return Accessor;
 
   })();
@@ -901,7 +889,8 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
     function Tween(config) {
       this.id = _idCounter++;
       U.extend(this, config);
-      this._saveProperty = "" + this.property + "_save_" + this.id;
+      this._saveProperty = "_plunder_tween_save_" + this.id;
+      this._accessorProp = "__accessorProp" + this.id;
       this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
       this.reset();
     }
@@ -952,14 +941,9 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
       _ref = this.targets;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        target["__prop" + this.id] = new Accessor(target, this.property);
-        target["__save" + this.id] = new Accessor(target, this._saveProperty);
+        target[this._accessorProp] = new Accessor(target, this.property);
         curValue = this._get(target);
-        if (U.isArray(curValue)) {
-          this._set(target, curValue.slice(0), "save");
-        } else {
-          this._set(target, curValue, "save");
-        }
+        target[this._saveProperty] = U.isArray(curValue) ? curValue.slice(0) : curValue;
         value = (_ref1 = this.from) != null ? _ref1 : curValue;
         if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
           throw new Error("Tween: mismatched types between from/to and targets current value");
@@ -978,7 +962,7 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        finalValue = this.restoreAfter ? this._get(target, "save") : this.to;
+        finalValue = this.restoreAfter ? target[this._saveProperty] : this.to;
         this._set(target, finalValue);
         _results.push(this._del(target));
       }
@@ -988,7 +972,7 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
     Tween.prototype._tween = function(target) {
       var cell, curValue, from, i, tweenedValue, _i, _len, _ref, _results;
       curValue = this._get(target);
-      from = (_ref = this.from) != null ? _ref : this._get(target, "save");
+      from = (_ref = this.from) != null ? _ref : target[this._saveProperty];
       if (U.isArray(curValue)) {
         _results = [];
         for (i = _i = 0, _len = curValue.length; _i < _len; i = ++_i) {
@@ -1010,24 +994,17 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
       return position;
     };
 
-    Tween.prototype._get = function(target, type) {
-      if (type == null) {
-        type = "prop";
-      }
-      return target["__" + type + this.id].get();
+    Tween.prototype._get = function(target) {
+      return target[this._accessorProp].get();
     };
 
-    Tween.prototype._set = function(target, value, type) {
-      if (type == null) {
-        type = "prop";
-      }
-      return target["__" + type + this.id].set(value);
+    Tween.prototype._set = function(target, value) {
+      return target[this._accessorProp].set(value);
     };
 
     Tween.prototype._del = function(target) {
-      target["__save" + this.id].del();
-      delete target["__save" + this.id];
-      return delete target["__prop" + this.id];
+      delete target[this._saveProperty];
+      return delete target[this._accessorProp];
     };
 
     return Tween;

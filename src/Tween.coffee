@@ -5,7 +5,9 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
     constructor: (config) ->
       @id = _idCounter++
       U.extend this, config
-      @_saveProperty = "#{@property}_save_#{@id}"
+      @_saveProperty = "_plunder_tween_save_#{@id}"
+      @_accessorProp = "__accessorProp#{@id}"
+
       @easeFunc = Easing[@easing || "linearTween"] || Easing.linearTween
       @reset()
 
@@ -42,15 +44,10 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
 
     _initTargets: ->
       for target in @targets
-        target["__prop#{@id}"] = new Accessor(target, @property)
-        target["__save#{@id}"] = new Accessor(target, @_saveProperty)
+        target[@_accessorProp] = new Accessor(target, @property)
         curValue = @_get(target)
 
-        if U.isArray(curValue)
-          @_set(target, curValue.slice(0), "save")
-        else
-          @_set(target, curValue, "save")
-
+        target[@_saveProperty] = if U.isArray(curValue) then curValue.slice(0) else curValue
         value = @from ? curValue
 
         if curValue? && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, @to))
@@ -63,13 +60,13 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
 
     _finish: ->
       for target in @targets
-        finalValue = if @restoreAfter then @_get(target, "save") else @to
+        finalValue = if @restoreAfter then target[@_saveProperty] else @to
         @_set(target, finalValue)
         @_del(target)
 
     _tween: (target) ->
       curValue = @_get(target)
-      from = @from ? @_get(target, "save")
+      from = @from ? target[@_saveProperty]
 
       if U.isArray(curValue)
         for cell, i in curValue
@@ -85,14 +82,13 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
       position = @easeFunc(elapsed, from, to - from, duration)
       return position
 
-    _get: (target, type="prop") ->
-      target["__#{type}#{@id}"].get()
+    _get: (target) ->
+      target[@_accessorProp].get()
 
-    _set: (target, value, type="prop") ->
-      target["__#{type}#{@id}"].set(value)
+    _set: (target, value) ->
+      target[@_accessorProp].set(value)
 
     _del: (target) ->
-      target["__save#{@id}"].del()
-      delete target["__save#{@id}"]
-      delete target["__prop#{@id}"]
+      delete target[@_saveProperty]
+      delete target[@_accessorProp]
 

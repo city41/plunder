@@ -29,18 +29,6 @@ define(['./Util'], function(U) {
       return obj[U.last(this.paths)] = value;
     };
 
-    Accessor.prototype.del = function() {
-      var i, obj, _i, _ref;
-      obj = this.obj;
-      for (i = _i = 0, _ref = this.paths.length - 1; _i < _ref; i = _i += 1) {
-        if (!obj[this.paths[i]]) {
-          return;
-        }
-        obj = obj[this.paths[i]];
-      }
-      return delete obj[U.last(this.paths)];
-    };
-
     return Accessor;
 
   })();
