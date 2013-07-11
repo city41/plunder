@@ -6,6 +6,10 @@ require(['../dist/plunder'], function(plunder) {
     function Entity() {
       this.timeline = new Timeline(this);
       this.anis = [];
+      this.pos = {
+        x: 10,
+        y: 10
+      };
       this.x = 10;
       this.y = 10;
       this.alpha = 1;
@@ -55,6 +59,17 @@ require(['../dist/plunder'], function(plunder) {
         });
         tl.wait(1000);
         return tl.reverse(t);
+      });
+    };
+
+    Entity.prototype.nestedTween = function() {
+      var tl;
+      this.usePos = true;
+      tl = this.timeline;
+      return tl.tween({
+        property: 'pos.x',
+        to: 100,
+        duration: 2000
       });
     };
 
@@ -116,7 +131,11 @@ require(['../dist/plunder'], function(plunder) {
     Entity.prototype.draw = function(context) {
       context.save();
       context.fillStyle = "rgba(" + (this.color[0] | 0) + ", " + (this.color[1] | 0) + ", " + (this.color[2] | 0) + ", " + this.color[3] + ")";
-      context.translate(this.x, this.y);
+      if (this.usePos) {
+        context.translate(this.pos.x, this.pos.y);
+      } else {
+        context.translate(this.x, this.y);
+      }
       if (this.scale) {
         context.scale(this.scale, this.scale);
       }
@@ -131,7 +150,7 @@ require(['../dist/plunder'], function(plunder) {
 
   })();
   entity = new Entity();
-  entity.bezier();
+  entity.nestedTween();
   context = document.getElementById('canvas').getContext('2d');
   lastTimestamp = null;
   update = function(ts) {

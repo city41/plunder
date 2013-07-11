@@ -21,6 +21,10 @@ require ['../dist/plunder'], (plunder) ->
     constructor: ->
       @timeline = new Timeline(this)
       @anis = []
+      @pos =
+        x: 10
+        y: 10
+
       @x = 10
       @y = 10
       @alpha = 1
@@ -52,6 +56,14 @@ require ['../dist/plunder'], (plunder) ->
             ]
         tl.wait 1000
         tl.reverse(t)
+
+    nestedTween: ->
+      @usePos = true
+      tl = @timeline
+      tl.tween
+        property: 'pos.x'
+        to: 100
+        duration: 2000
 
     # have the entity run a standard animation
     # this is the same animation currently featured on Plunder's website
@@ -99,7 +111,11 @@ require ['../dist/plunder'], (plunder) ->
 
       context.fillStyle = "rgba(#{@color[0] | 0}, #{@color[1] | 0}, #{@color[2] | 0}, #{@color[3]})"
 
-      context.translate(@x, @y)
+      if @usePos
+        context.translate(@pos.x, @pos.y)
+      else
+        context.translate(@x, @y)
+
       context.scale(@scale, @scale) if @scale
       context.rotate(U.degreesToRadians(@angle)) if @angle
       context.fillRect(-5, -5, 10, 10)
@@ -114,7 +130,8 @@ require ['../dist/plunder'], (plunder) ->
   #
 
   # entity.standard()
-  entity.bezier()
+  # entity.bezier()
+  entity.nestedTween()
 
 
   #

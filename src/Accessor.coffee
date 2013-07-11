@@ -1,18 +1,20 @@
 define ['./Util'], (U) ->
   class Accessor
-    constructor: (@obj, propertyPath) ->
-      @paths = propertyPath.split(".")
+    constructor: (rootObj, propertyPath) ->
+      paths = propertyPath.split(".")
+      @_leafPath = U.last(paths)
+      @_leafObj = @_getLeaf(rootObj, paths)
 
     get: () ->
-      obj = @obj
-      obj = obj[path] for path in @paths
-      return obj
+      @_leafObj[@_leafPath]
 
     set: (value) ->
-      obj = @obj
-      for i in [0...@paths.length-1] by 1
-        obj[@paths[i]] ?= {}
-        obj = obj[@paths[i]]
+      @_leafObj[@_leafPath] = value
 
-      obj[U.last(@paths)] = value
+    _getLeaf: (obj, paths) ->
+      for i in [0...paths.length-1]
+        obj[paths[i]] ?= {}
+        obj = obj[paths[i]]
+
+      return obj
 
