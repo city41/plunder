@@ -11,6 +11,7 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
 
     reset: ->
       @_elapsed = 0
+      @done = @_elapsed >= @duration
       @_targetsInitted = false
 
     reverse: ->
@@ -25,15 +26,19 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
     update: (delta) ->
       return  if @done or @disabled
 
+      # it's important for larger sequencing to only init targets once the animation is running
       @_initTargets() if not @_targetsInitted
 
       @_elapsed += delta
 
-      if @done
-        @_finish()
+      if @_elapsed >= @duration
+        @_elapsed = @duration
+        @done = true
       else
         @_tween target for target in @targets
-      return
+
+      if @done
+        @_finish()
 
     _initTargets: ->
       for target in @targets
@@ -90,13 +95,4 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
       target["__save#{@id}"].del()
       delete target["__save#{@id}"]
       delete target["__prop#{@id}"]
-
-
-
-
-  Object.defineProperty Tween::, 'done',
-    get: ->
-      @_elapsed >= @duration
-
-  return Tween
 

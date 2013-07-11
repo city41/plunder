@@ -18,6 +18,7 @@ define ["./Util"], (U) ->
       new Repeat @count, reversedChildren.reverse()
 
     update: (args...) ->
+      @done = @_curCount >= @count
       return  if @done
 
       curChild = @children[@_currentChild]
@@ -26,20 +27,13 @@ define ["./Util"], (U) ->
 
       if curChild.done
         ++@_currentChild
-
         if @_currentChild >= @children.length
           @_currentChild = 0
+
           ++@_curCount
+          @done = @_curCount >= @count
 
           if not @done
             child.reset() for child in @children
 
-
-
-
-  Object.defineProperty Repeat::, 'done',
-    get: ->
-      @_curCount >= @count
-
-  return Repeat
 

@@ -2,7 +2,7 @@ var __slice = [].slice;
 
 define(["./Util"], function(U) {
   var Repeat;
-  Repeat = (function() {
+  return Repeat = (function() {
     function Repeat(count, children) {
       this.count = count;
       this.children = children != null ? children : [];
@@ -42,6 +42,7 @@ define(["./Util"], function(U) {
     Repeat.prototype.update = function() {
       var args, child, curChild, _i, _len, _ref, _results;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      this.done = this._curCount >= this.count;
       if (this.done) {
         return;
       }
@@ -52,6 +53,7 @@ define(["./Util"], function(U) {
         if (this._currentChild >= this.children.length) {
           this._currentChild = 0;
           ++this._curCount;
+          this.done = this._curCount >= this.count;
           if (!this.done) {
             _ref = this.children;
             _results = [];
@@ -68,10 +70,4 @@ define(["./Util"], function(U) {
     return Repeat;
 
   })();
-  Object.defineProperty(Repeat.prototype, 'done', {
-    get: function() {
-      return this._curCount >= this.count;
-    }
-  });
-  return Repeat;
 });

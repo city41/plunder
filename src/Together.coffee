@@ -4,6 +4,7 @@ define ->
     constructor: (@children=[]) ->
 
     reset: ->
+      @done = false
       for child in @children
         child.reset()
 
@@ -14,17 +15,11 @@ define ->
     update: (args...)->
       return  if @done
 
+      childNotDone = false
+
       for child in @children
         child.update.apply child, args
+        childNotDone = true unless child.done
 
-
-
-  Object.defineProperty Together::, 'done',
-    get: ->
-      for child in @children
-        return false if not child.done
-      return true
-
-  return Together
-
+      @done = not childNotDone
 

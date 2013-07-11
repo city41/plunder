@@ -1,7 +1,7 @@
 define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
-  Tween = (function() {
+  return Tween = (function() {
     function Tween(config) {
       this.id = _idCounter++;
       U.extend(this, config);
@@ -12,6 +12,7 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
 
     Tween.prototype.reset = function() {
       this._elapsed = 0;
+      this.done = this._elapsed >= this.duration;
       return this._targetsInitted = false;
     };
 
@@ -35,14 +36,18 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
         this._initTargets();
       }
       this._elapsed += delta;
-      if (this.done) {
-        this._finish();
+      if (this._elapsed >= this.duration) {
+        this._elapsed = this.duration;
+        this.done = true;
       } else {
         _ref = this.targets;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
           this._tween(target);
         }
+      }
+      if (this.done) {
+        return this._finish();
       }
     };
 
@@ -132,10 +137,4 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
     return Tween;
 
   })();
-  Object.defineProperty(Tween.prototype, 'done', {
-    get: function() {
-      return this._elapsed >= this.duration;
-    }
-  });
-  return Tween;
 });

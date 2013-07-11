@@ -9,6 +9,7 @@ define ['./Util'], (U) ->
 
     reset: ->
       @_elapsed = 0
+      @done = @_elapsed >= @duration
       @_targetsInitted = false
 
     reverse: ->
@@ -38,16 +39,21 @@ define ['./Util'], (U) ->
       @_targetsInitted = true
 
     update: (delta) ->
-      @_elapsed += delta
       return if @done or @disabled
 
       @_initTargets() if not @_targetsInitted
-      @_move target for target in @targets
-      return
+
+      @_elapsed += delta
+
+      if @_elapsed > @duration
+        @_elapsed = @duration
+        @done = true
+      else
+        @_move target for target in @targets
 
 
     _move: (target) ->
-      # TODO: support more than the first index
+      # TODO: suppoert more than the first index
 
       percent = @_elapsed / @duration
       { x, y } = @_computeBezier(0, percent)
@@ -85,13 +91,4 @@ define ['./Util'], (U) ->
 
       return { x, y }
 
-
-
-
-
-  Object.defineProperty Bezier::, 'done',
-    get: ->
-      @_elapsed >= @duration
-  
-  return Bezier
 

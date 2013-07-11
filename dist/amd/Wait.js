@@ -1,6 +1,6 @@
 define(['./Util'], function(U) {
   var Wait;
-  Wait = (function() {
+  return Wait = (function() {
     function Wait(config) {
       U.extend(this, config);
       if ((this.min != null) && (this.max != null) && this.min > this.max) {
@@ -18,23 +18,19 @@ define(['./Util'], function(U) {
 
     Wait.prototype.reset = function() {
       this.duration = this._specifiedDuration || U.rand(this.min, this.max);
-      return this._elapsed = 0;
+      this._elapsed = 0;
+      return this.done = this._elapsed >= this.duration;
     };
 
     Wait.prototype.update = function(delta) {
       if (this.done) {
         return;
       }
-      return this._elapsed += delta;
+      this._elapsed += delta;
+      return this.done = this._elapsed >= this.duration;
     };
 
     return Wait;
 
   })();
-  Object.defineProperty(Wait.prototype, 'done', {
-    get: function() {
-      return this._elapsed >= this.duration;
-    }
-  });
-  return Wait;
 });

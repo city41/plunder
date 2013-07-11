@@ -2,13 +2,14 @@ var __slice = [].slice;
 
 define(function() {
   var Together;
-  Together = (function() {
+  return Together = (function() {
     function Together(children) {
       this.children = children != null ? children : [];
     }
 
     Together.prototype.reset = function() {
       var child, _i, _len, _ref, _results;
+      this.done = false;
       _ref = this.children;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -34,35 +35,24 @@ define(function() {
     };
 
     Together.prototype.update = function() {
-      var args, child, _i, _len, _ref, _results;
+      var args, child, childNotDone, _i, _len, _ref;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       if (this.done) {
         return;
       }
+      childNotDone = false;
       _ref = this.children;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         child = _ref[_i];
-        _results.push(child.update.apply(child, args));
+        child.update.apply(child, args);
+        if (!child.done) {
+          childNotDone = true;
+        }
       }
-      return _results;
+      return this.done = !childNotDone;
     };
 
     return Together;
 
   })();
-  Object.defineProperty(Together.prototype, 'done', {
-    get: function() {
-      var child, _i, _len, _ref;
-      _ref = this.children;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        child = _ref[_i];
-        if (!child.done) {
-          return false;
-        }
-      }
-      return true;
-    }
-  });
-  return Together;
 });
