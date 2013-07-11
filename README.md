@@ -26,11 +26,12 @@ Just a canvas and one entity that Plunder is manipulating. There are a few canne
 in the entity. You can uncomment the one you want to see run
 
 ```
-# grunt.standard()
-grunt.bezier()
+# entity.standard()
+# entity.bezier()
+entity.nestedTween()
 ```
 
-and those methods, `standard()`, `bezier()`, and `nestedProp` are decent intros to how Plunder works.
+and those methods, `standard()`, `bezier()`, and `nestedTween` are decent intros to how Plunder works.
 
 ## Documentation
 
