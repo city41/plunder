@@ -339,7 +339,7 @@ timeline.tween({ target: entityB });
 							<ul>
 								<li><tt>property</tt> - the property on the target to tween, can be either a number or an array of numbers</li>
 								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>from</tt> - the value to start the tween at</li>
+								<li><tt>[from]</tt> - the value to start the tween at. If omitted, the current value of the target's property is used instead.
 								<li><tt>to</tt> - the value to end the tween at</li>
 								<li><tt>[target]</tt> - the object(s) to operate on</li>
 								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
@@ -357,7 +357,19 @@ timeline.tween({
 	to: 100,
 	duration: 2000,
 	easing: 'easeInQuad'
+});
+
+// this will tween from 3 to 100, since the from option was left out
+var target = { x: 3 };
+timeline.tween({
+        target: x,
+	property: 'x',
+	to: 100,
+	duration: 2000,
+	easing: 'easeInQuad'
 });</code></pre>
+
+
 				<p>
 					<i>Note: <tt>tween</tt> supports nested properties. Specifying a property as <tt>'pos.x'</tt> will do the right thing and tween the property on the child object</i>
 				</p>
