@@ -71,6 +71,8 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         tween.update(tween.duration + 10)
         expect(target.foo.bar).toBe 10
 
+          
+
       it "should update each element of the array", ->
         originalValue = [12,13,14]
         { tween, target } = getArrayTween({}, originalValue)
@@ -138,6 +140,14 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
           expect(target.foo[0]).toEqual @easedValue
           expect(target.foo[1]).toEqual @easedValue
           expect(target.foo[2]).toEqual @easedValue
+
+        it "should not require from", ->
+          { tween, target } = getNoFromTween
+            easing: @easingFunc
+
+          tween.update 100
+
+          expect(target.foo).toEqual @easedValue
 
       describe '#reset', ->
         it 'should not change the property', ->
