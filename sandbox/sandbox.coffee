@@ -88,11 +88,11 @@ require ['../dist/plunder'], (plunder) ->
 
     # this method is required by Plunder, an ani
     # is something like tween, bezier, scale, etc
-    addAni: (ani) ->
+    addPlunderAnimation: (ani) ->
       @anis.push(ani)
 
     # also required by Plunder, but so far not really used
-    clearAnis: ->
+    clearPlunderAnimations: ->
       @anis = []
 
     # also required by Plunder, update the anis in each run of the

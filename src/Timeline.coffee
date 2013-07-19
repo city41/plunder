@@ -53,7 +53,7 @@ define [
 
     _pushAnimation: (ani) ->
       if @_buildStack.length is 0
-        @owner.addAni ani
+        @owner.addPlunderAnimation ani
       else
         @_buildStack[@_buildStack.length - 1].children.push ani
 
@@ -143,5 +143,5 @@ define [
     ## Animation maintenance
 
     stop: ->
-      @owner.clearAnis()
+      @owner.clearPlunderAnimations()
 

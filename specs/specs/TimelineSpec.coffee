@@ -1,13 +1,11 @@
 require ["Timeline", "Tween", "Repeat", "Easing"], (Timeline, Tween, Repeat, Easing) ->
   describe "Timeline", ->
     getOwner = ->
-      {
-        anis: [],
-        addAni: (ani) ->
-          @anis.push(ani)
-        clearAnis: ->
-          @anis = []
-      }
+      anis: [],
+      addPlunderAnimation: (ani) ->
+        @anis.push(ani)
+      clearPlunderAnimations: ->
+        @anis = []
 
     beforeEach ->
       @owner = getOwner()

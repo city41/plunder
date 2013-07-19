@@ -9,17 +9,15 @@ ig.module("plugins.plunder-entity")
       @parent x, y, settings
 
     update: ->
-      @parent()
-
       for ani in @anis
         ani.update ig.system.tick
-      # avoid creation of results array, has to be a better way...
-      return
 
-    addAni: (ani) ->
+      @parent()
+
+    addPlunderAnimation: (ani) ->
       @anis.push ani
 
-    clearAnis: ->
+    clearPlunderAnimations: ->
       @anis = []
 
     draw: ->

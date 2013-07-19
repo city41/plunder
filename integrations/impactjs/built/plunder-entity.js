@@ -7,17 +7,17 @@ ig.module("plugins.plunder-entity").requires("impact.entity").defines(function()
     },
     update: function() {
       var ani, _i, _len, _ref;
-      this.parent();
       _ref = this.anis;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         ani = _ref[_i];
         ani.update(ig.system.tick);
       }
+      return this.parent();
     },
-    addAni: function(ani) {
+    addPlunderAnimation: function(ani) {
       return this.anis.push(ani);
     },
-    clearAnis: function() {
+    clearPlunderAnimations: function() {
       return this.anis = [];
     },
     draw: function() {

@@ -1268,7 +1268,7 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
 
     Timeline.prototype._pushAnimation = function(ani) {
       if (this._buildStack.length === 0) {
-        this.owner.addAni(ani);
+        this.owner.addPlunderAnimation(ani);
       } else {
         this._buildStack[this._buildStack.length - 1].children.push(ani);
       }
@@ -1405,7 +1405,7 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
     };
 
     Timeline.prototype.stop = function() {
-      return this.owner.clearAnis();
+      return this.owner.clearPlunderAnimations();
     };
 
     return Timeline;

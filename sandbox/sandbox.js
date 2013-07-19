@@ -109,11 +109,11 @@ require(['../dist/plunder'], function(plunder) {
       });
     };
 
-    Entity.prototype.addAni = function(ani) {
+    Entity.prototype.addPlunderAnimation = function(ani) {
       return this.anis.push(ani);
     };
 
-    Entity.prototype.clearAnis = function() {
+    Entity.prototype.clearPlunderAnimations = function() {
       return this.anis = [];
     };
 
