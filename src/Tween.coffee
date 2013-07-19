@@ -1,4 +1,4 @@
-define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
+define ['./Easie', './Util', './Accessor'], (Easie, U, Accessor) ->
   _idCounter = 0
 
   class Tween
@@ -8,7 +8,7 @@ define ['./Easing', './Util', './Accessor'], (Easing, U, Accessor) ->
       @_saveProperty = "_plunder_tween_save_#{@id}"
       @_accessorProp = "__accessorProp#{@id}"
 
-      @easeFunc = Easing[@easing || "linearTween"] || Easing.linearTween
+      @easeFunc = Easie[@easing || "linear"] || Easie.linear
       @reset()
 
     reset: ->

@@ -631,219 +631,294 @@ define('Bezier',['./Util'], function(U) {
   })();
 });
 
-define('Easing',[],function() {
-  var Easing;
-  return Easing = {
-    linearTween: function(t, b, c, d) {
-      return c * t / d + b;
-    },
-    easeInQuad: function(t, b, c, d) {
-      return c * (t /= d) * t + b;
-    },
-    easeOutQuad: function(t, b, c, d) {
-      return -c * (t /= d) * (t - 2) + b;
-    },
-    easeInOutQuad: function(t, b, c, d) {
-      if ((t /= d / 2) < 1) {
-        return c / 2 * t * t + b;
+define('Easie',[],function() {
+  /*
+  Easie.coffee (https://github.com/jimjeffers/Easie)
+  Project created by J. Jeffers
+  
+  Robert Penner's Easing Equations in CoffeeScript
+  http://robertpenner.com/easing/
+  
+  DISCLAIMER: Software provided as is with no warranty of any type. 
+  Don't do bad things with this :)
+  */
+
+  return this.Easie = (function() {
+    function Easie() {}
+
+    Easie.backIn = function(time, begin, change, duration, overshoot) {
+      if (overshoot == null) {
+        overshoot = 1.70158;
       }
-      return -c / 2 * ((--t) * (t - 2) - 1) + b;
-    },
-    easeInCubic: function(t, b, c, d) {
-      return c * (t /= d) * t * t + b;
-    },
-    easeOutCubic: function(t, b, c, d) {
-      return c * ({
-        t: t / d - 1
-      } * t * t + 1) + b;
-    },
-    easeInOutCubic: function(t, b, c, d) {
-      if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t + b;
+      return change * (time /= duration) * time * ((overshoot + 1) * time - overshoot) + begin;
+    };
+
+    Easie.backOut = function(time, begin, change, duration, overshoot) {
+      if (overshoot == null) {
+        overshoot = 1.70158;
       }
-      return c / 2 * ((t -= 2) * t * t + 2) + b;
-    },
-    easeInQuart: function(t, b, c, d) {
-      return c * (t /= d) * t * t * t + b;
-    },
-    easeOutQuart: function(t, b, c, d) {
-      return -c * ({
-        t: t / d - 1
-      } * t * t * t - 1) + b;
-    },
-    easeInOutQuart: function(t, b, c, d) {
-      if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t * t + b;
+      return change * ((time = time / duration - 1) * time * ((overshoot + 1) * time + overshoot) + 1) + begin;
+    };
+
+    Easie.backInOut = function(time, begin, change, duration, overshoot) {
+      if (overshoot == null) {
+        overshoot = 1.70158;
       }
-      return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
-    },
-    easeInQuint: function(t, b, c, d) {
-      return c * (t /= d) * t * t * t * t + b;
-    },
-    easeOutQuint: function(t, b, c, d) {
-      return c * ({
-        t: t / d - 1
-      } * t * t * t * t + 1) + b;
-    },
-    easeInOutQuint: function(t, b, c, d) {
-      if ((t /= d / 2) < 1) {
-        return c / 2 * t * t * t * t * t + b;
-      }
-      return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-    },
-    easeInSine: function(t, b, c, d) {
-      return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-    },
-    easeOutSine: function(t, b, c, d) {
-      return c * Math.sin(t / d * (Math.PI / 2)) + b;
-    },
-    easeInOutSine: function(t, b, c, d) {
-      return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-    },
-    easeInExpo: function(t, b, c, d) {
-      if (t === 0) {
-        return b;
+      if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * (time * time * (((overshoot *= 1.525) + 1) * time - overshoot)) + begin;
       } else {
-        return c * Math.pow(2, 10 * (t / d - 1)) + b;
+        return change / 2 * ((time -= 2) * time * (((overshoot *= 1.525) + 1) * time + overshoot) + 2) + begin;
       }
-    },
-    easeOutExpo: function(t, b, c, d) {
-      if (t === d) {
-        return b + c;
+    };
+
+    Easie.bounceOut = function(time, begin, change, duration) {
+      if ((time /= duration) < 1 / 2.75) {
+        return change * (7.5625 * time * time) + begin;
+      } else if (time < 2 / 2.75) {
+        return change * (7.5625 * (time -= 1.5 / 2.75) * time + 0.75) + begin;
+      } else if (time < 2.5 / 2.75) {
+        return change * (7.5625 * (time -= 2.25 / 2.75) * time + 0.9375) + begin;
       } else {
-        return c * (-Math.pow(2, -10 * t / d) + 1) + b;
+        return change * (7.5625 * (time -= 2.625 / 2.75) * time + 0.984375) + begin;
       }
-    },
-    easeInOutExpo: function(t, b, c, d) {
-      if (t === 0) {
-        return b;
-      }
-      if (t === d) {
-        return b + c;
-      }
-      if ((t /= d / 2) < 1) {
-        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-      }
-      return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
-    },
-    easeInCirc: function(t, b, c, d) {
-      return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
-    },
-    easeOutCirc: function(t, b, c, d) {
-      return c * Math.sqrt(1 - {
-        t: t / d - 1
-      } * t) + b;
-    },
-    easeInOutCirc: function(t, b, c, d) {
-      if ((t /= d / 2) < 1) {
-        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
-      }
-      return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;
-    },
-    easeInElastic: function(t, b, c, d, a, p) {
-      var s;
-      if (t === 0) {
-        return b;
-      }
-      if ((t /= d) === 1) {
-        return b + c;
-      }
-      if (!p) {
-        p = d * .3;
-      }
-      if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
+    };
+
+    Easie.bounceIn = function(time, begin, change, duration) {
+      return change - Easie.bounceOut(duration - time, 0, change, duration) + begin;
+    };
+
+    Easie.bounceInOut = function(time, begin, change, duration) {
+      if (time < duration / 2) {
+        return Easie.bounceIn(time * 2, 0, change, duration) * 0.5 + begin;
       } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
+        return Easie.bounceOut(time * 2 - duration, 0, change, duration) * 0.5 + change * 0.5 + begin;
       }
-      return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-    },
-    easeOutElastic: function(t, b, c, d, a, p) {
-      var s;
-      if (t === 0) {
-        return b;
-      }
-      if ((t /= d) === 1) {
-        return b + c;
-      }
-      if (!p) {
-        p = d * .3;
-      }
-      if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
+    };
+
+    Easie.circIn = function(time, begin, change, duration) {
+      return -change * (Math.sqrt(1 - (time = time / duration) * time) - 1) + begin;
+    };
+
+    Easie.circOut = function(time, begin, change, duration) {
+      return change * Math.sqrt(1 - (time = time / duration - 1) * time) + begin;
+    };
+
+    Easie.circInOut = function(time, begin, change, duration) {
+      if ((time = time / (duration / 2)) < 1) {
+        return -change / 2 * (Math.sqrt(1 - time * time) - 1) + begin;
       } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
+        return change / 2 * (Math.sqrt(1 - (time -= 2) * time) + 1) + begin;
       }
-      return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
-    },
-    easeInOutElastic: function(t, b, c, d, a, p) {
-      var s;
-      if (t === 0) {
-        return b;
-      }
-      if ((t /= d / 2) === 2) {
-        return b + c;
-      }
-      if (!p) {
-        p = d * (.3 * 1.5);
-      }
-      if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
+    };
+
+    Easie.cubicIn = function(time, begin, change, duration) {
+      return change * (time /= duration) * time * time + begin;
+    };
+
+    Easie.cubicOut = function(time, begin, change, duration) {
+      return change * ((time = time / duration - 1) * time * time + 1) + begin;
+    };
+
+    Easie.cubicInOut = function(time, begin, change, duration) {
+      if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * time * time * time + begin;
       } else {
-        s = p / (2 * Math.PI) * Math.asin(c / a);
+        return change / 2 * ((time -= 2) * time * time + 2) + begin;
       }
-      if (t < 1) {
-        return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+    };
+
+    Easie.elasticOut = function(time, begin, change, duration, amplitude, period) {
+      var overshoot;
+      if (amplitude == null) {
+        amplitude = null;
       }
-      return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * .5 + c + b;
-    },
-    easeInBack: function(t, b, c, d, s) {
-      if (s === undefined) {
-        s = 1.70158;
+      if (period == null) {
+        period = null;
       }
-      return c * (t /= d) * t * ((s + 1) * t - s) + b;
-    },
-    easeOutBack: function(t, b, c, d, s) {
-      if (s === undefined) {
-        s = 1.70158;
-      }
-      return c * ({
-        t: t / d - 1
-      } * t * ((s + 1) * t + s) + 1) + b;
-    },
-    easeInOutBack: function(t, b, c, d, s) {
-      if (s === undefined) {
-        s = 1.70158;
-      }
-      if ((t /= d / 2) < 1) {
-        return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
-      }
-      return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
-    },
-    easeInBounce: function(t, b, c, d) {
-      return c - easeOutBounce(d - t, 0, c, d) + b;
-    },
-    easeOutBounce: function(t, b, c, d) {
-      if ((t /= d) < (1 / 2.75)) {
-        return c * (7.5625 * t * t) + b;
-      } else if (t < (2 / 2.75)) {
-        return c * (7.5625 * (t -= 1.5 / 2.75) * t + .75) + b;
-      } else if (t < (2.5 / 2.75)) {
-        return c * (7.5625 * (t -= 2.25 / 2.75) * t + .9375) + b;
+      if (time === 0) {
+        return begin;
+      } else if ((time = time / duration) === 1) {
+        return begin + change;
       } else {
-        return c * (7.5625 * (t -= 2.625 / 2.75) * t + .984375) + b;
+        if (period == null) {
+          period = duration * 0.3;
+        }
+        if ((amplitude == null) || amplitude < Math.abs(change)) {
+          amplitude = change;
+          overshoot = period / 4;
+        } else {
+          overshoot = period / (2 * Math.PI) * Math.asin(change / amplitude);
+        }
+        return (amplitude * Math.pow(2, -10 * time)) * Math.sin((time * duration - overshoot) * (2 * Math.PI) / period) + change + begin;
       }
-    },
-    easeInOutBounce: function(t, b, c, d) {
-      if (t < d / 2) {
-        return easeInBounce(t * 2, 0, c, d) * .5 + b;
+    };
+
+    Easie.elasticIn = function(time, begin, change, duration, amplitude, period) {
+      var overshoot;
+      if (amplitude == null) {
+        amplitude = null;
       }
-      return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
-    }
-  };
+      if (period == null) {
+        period = null;
+      }
+      if (time === 0) {
+        return begin;
+      } else if ((time = time / duration) === 1) {
+        return begin + change;
+      } else {
+        if (period == null) {
+          period = duration * 0.3;
+        }
+        if ((amplitude == null) || amplitude < Math.abs(change)) {
+          amplitude = change;
+          overshoot = period / 4;
+        } else {
+          overshoot = period / (2 * Math.PI) * Math.asin(change / amplitude);
+        }
+        time -= 1;
+        return -(amplitude * Math.pow(2, 10 * time)) * Math.sin((time * duration - overshoot) * (2 * Math.PI) / period) + begin;
+      }
+    };
+
+    Easie.elasticInOut = function(time, begin, change, duration, amplitude, period) {
+      var overshoot;
+      if (amplitude == null) {
+        amplitude = null;
+      }
+      if (period == null) {
+        period = null;
+      }
+      if (time === 0) {
+        return begin;
+      } else if ((time = time / (duration / 2)) === 2) {
+        return begin + change;
+      } else {
+        if (period == null) {
+          period = duration * (0.3 * 1.5);
+        }
+        if ((amplitude == null) || amplitude < Math.abs(change)) {
+          amplitude = change;
+          overshoot = period / 4;
+        } else {
+          overshoot = period / (2 * Math.PI) * Math.asin(change / amplitude);
+        }
+        if (time < 1) {
+          return -0.5 * (amplitude * Math.pow(2, 10 * (time -= 1))) * Math.sin((time * duration - overshoot) * ((2 * Math.PI) / period)) + begin;
+        } else {
+          return amplitude * Math.pow(2, -10 * (time -= 1)) * Math.sin((time * duration - overshoot) * (2 * Math.PI) / period) + change + begin;
+        }
+      }
+    };
+
+    Easie.expoIn = function(time, begin, change, duration) {
+      if (time === 0) {
+        return begin;
+      }
+      return change * Math.pow(2, 10 * (time / duration - 1)) + begin;
+    };
+
+    Easie.expoOut = function(time, begin, change, duration) {
+      if (time === duration) {
+        return begin + change;
+      }
+      return change * (-Math.pow(2, -10 * time / duration) + 1) + begin;
+    };
+
+    Easie.expoInOut = function(time, begin, change, duration) {
+      if (time === 0) {
+        return begin;
+      } else if (time === duration) {
+        return begin + change;
+      } else if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * Math.pow(2, 10 * (time - 1)) + begin;
+      } else {
+        return change / 2 * (-Math.pow(2, -10 * (time - 1)) + 2) + begin;
+      }
+    };
+
+    Easie.linearNone = function(time, begin, change, duration) {
+      return change * time / duration + begin;
+    };
+
+    Easie.linearIn = function(time, begin, change, duration) {
+      return Easie.linearNone(time, begin, change, duration);
+    };
+
+    Easie.linearOut = function(time, begin, change, duration) {
+      return Easie.linearNone(time, begin, change, duration);
+    };
+
+    Easie.linearInOut = function(time, begin, change, duration) {
+      return Easie.linearNone(time, begin, change, duration);
+    };
+
+    Easie.linear = function(time, begin, change, duration) {
+      return Easie.linearNone(time, begin, change, duration);
+    };
+
+    Easie.quadIn = function(time, begin, change, duration) {
+      return change * (time = time / duration) * time + begin;
+    };
+
+    Easie.quadOut = function(time, begin, change, duration) {
+      return -change * (time = time / duration) * (time - 2) + begin;
+    };
+
+    Easie.quadInOut = function(time, begin, change, duration) {
+      if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * time * time + begin;
+      } else {
+        return -change / 2 * ((time -= 1) * (time - 2) - 1) + begin;
+      }
+    };
+
+    Easie.quartIn = function(time, begin, change, duration) {
+      return change * (time = time / duration) * time * time * time + begin;
+    };
+
+    Easie.quartOut = function(time, begin, change, duration) {
+      return -change * ((time = time / duration - 1) * time * time * time - 1) + begin;
+    };
+
+    Easie.quartInOut = function(time, begin, change, duration) {
+      if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * time * time * time * time + begin;
+      } else {
+        return -change / 2 * ((time -= 2) * time * time * time - 2) + begin;
+      }
+    };
+
+    Easie.quintIn = function(time, begin, change, duration) {
+      return change * (time = time / duration) * time * time * time * time + begin;
+    };
+
+    Easie.quintOut = function(time, begin, change, duration) {
+      return change * ((time = time / duration - 1) * time * time * time * time + 1) + begin;
+    };
+
+    Easie.quintInOut = function(time, begin, change, duration) {
+      if ((time = time / (duration / 2)) < 1) {
+        return change / 2 * time * time * time * time * time + begin;
+      } else {
+        return change / 2 * ((time -= 2) * time * time * time * time + 2) + begin;
+      }
+    };
+
+    Easie.sineIn = function(time, begin, change, duration) {
+      return -change * Math.cos(time / duration * (Math.PI / 2)) + change + begin;
+    };
+
+    Easie.sineOut = function(time, begin, change, duration) {
+      return change * Math.sin(time / duration * (Math.PI / 2)) + begin;
+    };
+
+    Easie.sineInOut = function(time, begin, change, duration) {
+      return -change / 2 * (Math.cos(Math.PI * time / duration) - 1) + begin;
+    };
+
+    return Easie;
+
+  })();
 });
 
 define('Accessor',['./Util'], function(U) {
@@ -882,7 +957,7 @@ define('Accessor',['./Util'], function(U) {
   })();
 });
 
-define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
+define('Tween',['./Easie', './Util', './Accessor'], function(Easie, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
   return Tween = (function() {
@@ -891,7 +966,7 @@ define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accesso
       U.extend(this, config);
       this._saveProperty = "_plunder_tween_save_" + this.id;
       this._accessorProp = "__accessorProp" + this.id;
-      this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
+      this.easeFunc = Easie[this.easing || "linear"] || Easie.linear;
       this.reset();
     }
 
@@ -1415,12 +1490,12 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
   })();
 });
 
-define('main',["./Timeline", "./Util", "./Bezier", "./Easing", "./Invoke", "./Repeat", "./Together", "./Tween", "./Wait"], function(Timeline, Util, Bezier, Easing, Invoke, Repeat, Together, Tween, Wait) {
+define('main',["./Timeline", "./Util", "./Bezier", "./Easie", "./Invoke", "./Repeat", "./Together", "./Tween", "./Wait"], function(Timeline, Util, Bezier, Easie, Invoke, Repeat, Together, Tween, Wait) {
   return {
     Timeline: Timeline,
     Util: Util,
     Bezier: Bezier,
-    Easing: Easing,
+    Easie: Easie,
     Invoke: Invoke,
     Repeat: Repeat,
     Together: Together,

@@ -1,4 +1,4 @@
-require ["Timeline", "Tween", "Repeat", "Easing"], (Timeline, Tween, Repeat, Easing) ->
+require ["Timeline", "Tween", "Repeat", "Easie"], (Timeline, Tween, Repeat, Easie) ->
   describe "Timeline", ->
     getOwner = ->
       anis: [],
@@ -83,28 +83,28 @@ require ["Timeline", "Tween", "Repeat", "Easing"], (Timeline, Tween, Repeat, Eas
         move = @timeline.move
           from: x: 10, y: 20
           to: x: 100, y: 200
-          easing: 'easeInOutQuad'
+          easing: 'quadInOut'
 
-        expect(move.children[0].easeFunc).toBe Easing.easeInOutQuad
-        expect(move.children[1].easeFunc).toBe Easing.easeInOutQuad
+        expect(move.children[0].easeFunc).toBe Easie.quadInOut
+        expect(move.children[1].easeFunc).toBe Easie.quadInOut
 
       it "should translate easingX", ->
         move = @timeline.move
           from: x: 10, y: 20
           to: x: 100, y: 200
-          easingX: 'easeInOutQuad'
+          easingX: 'quadInOut'
 
-        expect(move.children[0].easeFunc).toBe Easing.easeInOutQuad
-        expect(move.children[1].easeFunc).toBe Easing.linearTween
+        expect(move.children[0].easeFunc).toBe Easie.quadInOut
+        expect(move.children[1].easeFunc).toBe Easie.linear
 
       it "should translate easingY", ->
         move = @timeline.move
           from: x: 10, y: 20
           to: x: 100, y: 200
-          easingY: 'easeInOutQuad'
+          easingY: 'quadInOut'
 
-        expect(move.children[0].easeFunc).toBe Easing.linearTween
-        expect(move.children[1].easeFunc).toBe Easing.easeInOutQuad
+        expect(move.children[0].easeFunc).toBe Easie.linear
+        expect(move.children[1].easeFunc).toBe Easie.quadInOut
 
     describe "#scale", ->
       it "should specify the scale property", ->

@@ -1,4 +1,4 @@
-define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
+define(['./Easie', './Util', './Accessor'], function(Easie, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
   return Tween = (function() {
@@ -7,7 +7,7 @@ define(['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
       U.extend(this, config);
       this._saveProperty = "_plunder_tween_save_" + this.id;
       this._accessorProp = "__accessorProp" + this.id;
-      this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
+      this.easeFunc = Easie[this.easing || "linear"] || Easie.linear;
       this.reset();
     }
 

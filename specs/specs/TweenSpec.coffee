@@ -1,4 +1,4 @@
-require ['Tween', 'Easing'], (Tween, Easing) ->
+require ['Tween', 'Easie'], (Tween, Easie) ->
   describe "Tween", ->
 
     getTween = (options = {}, initial, from, to) ->
@@ -38,9 +38,9 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
         { tween, target } = getNumericTween()
         expect(tween.done).toBe false
 
-      it "should default to linearTwean for easing", ->
+      it "should default to linearfor easing", ->
         { tween, target } = getNumericTween()
-        expect(tween.easeFunc).toBe Easing.linearTween
+        expect(tween.easeFunc).toBe Easie.linear
 
     describe '#update', ->
       it "should tween all targets", ->
@@ -117,12 +117,12 @@ require ['Tween', 'Easing'], (Tween, Easing) ->
 
       describe "tweening", ->
         beforeEach ->
-          @easingFunc = 'testEasingFunc'
+          @easingFunc = 'testEasieFunc'
           @easedValue = 12
-          Easing[@easingFunc] = => @easedValue
+          Easie[@easingFunc] = => @easedValue
 
         afterEach ->
-          delete Easing[@easingFunc]
+          delete Easie[@easingFunc]
 
         it "should tween values", ->
           { tween, target } = getNumericTween

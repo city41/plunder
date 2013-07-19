@@ -2,18 +2,18 @@ define [
   "./Timeline"
   "./Util"
   "./Bezier"
-  "./Easing"
+  "./Easie"
   "./Invoke"
   "./Repeat"
   "./Together"
   "./Tween"
   "./Wait"
-], (Timeline, Util, Bezier, Easing, Invoke, Repeat, Together, Tween, Wait) ->
+], (Timeline, Util, Bezier, Easie, Invoke, Repeat, Together, Tween, Wait) ->
 
   Timeline: Timeline
   Util: Util
   Bezier: Bezier
-  Easing: Easing
+  Easie: Easie
   Invoke: Invoke
   Repeat: Repeat
   Together: Together
