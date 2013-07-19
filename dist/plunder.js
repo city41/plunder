@@ -846,14 +846,49 @@ define('Easing',[],function() {
   };
 });
 
-define('Tween',['./Easing', './Util'], function(Easing, U) {
+define('Accessor',['./Util'], function(U) {
+  var Accessor;
+  return Accessor = (function() {
+    function Accessor(rootObj, propertyPath) {
+      var paths;
+      paths = propertyPath.split(".");
+      this._leafPath = U.last(paths);
+      this._leafObj = this._getLeaf(rootObj, paths);
+    }
+
+    Accessor.prototype.get = function() {
+      return this._leafObj[this._leafPath];
+    };
+
+    Accessor.prototype.set = function(value) {
+      return this._leafObj[this._leafPath] = value;
+    };
+
+    Accessor.prototype._getLeaf = function(obj, paths) {
+      var i, _i, _name, _ref;
+      for (i = _i = 0, _ref = paths.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (obj[_name = paths[i]] == null) {
+          obj[_name] = {};
+        }
+        obj = obj[paths[i]];
+      }
+      return obj;
+    };
+
+    return Accessor;
+
+  })();
+});
+
+define('Tween',['./Easing', './Util', './Accessor'], function(Easing, U, Accessor) {
   var Tween, _idCounter;
   _idCounter = 0;
   return Tween = (function() {
     function Tween(config) {
+      this.id = _idCounter++;
       U.extend(this, config);
-      this._saveProperty = this.property + "_save_" + (_idCounter++);
-      this._nonJitteredProperty = this.property + "_nonJittered_" + (_idCounter++);
+      this._saveProperty = "_plunder_tween_save_" + this.id;
+      this._accessorProp = "__accessorProp" + this.id;
       this.easeFunc = Easing[this.easing || "linearTween"] || Easing.linearTween;
       this.reset();
     }
@@ -873,29 +908,6 @@ define('Tween',['./Easing', './Util'], function(Easing, U) {
         easing: this.easing,
         duration: this.duration
       });
-    };
-
-    Tween.prototype._initTargets = function() {
-      var curValue, target, value, _i, _len, _ref;
-      _ref = this.targets;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        target = _ref[_i];
-        curValue = this._getProperty(target, this.property);
-        if (U.isArray(curValue)) {
-          this._setProperty(target, this._saveProperty, curValue.slice(0));
-        } else {
-          this._setProperty(target, this._saveProperty, curValue);
-        }
-        value = this.from != null ? this.from : target[this.property];
-        if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
-          throw new Error("Tween: mismatched types between from/to and targets current value");
-        }
-        if (U.isArray(value)) {
-          value = value.slice(0);
-        }
-        this._setProperty(target, this.property, value);
-      }
-      return this._targetsInitted = true;
     };
 
     Tween.prototype.update = function(delta) {
@@ -922,62 +934,53 @@ define('Tween',['./Easing', './Util'], function(Easing, U) {
       }
     };
 
+    Tween.prototype._initTargets = function() {
+      var curValue, target, value, _i, _len, _ref, _ref1;
+      _ref = this.targets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        target[this._accessorProp] = new Accessor(target, this.property);
+        curValue = this._get(target);
+        target[this._saveProperty] = U.isArray(curValue) ? curValue.slice(0) : curValue;
+        value = (_ref1 = this.from) != null ? _ref1 : curValue;
+        if ((curValue != null) && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, this.to))) {
+          throw new Error("Tween: mismatched types between from/to and targets current value");
+        }
+        if (U.isArray(value)) {
+          value = value.slice(0);
+        }
+        this._set(target, value);
+      }
+      return this._targetsInitted = true;
+    };
+
     Tween.prototype._finish = function() {
       var finalValue, target, _i, _len, _ref, _results;
       _ref = this.targets;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        finalValue = this.restoreAfter ? this._getProperty(target, this._saveProperty) : this.to;
-        this._setProperty(target, this.property, finalValue);
-        this._deleteProperty(target, this._saveProperty);
-        _results.push(this._deleteProperty(target, this._nonJitteredProperty));
+        finalValue = this.restoreAfter ? target[this._saveProperty] : this.to;
+        this._set(target, finalValue);
+        _results.push(this._del(target));
       }
       return _results;
     };
 
-    Tween.prototype._getProperty = function(target, propertyPath) {
-      var path, paths, _i, _len;
-      paths = propertyPath.split(".");
-      for (_i = 0, _len = paths.length; _i < _len; _i++) {
-        path = paths[_i];
-        target = target[path];
-      }
-      return target;
-    };
-
-    Tween.prototype._setProperty = function(target, propertyPath, value) {
-      var i, paths, _i, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        target = target[paths[i]];
-      }
-      return target[paths[paths.length - 1]] = value;
-    };
-
-    Tween.prototype._deleteProperty = function(target, propertyPath) {
-      var i, paths, _i, _ref;
-      paths = propertyPath.split(".");
-      for (i = _i = 0, _ref = paths.length - 1; _i < _ref; i = _i += 1) {
-        target = target[paths[i]];
-      }
-      return delete target[paths[paths.length - 1]];
-    };
-
     Tween.prototype._tween = function(target) {
-      var cell, curValue, from, i, tweenedValue, _i, _len, _results;
-      curValue = this._getProperty(target, this.property);
+      var cell, curValue, from, i, tweenedValue, _i, _len, _ref, _results;
+      curValue = this._get(target);
+      from = (_ref = this.from) != null ? _ref : target[this._saveProperty];
       if (U.isArray(curValue)) {
         _results = [];
         for (i = _i = 0, _len = curValue.length; _i < _len; i = ++_i) {
           cell = curValue[i];
-          from = this.from || target[this._saveProperty];
           _results.push(curValue[i] = this._tweenValue(this._elapsed, from[i], this.to[i], this.duration));
         }
         return _results;
       } else if (U.isNumber(curValue)) {
-        tweenedValue = this._tweenValue(this._elapsed, this.from, this.to, this.duration);
-        return this._setProperty(target, this.property, tweenedValue);
+        tweenedValue = this._tweenValue(this._elapsed, from, this.to, this.duration);
+        return this._set(target, tweenedValue);
       } else {
         throw new Error("Tween can only operate on numbers or arrays of numbers");
       }
@@ -986,10 +989,20 @@ define('Tween',['./Easing', './Util'], function(Easing, U) {
     Tween.prototype._tweenValue = function(elapsed, from, to, duration) {
       var position;
       position = this.easeFunc(elapsed, from, to - from, duration);
-      if (U.isNumber(this.jitterMin)) {
-        position += U.rand(this.jitterMin, this.jitterMax || 0);
-      }
       return position;
+    };
+
+    Tween.prototype._get = function(target) {
+      return target[this._accessorProp].get();
+    };
+
+    Tween.prototype._set = function(target, value) {
+      return target[this._accessorProp].set(value);
+    };
+
+    Tween.prototype._del = function(target) {
+      delete target[this._saveProperty];
+      return delete target[this._accessorProp];
     };
 
     return Tween;
@@ -1212,8 +1225,8 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
     }
 
     Timeline.prototype._getTargets = function(targetOptions) {
-      var targets, _ref, _ref1;
-      targets = (_ref = (_ref1 = targetOptions.targets) != null ? _ref1 : targetOptions.target) != null ? _ref : this.owner;
+      var targets, _ref;
+      targets = (_ref = targetOptions.target) != null ? _ref : this.owner;
       return U.toArray(targets);
     };
 
@@ -1255,7 +1268,7 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
 
     Timeline.prototype._pushAnimation = function(ani) {
       if (this._buildStack.length === 0) {
-        this.owner.addAni(ani);
+        this.owner.addPlunderAnimation(ani);
       } else {
         this._buildStack[this._buildStack.length - 1].children.push(ani);
       }
@@ -1392,7 +1405,7 @@ define('Timeline',["./Util", "./Bezier", "./Tween", "./Wait", "./Repeat", "./Tog
     };
 
     Timeline.prototype.stop = function() {
-      return this.owner.clearAnis();
+      return this.owner.clearPlunderAnimations();
     };
 
     return Timeline;

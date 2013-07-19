@@ -805,8 +805,8 @@ MyEntity.prototype = {
 					<ul>
 						<li>The entities that Timeline and its animations work with need these methods:
 							<ul>
-								<li><tt>addAni(ani)</tt> - adds an animation for the entity to keep track of</li>
-								<li><tt>clearAnis()</tt> - remove all animations the entity is responsible for</li>								
+								<li><tt>addPlunderAnimation(ani)</tt> - adds an animation for the entity to keep track of</li>
+								<li><tt>clearPlunderAnimations()</tt> - remove all animations the entity is responsible for</li>								
 							</ul>
 						</li>
 						<li>The entity should call <tt>update(delta)</tt> against all animations it was given with <tt>addAni</tt></li>
@@ -824,10 +824,10 @@ function Entity() {
 }
 
 Entity.prototype = {
-	addAni: function(ani) {
+	addPlunderAnimation: function(ani) {
 		this.anis.push(ani);
 	},
-	clearAnis: function() {
+	clearPlunderAnimations: function() {
 		this.anis = [];
 	},
 	update: function(delta) {
