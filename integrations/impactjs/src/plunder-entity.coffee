@@ -1,17 +1,18 @@
+root = exports ? this
+
 ig.module("plugins.plunder-entity")
 .requires("impact.entity")
 .defines ->
 
-  ig.Entity.inject
+  root.MixinPlunder =
     init: (x, y, settings) ->
-      @ani = new Timeline(this)
-      @anis = []
       @parent x, y, settings
+      @timeline = new Plunder.Timeline(this)
+      @anis = []
 
     update: ->
       for ani in @anis
         ani.update ig.system.tick
-
       @parent()
 
     addPlunderAnimation: (ani) ->

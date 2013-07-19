@@ -1,9 +1,13 @@
+var root;
+
+root = typeof exports !== "undefined" && exports !== null ? exports : this;
+
 ig.module("plugins.plunder-entity").requires("impact.entity").defines(function() {
-  return ig.Entity.inject({
+  return root.MixinPlunder = {
     init: function(x, y, settings) {
-      this.ani = new Timeline(this);
-      this.anis = [];
-      return this.parent(x, y, settings);
+      this.parent(x, y, settings);
+      this.timeline = new Plunder.Timeline(this);
+      return this.anis = [];
     },
     update: function() {
       var ani, _i, _len, _ref;
@@ -27,5 +31,5 @@ ig.module("plugins.plunder-entity").requires("impact.entity").defines(function()
       this.parent();
       return ig.system.context.globalAlpha = originalAlpha;
     }
-  });
+  };
 });
