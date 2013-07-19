@@ -6,8 +6,8 @@
 	|| window.webkitRequestAnimationFrame
 	|| window.msRequestAnimationFrame;
 
-  var Entity, context, entity, lastTimestamp, tl, update;
-  var playing = true;
+  var Entity, context, entity, lastTimestamp, tl, update, button, playing = true;
+
   Entity = (function() {
     function Entity() {
       this.anis = [];
@@ -84,15 +84,13 @@
     tl.reverse(t);
   });
   context = document.getElementById('canvas').getContext('2d');
-  var button= document.getElementById('play-main-example');
+  button= document.getElementById('play-main-example');
 
 
   button.onclick = function() {
     playing = !playing;
 
     if(playing) {
-      lastTimestamp = null;
-      update(0);
       button.innerHTML = "Pause";
     } else {
       button.innerHTML = "Play";
@@ -101,18 +99,19 @@
 
   lastTimestamp = null;
   update = function(ts) {
-    if (!playing) return;
-
     var delta;
     if (lastTimestamp == null) {
       lastTimestamp = ts;
     }
     delta = ts - lastTimestamp;
     lastTimestamp = ts;
-    entity.update(delta);
-    context.fillStyle = '#1d1f21';
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-    entity.draw(context);
+
+    if(playing) {
+      entity.update(delta);
+      context.fillStyle = '#1d1f21';
+      context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+      entity.draw(context);
+    }
     return window.raf(update);
   };
   return update(0);
