@@ -338,7 +338,7 @@ timeline.tween({ target: entityB });
                         <li><tt>[from]</tt> - the value to start the tween at. If omitted, the current value of the target's property is used instead.
                         <li><tt>to</tt> - the value to end the tween at</li>
                         <li><tt>[target]</tt> - the object(s) to operate on</li>
-                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt>)</li>
                      </ul>
                   </li>
                </ul>
@@ -351,7 +351,7 @@ timeline.tween({ target: entityB });
    from: 10,
    to: 100,
    duration: 2000,
-   easing: 'easeInQuad'
+   easing: 'quadIn'
 });
 
 // this will tween from 3 to 100, since the from option was left out
@@ -361,7 +361,7 @@ timeline.tween({
    property: 'x',
    to: 100,
    duration: 2000,
-   easing: 'easeInQuad'
+   easing: 'quadIn'
 });</pre>
 
 
@@ -378,9 +378,9 @@ timeline.tween({
                         <li><tt>from</tt> - the starting position of the object, ie <tt>{ x: 10, y: 20 }</tt></li>
                         <li><tt>to</tt> - the ending position of the object, ie <tt>{ x: 100, y: 200 }</tt></li>                        
                         <li><tt>[target]</tt> - the object(s) to operate on</li>
-                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-                        <li><tt>[easingX]</tt> - the easing equation to use for movement in the X direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
-                        <li><tt>[easingY]</tt> - the easing equation to use for movement in the Y direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt>)</li>
+                        <li><tt>[easingX]</tt> - the easing equation to use for movement in the X direction (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt> or <tt>easing</tt> if specified)</li>
+                        <li><tt>[easingY]</tt> - the easing equation to use for movement in the Y direction (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt> or <tt>easing</tt> if specified)</li>
                      </ul>
                   </li>
                </ul>
@@ -392,7 +392,7 @@ timeline.tween({
    from: { x: 10, y: 10 },
    to: { x: 100, y: 200 },
    duration: 2000,
-   easing: 'easeInOutQuad'
+   easing: 'quadInOut'
 });</pre>
             <p>
                <i>Note: <tt>move</tt> currently assumes the target object has <tt>x</tt> and <tt>y</tt> properties. 
@@ -408,7 +408,7 @@ timeline.tween({
                         <li><tt>from</tt> - the starting scale of the object, in decimal percentage</tt></li>
                         <li><tt>to</tt> - the ending scale of the object, in decimal percentage</tt></li>                        
                         <li><tt>[target]</tt> - the object(s) to operate on</li>
-                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt>)</li>
                      </ul>
                   </li>
                </ul>
@@ -433,7 +433,7 @@ timeline.tween({
                         <li><tt>from</tt> - the starting color of the object as a four element array</tt></li>
                         <li><tt>to</tt> - the ending color of the object as a four element array</tt></li>                        
                         <li><tt>[target]</tt> - the object(s) to operate on</li>
-                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt>)</li>
                      </ul>
                   </li>
                </ul>
@@ -458,7 +458,7 @@ timeline.tween({
                         <li><tt>from</tt> - the starting angle of the object</tt></li>
                         <li><tt>to</tt> - the ending angle of the object</tt></li>                        
                         <li><tt>[target]</tt> - the object(s) to operate on</li>
-                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linear</tt>)</li>
                      </ul>
                   </li>
                </ul>
@@ -468,7 +468,7 @@ timeline.tween({
    from: 0,
    to: 180,
    duration: 2000,
-   easing: 'easeOutCubic'
+   easing: 'cubicOut'
 });</pre>
             <p>
                <i>Note: <tt>rotate</tt> assumes the target object has an <tt>angle</tt> property. It is up to you to use this property when drawing the object
@@ -745,7 +745,7 @@ timeline.forever({ duration: 2000 }, function() {
             </p>
             
             <p><b>TODO:</b> this section will get fleshed out with nice graphics of what all the easing equations look like, not to mention
-               what they are. For now, you can see what's available in <a href="https://github.com/city41/plunder/blob/master/src/entries/Easing.coffee">
+               what they are. For now, you can see what's available in <a href="https://github.com/city41/plunder/blob/master/src/Easie.coffee">
                   the source code</a>
             </p>
 
