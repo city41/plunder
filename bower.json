@@ -1,0 +1,19 @@
+{
+  "name": "plunder",
+  "version": "0.1.0",
+  "main": "dist/plunder.js",
+  "ignore": [
+    ".gitignore",
+    ".jshintrc",
+    ".travis.yml",
+    "**/.*",
+    "node_modules",
+    "ideas",
+    "integrations",
+    "specs",
+    "examples",
+    "_SpecRunner.html",
+    "Gruntfile.coffee",
+    "support"
+  ]
+}
