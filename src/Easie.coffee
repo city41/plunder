@@ -10,7 +10,7 @@ define ->
   Don't do bad things with this :)
   ###
 
-  class @Easie
+  class Easie
     
     # Back Easing 
     # -----------------------------------------------------

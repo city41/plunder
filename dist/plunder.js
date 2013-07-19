@@ -643,7 +643,8 @@ define('Easie',[],function() {
   Don't do bad things with this :)
   */
 
-  return this.Easie = (function() {
+  var Easie;
+  return Easie = (function() {
     function Easie() {}
 
     Easie.backIn = function(time, begin, change, duration, overshoot) {
