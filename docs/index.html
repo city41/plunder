@@ -1,884 +1,863 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<meta http-equiv="X-UA-Compatible" content="chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="viewport" content="target-densitydpi=device-dpi">
-		<meta name="HandheldFriendly" content="true">
-		<link rel="canonical" href="http://city41.github.io/plunder">
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-		<title>
-			docs - Plunder
-		</title>
-		<style type="text/css">
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <meta http-equiv="X-UA-Compatible" content="chrome=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="target-densitydpi=device-dpi">
+      <meta name="HandheldFriendly" content="true">
+      <link rel="canonical" href="http://city41.github.io/plunder">
+      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+      <title>
+         docs - Plunder
+      </title>
+      <style type="text/css">
  body {
-		 font-size: 14px;
-		 line-height: 22px;
-		 background: #f4f4f4;
-		 color: #000;
-		 font-family: Helvetica Neue, Helvetica, Arial;
-		 }
-		 .logo {
-			font-size: 38.5px;
-			font-weight: bold;
-		}
-		 .interface {
-		 font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif !important;
-		 }
-		 .doc_disclaimer {
-		 font-style: italic;
-		 font-size: 0.8em;
-		 }
-		 div#sidebar {
-		 background: #fff;
-		 position: fixed;
-		 top: 0; left: 0; bottom: 0;
-		 width: 200px;
-		 overflow-y: auto;
-		 overflow-x: hidden;
-		 -webkit-overflow-scrolling: touch;
-		 padding: 15px 0 30px 30px;
-		 border-right: 1px solid #bbb;
-		 box-shadow: 0 0 20px #ccc; -webkit-box-shadow: 0 0 20px #ccc; -moz-box-shadow: 0 0 20px #ccc;
-		 }
-		 a.toc_title, a.toc_title:visited {
-		 display: block;
-		 color: black;
-		 font-weight: bold;
-		 margin-top: 15px;
-		 }
-		 a.toc_title:hover {
-		 text-decoration: underline;
-		 }
-		 #sidebar .version {
-		 font-size: 10px;
-		 font-weight: normal;
-		 }
-		 ul.toc_section {
-		 font-size: 11px;
-		 line-height: 14px;
-		 margin: 5px 0 0 0;
-		 padding-left: 0px;
-		 list-style-type: none;
-		 font-family: Lucida Grande;
-		 }
-		 .toc_section li {
-		 cursor: pointer;
-		 margin: 0 0 3px 0;
-		 }
-		 .toc_section li a {
-		 text-decoration: none;
-		 color: black;
-		 }
-		 .toc_section li a:hover {
-		 text-decoration: underline;
-		 }
-		 div.container {
-		 width: 550px;
-		 margin: 40px 0 50px 260px;
-		 }
-		 img#logo {
-		 width: 396px;
-		 height: 69px;
-		 }
-		 div.warning {
-		 margin-top: 15px;
-		 font: bold 11px Arial;
-		 color: #770000;
-		 }
-		 p {
-		 margin: 20px 0;
-		 width: 550px;
-		 }
-		 a, a:visited {
-		 color: #444;
-		 }
-		 a:active, a:hover {
-		 color: #000;
-		 }
-		 h1, h2, h3, h4, h5, h6 {
-		 padding-top: 20px;
-		 }
-		 h2 {
-		 font-size: 20px;
-		 }
-		 b.header {
-		 font-size: 16px;
-		 line-height: 30px;
-		 }
-		 span.alias {
-		 font-size: 14px;
-		 font-style: italic;
-		 margin-left: 20px;
-		 }
-		 table, tr, td {
-		 margin: 0; padding: 0;
-		 }
-		 td {
-		 padding: 2px 12px 2px 0;
-		 }
-		 table .rule {
-		 height: 1px;
-		 background: #ccc;
-		 margin: 5px 0;
-		 }
-		 ul {
-		 list-style-type: circle;
-		 padding: 0 0 0 20px;
-		 }
-		 li {
-		 width: 500px;
-		 margin-bottom: 10px;
-		 }
-		 code, pre, tt {
-		 font-family: Monaco, Consolas, "Lucida Console", monospace;
-		 font-size: 12px;
-		 line-height: 18px;
-		 font-style: normal;
-		 }
-		 tt {
-		 padding: 0px 3px;
-		 background: #fff;
-		 border: 1px solid #ddd;
-		 zoom: 1;
-		 }
-		 code {
-		 margin-left: 20px;
-		 }
-		 pre {
-		 font-size: 12px;
-		 padding: 2px 0 2px 15px;
-		 border-left: 5px solid #bbb;
-		 margin: 0px 0 30px;
-		 }
-		 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) and (max-width: 640px),
-		 only screen and (-o-min-device-pixel-ratio: 3/2) and (max-width: 640px),
-		 only screen and (min-device-pixel-ratio: 1.5) and (max-width: 640px) {
-		 img {
-		 max-width: 100%;
-		 }
-		 div#sidebar {
-		 -webkit-overflow-scrolling: initial;
-		 position: relative;
-		 width: 90%;
-		 height: 120px;
-		 left: 0;
-		 top: -7px;
-		 padding: 10px 0 10px 30px;
-		 border: 0;
-		 }
-		 img#logo {
-		 width: auto;
-		 height: auto;
-		 }
-		 div.container {
-		 margin: 0;
-		 width: 100%;
-		 }
-		 p, div.container ul {
-		 max-width: 98%;
-		 overflow-x: scroll;
-		 }
-		 pre {
-		 overflow: scroll;
-		 }
-		 }
-		</style>
-	</head>
-	<body>
-		<div id="sidebar" class="interface">
-			<a class="toc_title" href="#">Plunder <span class="version">(0.1.0)</span></a>
-			<ul class="toc_section">
-				<li>» <a href="http://github.com/city41/plunder">GitHub Repository</a></li>
-				<li>» <a href="http://twitter.com/cityfortyone">@cityfortyone</a></li>
-				<li>» <a href="mailto:matt.e.greer@gmail.com">matt.e.greer@gmail.com</a></li>								
-			</ul>
-			<a class="toc_title" href="#timeline">The Timeline</a>		
-			<a class="toc_title" href="#targeting">Targeting</a>			
-			<a class="toc_title" href="#animations">Animations</a>
-			<ul class="toc_section">
-				<li>- <a href="#tween">tween</a>
-				</li>
-				<li>- <a href="#move">move</a>
-				</li>
-				<li>- <a href="#scale">scale</a>
-				</li>
-				<li>- <a href="#color">color</a>
-				</li>
-				<li>- <a href="#rotate">rotate</a>
-				</li>
-				<li>- <a href="#fadeIn">fadeIn</a>
-				</li>
-				<li>- <a href="#fadeOut">fadeOut</a>
-				</li>
-				<li>- <a href="#wait">wait</a>
-				</li>
-				<li>- <a href="#waitBetween">waitBetween</a>
-				</li>
-				<li>- <a href="#invoke">invoke</a>
-				</li>
-				<li>- <a href="#reverse">reverse</a>
-				</li>
-				<li>- <a href="#setProperty">setProperty</a>
-				</li>
-				<li>- <a href="#bezier">bezier</a>
-				</li>
-			</ul><a class="toc_title" href="#parents">Parent Animations</a>
-			<ul class="toc_section">
-				<li>- <a href="#sequence">sequence</a>
-				</li>
-				<li>- <a href="#together">together</a>
-				</li>
-				<li>- <a href="#repeat">repeat</a>
-				</li>
-				<li>- <a href="#forever">forever</a>
-				</li>
-			</ul>
-			<a class="toc_title" href="#easing">Easing</a> 						
-			<a class="toc_title" href="#time">Time Units</a> 			
-			<a class="toc_title" href="#engines">Engine Integrations</a> 
-			<ul class="toc_section">
-				<li>- <a href="#standalone">Standalone (no engine)</a>
-				</li>
-			</ul>
-			<a class="toc_title" href="#changelog">Change Log</a>
-		</div>
-		<div class="container">
-			<p id="introduction">
-				<h1 class="logo">Plunder</h1>
-			</p>
-			<p>
-				<a href="http://github.com/city41/plunder">Plunder</a> is an animation system intended to be used with JavaScript game engines. Plunder can also be used on its own with a small amount of supporting canvas related code. See the <a href="#engines">Engine Integrations</a> section for more info on how to add Plunder to your game.
-			</p>
-			<p class="doc_disclaimer">
-				Plunder's documentation is based on <a href="http://underscorejs.org">Underscore's</a> documentation. Thanks to the Underscore team for such a great template.
-			</p>
-			<div id="documentation">
-				<h2 id="timeline">The Timeline</h2>
-				<p>
-					The <tt>Timeline</tt> type is the only public type in Plunder. All of the methods described here are found on a Timeline object.
-				</p>
-				<p>
-					Timelines need to be constructed with an <em>owner</em>, this is typically an entity/actor/element in your game world. 
-					This object needs to have a couple methods defined on it to work properly with Plunder, see the <a href="#engines">Engine Integrations</a>
-					section for more information.
-				</p>
-				<p>
-					It is typical to instantiate one Timeline object per entity, for example:
-				
-<pre><code>
-var entity = new MyGameEntity();
+       font-size: 14px;
+       line-height: 22px;
+       background: #f4f4f4;
+       color: #000;
+       font-family: Helvetica Neue, Helvetica, Arial;
+       }
+       .logo {
+         font-size: 38.5px;
+         font-weight: bold;
+      }
+       .interface {
+       font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif !important;
+       }
+       .doc_disclaimer {
+       font-style: italic;
+       font-size: 0.8em;
+       }
+       div#sidebar {
+       background: #fff;
+       position: fixed;
+       top: 0; left: 0; bottom: 0;
+       width: 200px;
+       overflow-y: auto;
+       overflow-x: hidden;
+       -webkit-overflow-scrolling: touch;
+       padding: 15px 0 30px 30px;
+       border-right: 1px solid #bbb;
+       box-shadow: 0 0 20px #ccc; -webkit-box-shadow: 0 0 20px #ccc; -moz-box-shadow: 0 0 20px #ccc;
+       }
+       a.toc_title, a.toc_title:visited {
+       display: block;
+       color: black;
+       font-weight: bold;
+       margin-top: 15px;
+       }
+       a.toc_title:hover {
+       text-decoration: underline;
+       }
+       #sidebar .version {
+       font-size: 10px;
+       font-weight: normal;
+       }
+       ul.toc_section {
+       font-size: 11px;
+       line-height: 14px;
+       margin: 5px 0 0 0;
+       padding-left: 0px;
+       list-style-type: none;
+       font-family: Lucida Grande;
+       }
+       .toc_section li {
+       cursor: pointer;
+       margin: 0 0 3px 0;
+       }
+       .toc_section li a {
+       text-decoration: none;
+       color: black;
+       }
+       .toc_section li a:hover {
+       text-decoration: underline;
+       }
+       div.container {
+       width: 550px;
+       margin: 40px 0 50px 260px;
+       }
+       img#logo {
+       width: 396px;
+       height: 69px;
+       }
+       div.warning {
+       margin-top: 15px;
+       font: bold 11px Arial;
+       color: #770000;
+       }
+       p {
+       margin: 20px 0;
+       width: 550px;
+       }
+       a, a:visited {
+       color: #444;
+       }
+       a:active, a:hover {
+       color: #000;
+       }
+       h1, h2, h3, h4, h5, h6 {
+       padding-top: 20px;
+       }
+       h2 {
+       font-size: 20px;
+       }
+       b.header {
+       font-size: 16px;
+       line-height: 30px;
+       }
+       span.alias {
+       font-size: 14px;
+       font-style: italic;
+       margin-left: 20px;
+       }
+       table, tr, td {
+       margin: 0; padding: 0;
+       }
+       td {
+       padding: 2px 12px 2px 0;
+       }
+       table .rule {
+       height: 1px;
+       background: #ccc;
+       margin: 5px 0;
+       }
+       ul {
+       list-style-type: circle;
+       padding: 0 0 0 20px;
+       }
+       li {
+       width: 500px;
+       margin-bottom: 10px;
+       }
+       code, pre, tt {
+       font-family: Monaco, Consolas, "Lucida Console", monospace;
+       font-size: 12px;
+       line-height: 18px;
+       font-style: normal;
+       }
+       tt {
+       padding: 0px 3px;
+       background: #fff;
+       border: 1px solid #ddd;
+       zoom: 1;
+       }
+       code {
+       margin-left: 20px;
+       }
+       pre {
+       font-size: 12px;
+       padding: 2px 0 2px 15px;
+       border-left: 5px solid #bbb;
+       margin: 0px 0 30px;
+       }
+       @media only screen and (-webkit-min-device-pixel-ratio: 1.5) and (max-width: 640px),
+       only screen and (-o-min-device-pixel-ratio: 3/2) and (max-width: 640px),
+       only screen and (min-device-pixel-ratio: 1.5) and (max-width: 640px) {
+       img {
+       max-width: 100%;
+       }
+       div#sidebar {
+       -webkit-overflow-scrolling: initial;
+       position: relative;
+       width: 90%;
+       height: 120px;
+       left: 0;
+       top: -7px;
+       padding: 10px 0 10px 30px;
+       border: 0;
+       }
+       img#logo {
+       width: auto;
+       height: auto;
+       }
+       div.container {
+       margin: 0;
+       width: 100%;
+       }
+       p, div.container ul {
+       max-width: 98%;
+       overflow-x: scroll;
+       }
+       pre {
+       overflow: scroll;
+       }
+       }
+      </style>
+   </head>
+   <body>
+      <div id="sidebar" class="interface">
+         <a class="toc_title" href="#">Plunder <span class="version">(0.1.0)</span></a>
+         <ul class="toc_section">
+            <li>» <a href="http://github.com/city41/plunder">GitHub Repository</a></li>
+            <li>» <a href="http://twitter.com/cityfortyone">@cityfortyone</a></li>
+            <li>» <a href="mailto:matt.e.greer@gmail.com">matt.e.greer@gmail.com</a></li>                        
+         </ul>
+         <a class="toc_title" href="#timeline">The Timeline</a>      
+         <a class="toc_title" href="#targeting">Targeting</a>         
+         <a class="toc_title" href="#animations">Animations</a>
+         <ul class="toc_section">
+            <li>- <a href="#tween">tween</a>
+            </li>
+            <li>- <a href="#move">move</a>
+            </li>
+            <li>- <a href="#scale">scale</a>
+            </li>
+            <li>- <a href="#color">color</a>
+            </li>
+            <li>- <a href="#rotate">rotate</a>
+            </li>
+            <li>- <a href="#fadeIn">fadeIn</a>
+            </li>
+            <li>- <a href="#fadeOut">fadeOut</a>
+            </li>
+            <li>- <a href="#wait">wait</a>
+            </li>
+            <li>- <a href="#waitBetween">waitBetween</a>
+            </li>
+            <li>- <a href="#invoke">invoke</a>
+            </li>
+            <li>- <a href="#reverse">reverse</a>
+            </li>
+            <li>- <a href="#setProperty">setProperty</a>
+            </li>
+            <li>- <a href="#bezier">bezier</a>
+            </li>
+         </ul><a class="toc_title" href="#parents">Parent Animations</a>
+         <ul class="toc_section">
+            <li>- <a href="#sequence">sequence</a>
+            </li>
+            <li>- <a href="#together">together</a>
+            </li>
+            <li>- <a href="#repeat">repeat</a>
+            </li>
+            <li>- <a href="#forever">forever</a>
+            </li>
+         </ul>
+         <a class="toc_title" href="#easing">Easing</a>                   
+         <a class="toc_title" href="#time">Time Units</a>          
+         <a class="toc_title" href="#engines">Engine Integrations</a> 
+         <ul class="toc_section">
+            <li>- <a href="#standalone">Standalone (no engine)</a>
+            </li>
+         </ul>
+         <a class="toc_title" href="#changelog">Change Log</a>
+      </div>
+      <div class="container">
+         <p id="introduction">
+            <h1 class="logo">Plunder</h1>
+         </p>
+         <p>
+            <a href="http://github.com/city41/plunder">Plunder</a> is an animation system intended to be used with JavaScript game engines. Plunder can also be used on its own with a small amount of supporting canvas related code. See the <a href="#engines">Engine Integrations</a> section for more info on how to add Plunder to your game.
+         </p>
+         <p class="doc_disclaimer">
+            Plunder's documentation is based on <a href="http://underscorejs.org">Underscore's</a> documentation. Thanks to the Underscore team for such a great template.
+         </p>
+         <div id="documentation">
+            <h2 id="timeline">The Timeline</h2>
+            <p>
+               The <tt>Timeline</tt> type is the only public type in Plunder. All of the methods described here are found on a Timeline object.
+            </p>
+            <p>
+               Timelines need to be constructed with an <em>owner</em>, this is typically an entity/actor/element in your game world. 
+               This object needs to have a couple methods defined on it to work properly with Plunder, see the <a href="#engines">Engine Integrations</a>
+               section for more information.
+            </p>
+            <p>
+               It is typical to instantiate one Timeline object per entity, for example:
+            
+<pre>var entity = new MyGameEntity();
 var timeline = new Timeline(entity);
 timeline.tween({
-	property: 'myProperty',
-	from: 10,
-	to: 100
+   property: 'myProperty',
+   from: 10,
+   to: 100
 });
-</code></pre>				
-				</p>
-				
-				<h2 id="targeting">Targeting</h2>
-				<p>
-					All animations you invoke must have a target entity to run against. If you do not specify a target, then the timeline's owner
-					will be the target of the animation:
-				</p>
-<pre><code>
-var entity = new MyGameEntity();
+</pre>            
+            </p>
+            
+            <h2 id="targeting">Targeting</h2>
+            <p>
+               All animations you invoke must have a target entity to run against. If you do not specify a target, then the timeline's owner
+               will be the target of the animation:
+            </p>
+<pre>var entity = new MyGameEntity();
 var timeline = new Timeline(entity);
 
 // this will tween entity, as no target was specified
 timeline.tween({
-	property: 'myProperty',
-	from: 10,
-	to: 100
+   property: 'myProperty',
+   from: 10,
+   to: 100
 });
-</code></pre>
-				<p>
-					Not specifying a target and implicitly using owner is the most common use case. You can specify targets manually, all <tt>Timeline</tt>
-					animation methods accept a <tt>target</tt> property to specify what object(s) to run the animation against:
-				</p>
-<pre><code>
-var entity = new MyGameEntity();
+</pre>
+            <p>
+               Not specifying a target and implicitly using owner is the most common use case. You can specify targets manually, all <tt>Timeline</tt>
+               animation methods accept a <tt>target</tt> property to specify what object(s) to run the animation against:
+            </p>
+<pre>var entity = new MyGameEntity();
 var timeline = new Timeline(entity);
 
 // this will tween someOtherEntity, not entity
 timeline.tween({
-	target: someOtherEntity,
-	property: 'myProperty',
-	from: 10,
-	to: 100
+   target: someOtherEntity,
+   property: 'myProperty',
+   from: 10,
+   to: 100
 });
 
 // this will tween entityA and entityB
 timeline.tween({
-	target: [entityA, entityB],
-	property: 'myProperty',
-	from: 10,
-	to: 100
+   target: [entityA, entityB],
+   property: 'myProperty',
+   from: 10,
+   to: 100
 });
-</code></pre>
-				<p>
-					When you use an array of entities as targets, it is functionally no different from individually calling an animation against each object:
-				</p>
-<pre><code>
-// this...
+</pre>
+            <p>
+               When you use an array of entities as targets, it is functionally no different from individually calling an animation against each object:
+            </p>
+<pre>// this...
 timeline.tween({ target: [entityA, entityB] });
 
 // is equivalent to this...
 timeline.tween({ target: entityA });
 timeline.tween({ target: entityB });
-</code></pre>
-					
-				
-				<h2 id="animations">Animations</h2>
-				<p id="tween">
-					<b class="header">tween</b><code>timeline.tween(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>property</tt> - the property on the target to tween, can be either a number or an array of numbers</li>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>[from]</tt> - the value to start the tween at. If omitted, the current value of the target's property is used instead.
-								<li><tt>to</tt> - the value to end the tween at</li>
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-							</ul>
-						</li>
-					</ul>
-					The workhorse of Plunder. Almost everything Plunder is capable of is implemented by using <tt>tween</tt>. It is used to tween
-					an arbitrary property on an object over the specified time. Feel free to use <tt>tween</tt> if it fits your needs, but chances
-					are one of the other animation types meets your needs and is simpler to use.
-				</p>
-<pre><code>
-timeline.tween({
-	property: 'x',
-	from: 10,
-	to: 100,
-	duration: 2000,
-	easing: 'easeInQuad'
+</pre>
+               
+            
+            <h2 id="animations">Animations</h2>
+            <p id="tween">
+               <b class="header">tween</b><code>timeline.tween(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>property</tt> - the property on the target to tween, can be either a number or an array of numbers</li>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>[from]</tt> - the value to start the tween at. If omitted, the current value of the target's property is used instead.
+                        <li><tt>to</tt> - the value to end the tween at</li>
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                     </ul>
+                  </li>
+               </ul>
+               The workhorse of Plunder. Almost everything Plunder is capable of is implemented by using <tt>tween</tt>. It is used to tween
+               an arbitrary property on an object over the specified time. Feel free to use <tt>tween</tt> if it fits your needs, but chances
+               are one of the other animation types meets your needs and is simpler to use.
+            </p>
+<pre>timeline.tween({
+   property: 'x',
+   from: 10,
+   to: 100,
+   duration: 2000,
+   easing: 'easeInQuad'
 });
 
 // this will tween from 3 to 100, since the from option was left out
 var target = { x: 3 };
 timeline.tween({
         target: x,
-	property: 'x',
-	to: 100,
-	duration: 2000,
-	easing: 'easeInQuad'
-});</code></pre>
+   property: 'x',
+   to: 100,
+   duration: 2000,
+   easing: 'easeInQuad'
+});</pre>
 
 
-				<p>
-					<i>Note: <tt>tween</tt> supports nested properties. Specifying a property as <tt>'pos.x'</tt> will do the right thing and tween the property on the child object</i>
-				</p>
+            <p>
+               <i>Note: <tt>tween</tt> supports nested properties. Specifying a property as <tt>'pos.x'</tt> will do the right thing and tween the property on the child object</i>
+            </p>
 
-				<p id="move">
-					<b class="header">move</b><code>timeline.move(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>from</tt> - the starting position of the object, ie <tt>{ x: 10, y: 20 }</tt></li>
-								<li><tt>to</tt> - the ending position of the object, ie <tt>{ x: 100, y: 200 }</tt></li>								
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-								<li><tt>[easingX]</tt> - the easing equation to use for movement in the X direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
-								<li><tt>[easingY]</tt> - the easing equation to use for movement in the Y direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
-							</ul>
-						</li>
-					</ul>
-					Moves an object from one location to another, over the allotted duration and using the specified easing. X and Y movement
-					can have their own easing equations, by using <tt>easingX</tt> and/or <tt>easingY</tt>. This is pretty unusual though, and 
-					may be removed.
-				</p>
-<pre><code>
-timeline.move({
-	from: { x: 10, y: 10 },
-	to: { x: 100, y: 200 },
-	duration: 2000,
-	easing: 'easeInOutQuad'
-});</code></pre>
-				<p>
-					<i>Note: <tt>move</tt> currently assumes the target object has <tt>x</tt> and <tt>y</tt> properties. 
-						This is not always a good assumption, and will be addressed when more engine integrations are created.</i>
-				</p>			
-				
-				<p id="scale">
-					<b class="header">scale</b><code>timeline.scale(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>from</tt> - the starting scale of the object, in decimal percentage</tt></li>
-								<li><tt>to</tt> - the ending scale of the object, in decimal percentage</tt></li>								
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-							</ul>
-						</li>
-					</ul>
-					Scales the target object's size over the duration.
-				</p>
-<pre><code>
-timeline.scale({
-	from: 1,
-	to: 8,
-	duration: 2000
-});</code></pre>
-				<p>
-					<i>Note: <tt>scale</tt> assumes the target object has a <tt>scale</tt> property. It is up to you to use this property when drawing the object
-						to achieve the desired scale. This will be addressed better when more engine integrations are created.</i>
-				</p>		
-							
-				<p id="color">
-					<b class="header">color</b><code>timeline.color(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>from</tt> - the starting color of the object as a four element array</tt></li>
-								<li><tt>to</tt> - the ending color of the object as a four element array</tt></li>								
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-							</ul>
-						</li>
-					</ul>
-					Changes the target object's color over the duration.
-				</p>
-<pre><code>
-timeline.color({
-	from: [255, 0, 0, 1],
-	to: [0, 0, 255, 1],
-	duration: 2000
-});</code></pre>
-				<p>
-					<i>Note: <tt>color</tt> assumes the target object has a <tt>color</tt> property. It is up to you to use this property when drawing the object
-						to achieve the desired color or tinting. This will be addressed better when more engine integrations are created.</i>
-				</p>	
-				
-				<p id="rotate">
-					<b class="header">rotate</b><code>timeline.rotate(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>from</tt> - the starting angle of the object</tt></li>
-								<li><tt>to</tt> - the ending angle of the object</tt></li>								
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-								<li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
-							</ul>
-						</li>
-					</ul>
-					Changes the target object's angle over the duration.
-				</p>
-<pre><code>
-timeline.rotate({
-	from: 0,
-	to: 180,
-	duration: 2000,
-	easing: 'easeOutCubic'
-});</code></pre>
-				<p>
-					<i>Note: <tt>rotate</tt> assumes the target object has an <tt>angle</tt> property. It is up to you to use this property when drawing the object
-						to achieve the desired angle. You can use degrees or radians, whichever works better for you. This will be addressed better when more engine integrations are created.</i>
-				</p>
-				
-				<p id="fadeIn">
-					<b class="header">fadeIn</b><code>timeline.fadeIn(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-							</ul>
-						</li>
-					</ul>
-					Sets the target object's opacity to zero, then tweens it to full opacity over the duration.
-				</p>
-<pre><code>
-timeline.fadeIn({
-	duration: 2000
-});</code></pre>
-				<p>
-					<i>Note: <tt>fadeIn</tt> assumes the target object has an <tt>alpha</tt> property. It is up to you to use this property when drawing the object
-						to achieve the desired opacity. Alternatively, <a href="#color">color</a> is another option for affecting opacity. This will be addressed better when more engine integrations are created.</i>
-				</p>
-				
-				<p id="fadeOut">
-					<b class="header">fadeOut</b><code>timeline.fadeOut(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>duration</tt> - how long the tween should take</li>
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-							</ul>
-						</li>
-					</ul>
-					Sets the target object to full opacity, then tweens it to completely transparent over the duration.
-				</p>
-				<pre><code>
-timeline.fadeIn({
-	duration: 2000
-});</code></pre>
-				<p>
-					<i>Note: <tt>fadeOut</tt> assumes the target object has an <tt>alpha</tt> property. It is up to you to use this property when drawing the object
-						to achieve the desired opacity. Alternatively, <a href="#color">color</a> is another option for affecting opacity. This will be addressed better when more engine integrations are created.</i>
-				</p>
-				<p id="wait">
-					<b class="header">wait</b><code>timeline.wait(duration)</code> <br>
-					<ul>
-						<li><tt>duration</tt> - how long to wait for</li>
-					</ul>
-					Delays the animation for the duration
-				</p>
-<pre><code>
-timeline.wait(1000);
-</code></pre>
+            <p id="move">
+               <b class="header">move</b><code>timeline.move(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>from</tt> - the starting position of the object, ie <tt>{ x: 10, y: 20 }</tt></li>
+                        <li><tt>to</tt> - the ending position of the object, ie <tt>{ x: 100, y: 200 }</tt></li>                        
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                        <li><tt>[easingX]</tt> - the easing equation to use for movement in the X direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
+                        <li><tt>[easingY]</tt> - the easing equation to use for movement in the Y direction (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt> or <tt>easing</tt> if specified)</li>
+                     </ul>
+                  </li>
+               </ul>
+               Moves an object from one location to another, over the allotted duration and using the specified easing. X and Y movement
+               can have their own easing equations, by using <tt>easingX</tt> and/or <tt>easingY</tt>. This is pretty unusual though, and 
+               may be removed.
+            </p>
+<pre>timeline.move({
+   from: { x: 10, y: 10 },
+   to: { x: 100, y: 200 },
+   duration: 2000,
+   easing: 'easeInOutQuad'
+});</pre>
+            <p>
+               <i>Note: <tt>move</tt> currently assumes the target object has <tt>x</tt> and <tt>y</tt> properties. 
+                  This is not always a good assumption, and will be addressed when more engine integrations are created.</i>
+            </p>         
+            
+            <p id="scale">
+               <b class="header">scale</b><code>timeline.scale(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>from</tt> - the starting scale of the object, in decimal percentage</tt></li>
+                        <li><tt>to</tt> - the ending scale of the object, in decimal percentage</tt></li>                        
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                     </ul>
+                  </li>
+               </ul>
+               Scales the target object's size over the duration.
+            </p>
+<pre>timeline.scale({
+   from: 1,
+   to: 8,
+   duration: 2000
+});</pre>
+            <p>
+               <i>Note: <tt>scale</tt> assumes the target object has a <tt>scale</tt> property. It is up to you to use this property when drawing the object
+                  to achieve the desired scale. This will be addressed better when more engine integrations are created.</i>
+            </p>      
+                     
+            <p id="color">
+               <b class="header">color</b><code>timeline.color(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>from</tt> - the starting color of the object as a four element array</tt></li>
+                        <li><tt>to</tt> - the ending color of the object as a four element array</tt></li>                        
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                     </ul>
+                  </li>
+               </ul>
+               Changes the target object's color over the duration.
+            </p>
+<pre>timeline.color({
+   from: [255, 0, 0, 1],
+   to: [0, 0, 255, 1],
+   duration: 2000
+});</pre>
+            <p>
+               <i>Note: <tt>color</tt> assumes the target object has a <tt>color</tt> property. It is up to you to use this property when drawing the object
+                  to achieve the desired color or tinting. This will be addressed better when more engine integrations are created.</i>
+            </p>   
+            
+            <p id="rotate">
+               <b class="header">rotate</b><code>timeline.rotate(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>from</tt> - the starting angle of the object</tt></li>
+                        <li><tt>to</tt> - the ending angle of the object</tt></li>                        
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                        <li><tt>[easing]</tt> - the easing equation to use (see <a href="#easing">Easing</a>, defaults to <tt>linearTween</tt>)</li>
+                     </ul>
+                  </li>
+               </ul>
+               Changes the target object's angle over the duration.
+            </p>
+<pre>timeline.rotate({
+   from: 0,
+   to: 180,
+   duration: 2000,
+   easing: 'easeOutCubic'
+});</pre>
+            <p>
+               <i>Note: <tt>rotate</tt> assumes the target object has an <tt>angle</tt> property. It is up to you to use this property when drawing the object
+                  to achieve the desired angle. You can use degrees or radians, whichever works better for you. This will be addressed better when more engine integrations are created.</i>
+            </p>
+            
+            <p id="fadeIn">
+               <b class="header">fadeIn</b><code>timeline.fadeIn(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                     </ul>
+                  </li>
+               </ul>
+               Sets the target object's opacity to zero, then tweens it to full opacity over the duration.
+            </p>
+<pre>timeline.fadeIn({
+   duration: 2000
+});</pre>
+            <p>
+               <i>Note: <tt>fadeIn</tt> assumes the target object has an <tt>alpha</tt> property. It is up to you to use this property when drawing the object
+                  to achieve the desired opacity. Alternatively, <a href="#color">color</a> is another option for affecting opacity. This will be addressed better when more engine integrations are created.</i>
+            </p>
+            
+            <p id="fadeOut">
+               <b class="header">fadeOut</b><code>timeline.fadeOut(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>duration</tt> - how long the tween should take</li>
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                     </ul>
+                  </li>
+               </ul>
+               Sets the target object to full opacity, then tweens it to completely transparent over the duration.
+            </p>
+<pre>timeline.fadeIn({
+   duration: 2000
+});</pre>
+            <p>
+               <i>Note: <tt>fadeOut</tt> assumes the target object has an <tt>alpha</tt> property. It is up to you to use this property when drawing the object
+                  to achieve the desired opacity. Alternatively, <a href="#color">color</a> is another option for affecting opacity. This will be addressed better when more engine integrations are created.</i>
+            </p>
+            <p id="wait">
+               <b class="header">wait</b><code>timeline.wait(duration)</code> <br>
+               <ul>
+                  <li><tt>duration</tt> - how long to wait for</li>
+               </ul>
+               Delays the animation for the duration
+            </p>
+<pre>timeline.wait(1000);</pre>
 
-				<p id="waitBetween">
-					<b class="header">waitBetween</b><code>timeline.waitBetween(min, max)</code> <br>
-					<ul>
-						<li><tt>min</tt> - the minimum amount of time to wait for</li>
-						<li><tt>max</tt> - the maximum amount of time to wait for</li>						
-					</ul>
-					Randomly chooses a duration between <tt>min</tt> and <tt>max</tt>, then waits that long.
-				</p>
-<pre><code>
-timeline.waitBetween(500, 4000);
-</code></pre>
-						
-				<p id="invoke">
-					<b class="header">invoke</b><code>timeline.invoke(fn, context)</code> <br>
-					<ul>
-						<li><tt>fn</tt> - the function to call</li>
-						<li><tt>[context]</tt> - the context to run the function in</li>						
-					</ul>
-					Calls the provided function using the provided context. If context is not provided, the global context is used.
-				</p>
-<pre><code>
-timeline.invoke(function() { this.shootBullet(); }, myEntity);
-</code></pre>																		
+            <p id="waitBetween">
+               <b class="header">waitBetween</b><code>timeline.waitBetween(min, max)</code> <br>
+               <ul>
+                  <li><tt>min</tt> - the minimum amount of time to wait for</li>
+                  <li><tt>max</tt> - the maximum amount of time to wait for</li>                  
+               </ul>
+               Randomly chooses a duration between <tt>min</tt> and <tt>max</tt>, then waits that long.
+            </p>
+<pre>timeline.waitBetween(500, 4000);</pre>
+                  
+            <p id="invoke">
+               <b class="header">invoke</b><code>timeline.invoke(fn, context)</code> <br>
+               <ul>
+                  <li><tt>fn</tt> - the function to call</li>
+                  <li><tt>[context]</tt> - the context to run the function in</li>                  
+               </ul>
+               Calls the provided function using the provided context. If context is not provided, the global context is used.
+            </p>
+<pre>timeline.invoke(function() { this.shootBullet(); }, myEntity);</pre>
 
-				<p>
-					<i>Note: If <tt>context</tt> is not provided, it does <b>not</b> use the Timeline's owner as the context.</i>
-				</p>
-				
-				<p id="reverse">
-					<b class="header">reverse</b><code>timeline.reverse(animation)</code> <br>
-					<ul>
-						<li><tt>animation</tt> - the animation to reverse</li>
-					</ul>
-					Reverses the provided animation and adds the result as a new animation. Any animation type can be passed to <tt>reverse</tt>, 
-					including <a href="#parents">parent animations</a>. 
-				</p>
-<pre><code>
-var move = timeline.move({ 
-	from: { x: 10, y: 10 },
-	to: { x: 100, y: 200 }
+            <p>
+               <i>Note: If <tt>context</tt> is not provided, it does <b>not</b> use the Timeline's owner as the context.</i>
+            </p>
+            
+            <p id="reverse">
+               <b class="header">reverse</b><code>timeline.reverse(animation)</code> <br>
+               <ul>
+                  <li><tt>animation</tt> - the animation to reverse</li>
+               </ul>
+               Reverses the provided animation and adds the result as a new animation. Any animation type can be passed to <tt>reverse</tt>, 
+               including <a href="#parents">parent animations</a>. 
+            </p>
+<pre>var move = timeline.move({ 
+   from: { x: 10, y: 10 },
+   to: { x: 100, y: 200 }
 });
 
 // the resulting animation will be a move from (100,200)->(10,10), ie the opposite of the above.
-timeline.reverse(move);
-</code></pre>
+timeline.reverse(move);</pre>
 
-				<p id="setProperty">
-					<b class="header">setProperty</b><code>timeline.setProperty(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>property</tt> - the property to set</li>
-								<li><tt>value</tt> - the value to set on the property</li>
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-							</ul>
-						</li>
-					</ul>
-					Sets the given property to the given value on the target object.
-				</p>
-<pre><code>
+            <p id="setProperty">
+               <b class="header">setProperty</b><code>timeline.setProperty(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>property</tt> - the property to set</li>
+                        <li><tt>value</tt> - the value to set on the property</li>
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                     </ul>
+                  </li>
+               </ul>
+               Sets the given property to the given value on the target object.
+            </p>
+<pre>
 timeline.setProperty({
-	property: 'health',
-	value: 50
+   property: 'health',
+   value: 50
 });
-</code></pre>	
+</pre>   
 
-				<p id="bezier">
-					<b class="header">bezier</b><code>timeline.bezier(options)</code> <br>
-					<ul>
-						<li>options
-							<ul>
-								<li><tt>points</tt> - the bezier points to use</li>
-								<li><tt>duration</tt> - the duration of the bezier movement</li>
-								<li><tt>[target]</tt> - the object(s) to operate on</li>
-							</ul>
-						</li>
-					</ul>
-					Moves the target object along the bezier curve specified by <tt>points</tt>.
-				</p>
-<pre><code>
-timeline.bezier({
-	duration: 2000,
-	points: [
-		{ x: 10, y: 10 }, // the first point
-		{ x: 10, y: 60 }, // the first point's handle
-		{ x: 100, y: 40 }, // the second point's handle
-		{ x: 100, y: 100 } // the second point
-	]
+            <p id="bezier">
+               <b class="header">bezier</b><code>timeline.bezier(options)</code> <br>
+               <ul>
+                  <li>options
+                     <ul>
+                        <li><tt>points</tt> - the bezier points to use</li>
+                        <li><tt>duration</tt> - the duration of the bezier movement</li>
+                        <li><tt>[target]</tt> - the object(s) to operate on</li>
+                     </ul>
+                  </li>
+               </ul>
+               Moves the target object along the bezier curve specified by <tt>points</tt>.
+            </p>
+<pre>timeline.bezier({
+   duration: 2000,
+   points: [
+      { x: 10, y: 10 }, // the first point
+      { x: 10, y: 60 }, // the first point's handle
+      { x: 100, y: 40 }, // the second point's handle
+      { x: 100, y: 100 } // the second point
+   ]
 });
-</code></pre>								
+</pre>                        
 
-				<p>
-					<i>Note: <tt>bezier</tt> is currently experimental and not fully fleshed out. It currently only supports two points (one segment)</i>
-				</p>						
-				
-				<h2 id="parents">Parent Animations</h2>
-				<p>
-					Animations which allow composing of child animations. Parent animations are what give Plunder its flexibility and power. Parent animations 
-					can be children as well, allowing for very complex animation sequences.
-				</p>
-				
-				<p id="sequence">
-					<b class="header">sequence</b><code>timeline.sequence([childDefaults], builderFn)</code> <br>
-					<ul>
-						<li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config.</li>
-						<li><tt>buildrFn</tt> - the function that builds the child animations
-					</ul>
-					
-					Runs the child animations in a sequence, one after the other. The parent sequence animation is not considered done until the final child has finished.
-				</p>
-<pre><code>
-// the target object will move across the screen, 
+            <p>
+               <i>Note: <tt>bezier</tt> is currently experimental and not fully fleshed out. It currently only supports two points (one segment)</i>
+            </p>                  
+            
+            <h2 id="parents">Parent Animations</h2>
+            <p>
+               Animations which allow composing of child animations. Parent animations are what give Plunder its flexibility and power. Parent animations 
+               can be children as well, allowing for very complex animation sequences.
+            </p>
+            
+            <p id="sequence">
+               <b class="header">sequence</b><code>timeline.sequence([childDefaults], builderFn)</code> <br>
+               <ul>
+                  <li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config.</li>
+                  <li><tt>buildrFn</tt> - the function that builds the child animations
+               </ul>
+               
+               Runs the child animations in a sequence, one after the other. The parent sequence animation is not considered done until the final child has finished.
+            </p>
+<pre>// the target object will move across the screen, 
 // rotate a full rotation, 
 // rotate back in the opposite direction,
 // then move back to its original location
 
 timeline.sequence( { duration: 2000 }, function() {
-	var m = timeline.move({
-		from: { x: 10, y: 10 },
-		to: { x: 100, y: 200 }
-	});
-	timeline.rotate({
-		from: 0,
-		to: 360,
-		duration: 1000
-	});
-	timeline.reverse(m);
+   var m = timeline.move({
+      from: { x: 10, y: 10 },
+      to: { x: 100, y: 200 }
+   });
+   timeline.rotate({
+      from: 0,
+      to: 360,
+      duration: 1000
+   });
+   timeline.reverse(m);
 });
-</code></pre>
+</pre>
 
-				<p id="together">
-					<b class="header">together</b><code>timeline.together([childDefaults], builderFn)</code> <br>
-					<ul>
-						<li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config.</li>
-						<li><tt>buildrFn</tt> - the function that builds the child animations
-					</ul>
-					
-					Runs the child animations all at the same time. The parent together animation is not considered done until all the children have finished.
-				</p>
-<pre><code>
+            <p id="together">
+               <b class="header">together</b><code>timeline.together([childDefaults], builderFn)</code> <br>
+               <ul>
+                  <li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config.</li>
+                  <li><tt>buildrFn</tt> - the function that builds the child animations
+               </ul>
+               
+               Runs the child animations all at the same time. The parent together animation is not considered done until all the children have finished.
+            </p>
+<pre>
 // the target object will move across the screen, 
 // and rotate a full rotation, both at the same time
 
 timeline.together( { duration: 2000 }, function() {
-	timeline.move({
-		from: { x: 10, y: 10 },
-		to: { x: 100, y: 200 }
-	});
-	timeline.rotate({
-		from: 0,
-		to: 360
-	});
+   timeline.move({
+      from: { x: 10, y: 10 },
+      to: { x: 100, y: 200 }
+   });
+   timeline.rotate({
+      from: 0,
+      to: 360
+   });
 });
-</code></pre>
+</pre>
 
-				<p id="repeat">
-					<b class="header">repeat</b><code>timeline.repeat(count, [childDefaults], builderFn)</code> <br>
-					<ul>
-						<li><tt>count</tt> - the number of times to repeat the animation sequence</li>
-						<li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config</li>
-						<li><tt>buildrFn</tt> - the function that builds the child animations
-					</ul>
-					
-					Repeats the child animations the specified number of times. The child animations are ran sequentially, like <tt>sequence</tt>.
-				</p>
-<pre><code>
-	// the target object will move across the screen, 
-	// rotate a full rotation, 
-	// rotates back the opposite way,
-	// then move back to its original location
-	//
-	// this is repeated three times
+            <p id="repeat">
+               <b class="header">repeat</b><code>timeline.repeat(count, [childDefaults], builderFn)</code> <br>
+               <ul>
+                  <li><tt>count</tt> - the number of times to repeat the animation sequence</li>
+                  <li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config</li>
+                  <li><tt>buildrFn</tt> - the function that builds the child animations
+               </ul>
+               
+               Repeats the child animations the specified number of times. The child animations are ran sequentially, like <tt>sequence</tt>.
+            </p>
+<pre>
+// the target object will move across the screen, 
+// rotate a full rotation, 
+// rotates back the opposite way,
+// then move back to its original location
+//
+// this is repeated three times
 
-	timeline.repeat(3, { duration: 2000 }, function() {
-		var m = timeline.move({
-			from: { x: 10, y: 10 },
-			to: { x: 100, y: 200 }
-		});
-		timeline.rotate({
-			from: 0,
-			to: 360,
-			duration: 1000
-		});
-		timeline.reverse(m);
-	});
-</code></pre>
+timeline.repeat(3, { duration: 2000 }, function() {
+   var m = timeline.move({
+      from: { x: 10, y: 10 },
+      to: { x: 100, y: 200 }
+   });
+   timeline.rotate({
+      from: 0,
+      to: 360,
+      duration: 1000
+   });
+   timeline.reverse(m);
+});
+</pre>
 
-				<p id="forever">
-					<b class="header">forever</b><code>timeline.forever([childDefaults], builderFn)</code> <br>
-					<ul>
-						<li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config</li>
-						<li><tt>buildrFn</tt> - the function that builds the child animations
-					</ul>
-					
-					Repeats the child animations indefinitely. The child animations are ran sequentially, like <tt>sequence</tt>.
-				</p>
-<pre><code>
-	// the target object will move across the screen, 
-	// rotate a full rotation, 
-	// rotates back the opposite way,
-	// then move back to its original location
-	//
-	// this is repeated forever
+            <p id="forever">
+               <b class="header">forever</b><code>timeline.forever([childDefaults], builderFn)</code> <br>
+               <ul>
+                  <li><tt>[childDefaults]</tt> - a config object that will get applied to all the child animations. Children can override anything in this config</li>
+                  <li><tt>buildrFn</tt> - the function that builds the child animations
+               </ul>
+               
+               Repeats the child animations indefinitely. The child animations are ran sequentially, like <tt>sequence</tt>.
+            </p>
+<pre>
+// the target object will move across the screen, 
+// rotate a full rotation, 
+// rotates back the opposite way,
+// then move back to its original location
+//
+// this is repeated forever
 
-	timeline.forever({ duration: 2000 }, function() {
-		var m = timeline.move({
-			from: { x: 10, y: 10 },
-			to: { x: 100, y: 200 }
-		});
-		timeline.rotate({
-			from: 0,
-			to: 360,
-			duration: 1000
-		});
-		timeline.reverse(m);
-	});
-</code></pre>
+timeline.forever({ duration: 2000 }, function() {
+   var m = timeline.move({
+      from: { x: 10, y: 10 },
+      to: { x: 100, y: 200 }
+   });
+   timeline.rotate({
+      from: 0,
+      to: 360,
+      duration: 1000
+   });
+   timeline.reverse(m);
+});
+</pre>
 
-				<p>
-					<i>Note: this is just sugar for <tt>timeline.repeat(Infinity, [childDefaults], builderFn)</tt></i>
-				</p>
+            <p>
+               <i>Note: this is just sugar for <tt>timeline.repeat(Infinity, [childDefaults], builderFn)</tt></i>
+            </p>
 
-				<h2 id="easing">Easing</h2>
-				
-				<p>
-				The <tt>easing</tt> option of most animations specifies how the animation should progress. For example to start out slow, 
-				speed up quickly for the main portion of the animation, then slow down again when arriving at the end.
-				</p>
-				
-				<p><b>TODO:</b> this section will get fleshed out with nice graphics of what all the easing equations look like, not to mention
-					what they are. For now, you can see what's available in <a href="https://github.com/city41/plunder/blob/master/src/entries/Easing.coffee">
-						the source code</a>
-				</p>
+            <h2 id="easing">Easing</h2>
+            
+            <p>
+            The <tt>easing</tt> option of most animations specifies how the animation should progress. For example to start out slow, 
+            speed up quickly for the main portion of the animation, then slow down again when arriving at the end.
+            </p>
+            
+            <p><b>TODO:</b> this section will get fleshed out with nice graphics of what all the easing equations look like, not to mention
+               what they are. For now, you can see what's available in <a href="https://github.com/city41/plunder/blob/master/src/entries/Easing.coffee">
+                  the source code</a>
+            </p>
 
-				<h2 id="time">Time Units</h2>
+            <h2 id="time">Time Units</h2>
 
-				<p>
-					Plunder is completely time unit agnostic. Milliseconds, seconds, fortnights... it doesn't matter as long as you are consistent. 
-					If your game typically uses milliseconds, then as long as you use milliseconds for all <tt>duration</tt> specifications <em>and</em> 
-					pass milliseconds as the <tt>delta</tt> parameter to each animation's <tt>update(delta)</tt> method, then Plunder will work correctly.
-				</p>
-<pre><code>
+            <p>
+               Plunder is completely time unit agnostic. Milliseconds, seconds, fortnights... it doesn't matter as long as you are consistent. 
+               If your game typically uses milliseconds, then as long as you use milliseconds for all <tt>duration</tt> specifications <em>and</em> 
+               pass milliseconds as the <tt>delta</tt> parameter to each animation's <tt>update(delta)</tt> method, then Plunder will work correctly.
+            </p>
+<pre>
 timeline.tween({
-	property: 'myProperty',
-	duration: 1000  // <--- whatever units you use here
+   property: 'myProperty',
+   duration: 1000  // <--- whatever units you use here
 });
 
 // ...
 
 MyEntity.prototype = {
-	update: function(delta) {
-		for(var i = 0; i < this.anis.length; ++i) {
-			this.anis[i].update(delta); // <---- use those same units here
-		}
-	}
+   update: function(delta) {
+      for(var i = 0; i < this.anis.length; ++i) {
+         this.anis[i].update(delta); // <---- use those same units here
+      }
+   }
 }
-</code></pre>
+</pre>
 
-				<p>
-					<b>Note:</b> See the <a href="#engines">Engine Integrations</a> section for more information on
-					the <tt>update</tt> method.
-				</p>
-				
-				<h2 id="engines">Engine Integrations</h2>
-				<p>
-					Plunder is designed to be as engine agnostic as possible. The hooks it needs to work with an engine are minimal:
-					<ul>
-						<li>The entities that Timeline and its animations work with need these methods:
-							<ul>
-								<li><tt>addPlunderAnimation(ani)</tt> - adds an animation for the entity to keep track of</li>
-								<li><tt>clearPlunderAnimations()</tt> - remove all animations the entity is responsible for</li>								
-							</ul>
-						</li>
-						<li>The entity should call <tt>update(delta)</tt> against all animations it was given with <tt>addAni</tt></li>
-					</ul>
-				</p>
-				<p>
-					<b>TODO</b>: these methods will be renamed <tt>addPlunderAnimation</tt> and <tt>clearPlunderAnimations</tt> soon
-				</p>
-				<p>
-					Here is an example entity implementation that meets Plunder's needs:
-					
-<pre><code>
+            <p>
+               <b>Note:</b> See the <a href="#engines">Engine Integrations</a> section for more information on
+               the <tt>update</tt> method.
+            </p>
+            
+            <h2 id="engines">Engine Integrations</h2>
+            <p>
+               Plunder is designed to be as engine agnostic as possible. The hooks it needs to work with an engine are minimal:
+               <ul>
+                  <li>The entities that Timeline and its animations work with need these methods:
+                     <ul>
+                        <li><tt>addPlunderAnimation(ani)</tt> - adds an animation for the entity to keep track of</li>
+                        <li><tt>clearPlunderAnimations()</tt> - remove all animations the entity is responsible for</li>                        
+                     </ul>
+                  </li>
+                  <li>The entity should call <tt>update(delta)</tt> against all animations it was given with <tt>addAni</tt></li>
+               </ul>
+            </p>
+            <p>
+               <b>TODO</b>: these methods will be renamed <tt>addPlunderAnimation</tt> and <tt>clearPlunderAnimations</tt> soon
+            </p>
+            <p>
+               Here is an example entity implementation that meets Plunder's needs:
+               
+<pre>
 function Entity() {
-	this.anis = [];
+   this.anis = [];
 }
 
 Entity.prototype = {
-	addPlunderAnimation: function(ani) {
-		this.anis.push(ani);
-	},
-	clearPlunderAnimations: function() {
-		this.anis = [];
-	},
-	update: function(delta) {
-		for(var i = 0, i < this.anis.length; ++i) {
-			this.anis[i].update(delta);
-		}
-	}
+   addPlunderAnimation: function(ani) {
+      this.anis.push(ani);
+   },
+   clearPlunderAnimations: function() {
+      this.anis = [];
+   },
+   update: function(delta) {
+      for(var i = 0, i < this.anis.length; ++i) {
+         this.anis[i].update(delta);
+      }
+   }
 }
 
 var entity = new Entity();
 var timeline = new Timeline(entity);
 timeline.move({
-	from: { x: 10, y: 10 },
-	to: { x: 100, y: 100 },
-	duration: 1000
+   from: { x: 10, y: 10 },
+   to: { x: 100, y: 100 },
+   duration: 1000
 });
 
 // at this point entity.anis will contain one animation 
 // object that will move the entity as prescribed
-</code></pre>					
-				<p>
-					<b>Note:</b> for more info on what <tt>delta</tt> needs to be in <tt>update</tt>, see the <a href="#time">Time Units</a> section.
-				</p>
+</pre>               
+            <p>
+               <b>Note:</b> for more info on what <tt>delta</tt> needs to be in <tt>update</tt>, see the <a href="#time">Time Units</a> section.
+            </p>
 
-				<p id="standalone">
-					<b class="header">Standalone (no engine)</b>
-					<p>
-						<b>TODO:</b> provide the standalone reference implememntation
-					</p>
-				</p>
-				<p>
-					<b>TODO:</b> provide engine integrations for the most popular JavaScript engines. The ImpactJS integration already exists,
-					as I used it in the game where Plunder was extracted from. It will arrive shortly, along with other integrations.
-				</p>
-				
-				<h2 id="changelog">
-					Change Log
-				</h2>
-				<p>
-					<b class="header">0.1.0</b> — <small><i>Jul. 7, 2013</i></small>
-				</p>
-				<ul>
-					<li>Initial release
-					</li>
-					<li>Added Timeline with <tt>tween</tt>, <tt>move</tt>, <tt>scale</tt>, <tt>color</tt>, <tt>rotate</tt>, 
-						<tt>fadeIn</tt>, <tt>fadeOut</tt>, <tt>wait</tt>, <tt>waitBetween</tt>, <tt>invoke</tt>, <tt>reverse</tt>, <tt>setProperty</tt>, 
-						<tt>bezier</tt>, <tt>sequence</tt>, <tt>together</tt>, <tt>repeat</tt> and <tt>forever</tt>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</body>
+            <p id="standalone">
+               <b class="header">Standalone (no engine)</b>
+               <p>
+                  <b>TODO:</b> provide the standalone reference implememntation
+               </p>
+            </p>
+            <p>
+               <b>TODO:</b> provide engine integrations for the most popular JavaScript engines. The ImpactJS integration already exists,
+               as I used it in the game where Plunder was extracted from. It will arrive shortly, along with other integrations.
+            </p>
+            
+            <h2 id="changelog">
+               Change Log
+            </h2>
+            <p>
+               <b class="header">0.1.0</b> — <small><i>Jul. 7, 2013</i></small>
+            </p>
+            <ul>
+               <li>Initial release
+               </li>
+               <li>Added Timeline with <tt>tween</tt>, <tt>move</tt>, <tt>scale</tt>, <tt>color</tt>, <tt>rotate</tt>, 
+                  <tt>fadeIn</tt>, <tt>fadeOut</tt>, <tt>wait</tt>, <tt>waitBetween</tt>, <tt>invoke</tt>, <tt>reverse</tt>, <tt>setProperty</tt>, 
+                  <tt>bezier</tt>, <tt>sequence</tt>, <tt>together</tt>, <tt>repeat</tt> and <tt>forever</tt>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </body>
 </html>
 
