@@ -10,8 +10,7 @@ define [
 
   class Timeline
     constructor: (@owner) ->
-      unless @owner
-        throw new Error("Timeline requires an owner")
+      throw new Error("Timeline requires an owner") unless @owner
       @_buildStack = []
       @_childConfigStack = []
 

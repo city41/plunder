@@ -25,6 +25,9 @@ t.tween 'x:from10->100:for1000'
 
 t.tween 'prop=x,from=10,to=100,for=1000'
 
+t.tweenX({ from: 10, to: 100, for: 1000 })
+t.tweenColo
+
 
 t.together (t) ->
   t.tween 'prop:x,from:10,to:100,for:1000'

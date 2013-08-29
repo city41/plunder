@@ -105,9 +105,7 @@ define(['./Easie', './Util', './Accessor'], function(Easie, U, Accessor) {
     };
 
     Tween.prototype._tweenValue = function(elapsed, from, to, duration) {
-      var position;
-      position = this.easeFunc(elapsed, from, to - from, duration);
-      return position;
+      return this.easeFunc(elapsed, from, to - from, duration);
     };
 
     Tween.prototype._get = function(target) {

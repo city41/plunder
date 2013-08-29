@@ -53,7 +53,7 @@ define ['./Easie', './Util', './Accessor'], (Easie, U, Accessor) ->
         if curValue? && (!U.areSameTypes(value, curValue) || !U.areSameTypes(value, @to))
           throw new Error("Tween: mismatched types between from/to and targets current value")
 
-        value = value.slice(0)  if U.isArray(value)
+        value = value.slice(0) if U.isArray(value)
         @_set(target, value)
 
       @_targetsInitted = true
@@ -79,8 +79,7 @@ define ['./Easie', './Util', './Accessor'], (Easie, U, Accessor) ->
         throw new Error("Tween can only operate on numbers or arrays of numbers")
 
     _tweenValue: (elapsed, from, to, duration) ->
-      position = @easeFunc(elapsed, from, to - from, duration)
-      return position
+      @easeFunc(elapsed, from, to - from, duration)
 
     _get: (target) ->
       target[@_accessorProp].get()
