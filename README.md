@@ -1,6 +1,6 @@
 # Plunder [![Build Status](https://secure.travis-ci.org/city41/plunder.png?branch=master)](http://travis-ci.org/city41/plunder) [![Stories in Ready](https://badge.waffle.io/city41/plunder.png)](http://waffle.io/city41/plunder)
 
-[Plunder's website](http://city41.github.io/plunder)
+[Plunder's website](http://plunderjs.com)
 
 A tween based animation system for JavaScript game engines.
 
@@ -11,7 +11,7 @@ I'd love to see Plunder become so compelling that even people using more complet
 Plunder is coming along nicely but still needs a bit of love before it's really usable. 
 
 ## See Plunder in action
-Check out the [website](http://city41.github.io/plunder) for live examples.
+Check out the [website](http://plunderjs.com) for live examples.
 
 ## Build Plunder and play with it via the sandbox
 Here's what you need to do
@@ -50,4 +50,9 @@ Please fork the repo and send pull requests. Make sure to take advantage of the 
 * `grunt watch:sandbox` -- watches Plunder's source files and sandbox's files, and rebuilds whenever they change
 
 You can also see our [waffle board](http://waffle.io/city41/plunder) to get an idea of what needs to be worked on
+
+## Plunder's Website
+The [website](http://plunderjs.com) for Plunder now has its own repo, as it's gotten pretty involved. Check it out at http://github.com/city41/plunderSite  
+  
+The `gh-pages` branch here is now deprecated.
 
