@@ -49,7 +49,6 @@ module.exports = (grunt) ->
       options:
         baseUrl: "dist/amd"
         name: "main"
-        almond: true
         wrap:
           startFile: "support/start.frag"
           endFile: "support/end.frag"
@@ -84,7 +83,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
-  grunt.loadNpmTasks "grunt-requirejs"
+  grunt.loadNpmTasks "grunt-contrib-requirejs"
 
   # Default task.
   grunt.registerTask "default", ["build:plunder"]
