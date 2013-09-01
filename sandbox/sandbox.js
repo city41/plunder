@@ -1,7 +1,12 @@
-require(['../dist/plunder'], function(plunder) {
+(function() {
   var Entity, Timeline, U, context, entity, lastTimestamp, update;
-  Timeline = plunder.Timeline;
-  U = plunder.Util;
+
+  Timeline = Plunder.Timeline;
+
+  U = Plunder.Util;
+
+  window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame;
+
   Entity = (function() {
     function Entity() {
       this.timeline = new Timeline(this);
@@ -130,13 +135,18 @@ require(['../dist/plunder'], function(plunder) {
     return Entity;
 
   })();
+
   entity = new Entity();
+
   entity.bezier();
+
   context = document.getElementById('canvas').getContext('2d');
+
   lastTimestamp = null;
+
   update = function(ts) {
     var delta;
-    if (lastTimestamp == null) {
+    if (!lastTimestamp) {
       lastTimestamp = ts;
     }
     delta = ts - lastTimestamp;
@@ -146,5 +156,7 @@ require(['../dist/plunder'], function(plunder) {
     entity.draw(context);
     return window.requestAnimationFrame(update);
   };
-  return update(0);
-});
+
+  update(0);
+
+}).call(this);

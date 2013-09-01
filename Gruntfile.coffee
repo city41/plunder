@@ -34,7 +34,7 @@ module.exports = (grunt) ->
           "specs/helpers/helpers.js": "specs/helpers/**/*.coffee"
       sandbox:
         options:
-          bare: true
+          bare: false
         files:
           "sandbox/sandbox.js": "sandbox/**/*.coffee"
       impactjs:
