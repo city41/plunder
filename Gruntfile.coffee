@@ -1,5 +1,7 @@
 "use strict"
 
+LIVERELOAD_PORT = 35729
+lrSnippet = require("connect-livereload")(port: LIVERELOAD_PORT)
 mountFolder = (connect, dir) ->
   connect.static require("path").resolve(dir)
 
@@ -23,7 +25,7 @@ module.exports = (grunt) ->
       sandbox:
         options:
           middleware: (connect) ->
-            [mountFolder(connect, 'sandbox'), mountFolder(connect, 'dist')]
+            [lrSnippet, mountFolder(connect, 'sandbox'), mountFolder(connect, 'dist')]
 
     open:
       server:
@@ -87,7 +89,12 @@ module.exports = (grunt) ->
 
     watch:
       sandbox:
-        files: ["sandbox/**/*.coffee", "src/**/*.coffee"]
+        options:
+          livereload: LIVERELOAD_PORT
+        files: [
+          "sandbox/**/*.coffee"
+          "src/**/*.coffee"
+        ]
         tasks: ["build:sandbox"]
 
 
