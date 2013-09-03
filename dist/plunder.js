@@ -419,8 +419,6 @@ var requirejs, require, define;
     };
 }());
 
-define("almond", function(){});
-
 var __hasProp = {}.hasOwnProperty;
 
 define('Util',[],function() {

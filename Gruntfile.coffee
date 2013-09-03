@@ -50,8 +50,8 @@ module.exports = (grunt) ->
         baseUrl: "dist/amd"
         name: "main"
         wrap:
-          startFile: "support/start.frag"
-          endFile: "support/end.frag"
+          startFile: [ "support/start.frag", "support/almond.js" ],
+          endFile: [ "support/end.frag" ]
       plunder:
         options:
           out: "dist/<%= pkg.name %>.js"
