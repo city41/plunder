@@ -46,8 +46,8 @@ Please fork the repo and send pull requests. Make sure to take advantage of the 
 
 * `grunt` -- default task, runs the tests then builds Plunder
 * `grunt spec` -- runs the tests
-* `grunt sandbox` -- builds the sandbox
-* `grunt watch:sandbox` -- watches Plunder's source files and sandbox's files, and rebuilds whenever they change
+* `grunt build:sandbox` -- builds the sandbox
+* `grunt server:sandbox` -- starts a server on `localhost:9000` with the sandbox served from there, then opens a browser to it
 
 You can also see our [waffle board](http://waffle.io/city41/plunder) to get an idea of what needs to be worked on
 

@@ -1,4 +1,8 @@
 "use strict"
+
+mountFolder = (connect, dir) ->
+  connect.static require("path").resolve(dir)
+
 module.exports = (grunt) ->
 
   grunt.initConfig
@@ -11,6 +15,19 @@ module.exports = (grunt) ->
         name: "Matt Greer"
 
     banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" + "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" + "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n"
+
+    connect:
+      options:
+        port: 9000
+        hostname: '0.0.0.0'
+      sandbox:
+        options:
+          middleware: (connect) ->
+            [mountFolder(connect, 'sandbox'), mountFolder(connect, 'dist')]
+
+    open:
+      server:
+        path: "http://<%= connect.options.hostname %>:<%= connect.options.port %>"
 
     coffee:
       plunder:
@@ -71,7 +88,7 @@ module.exports = (grunt) ->
     watch:
       sandbox:
         files: ["sandbox/**/*.coffee", "src/**/*.coffee"]
-        tasks: ["sandbox"]
+        tasks: ["build:sandbox"]
 
 
   grunt.loadNpmTasks "grunt-contrib-clean"
@@ -79,9 +96,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-requirejs"
+  grunt.loadNpmTasks "grunt-contrib-connect"
+  grunt.loadNpmTasks "grunt-open"
 
   grunt.registerTask "default", ["build:plunder"]
-  grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
   grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
+  grunt.registerTask "build:sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
+  grunt.registerTask "server:sandbox", ["build:sandbox", "connect:sandbox", "open", "watch:sandbox"]
 
