@@ -1,10 +1,8 @@
 "use strict"
 module.exports = (grunt) ->
 
-  # Project configuration.
   grunt.initConfig
 
-    # Metadata.
     pkg:
       name: "plunder"
       version: "0.1.0"
@@ -14,8 +12,6 @@ module.exports = (grunt) ->
 
     banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" + "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" + "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n"
 
-
-    # Task configuration.
     coffee:
       plunder:
         options:
@@ -78,14 +74,12 @@ module.exports = (grunt) ->
         tasks: ["sandbox"]
 
 
-  # These plugins provide necessary tasks.
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-requirejs"
 
-  # Default task.
   grunt.registerTask "default", ["build:plunder"]
   grunt.registerTask "sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
   grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
