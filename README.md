@@ -18,8 +18,7 @@ Here's what you need to do
 
 1. clone this repo to your box
 2. run `npm install` (you will need [npm](http://npmjs.org) installed)
-3. run `grunt sandbox` to build the sandbox
-4. open `sandbox/index.html` in your browser
+3. run `grunt server:sandbox` to play with the sandbox
 
 `sandbox/sandbox.coffee` is a truly minimal infrastructure to make Plunder possible.
 Just a canvas and one entity that Plunder is manipulating. There are a few canned animation sequences defined
