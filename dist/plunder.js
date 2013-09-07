@@ -422,7 +422,7 @@ var requirejs, require, define;
 var __hasProp = {}.hasOwnProperty;
 
 define('Util',[],function() {
-  var Util, _isInteger;
+  var Util, buildIsType, type, _i, _isInteger, _len, _ref;
   _isInteger = function(num) {
     return num === (num | 0);
   };
@@ -452,17 +452,8 @@ define('Util',[],function() {
     radiansToDegrees: function(radians) {
       return radians * 180 / Math.PI;
     },
-    isNumber: function(n) {
-      return typeof n === "number";
-    },
-    isUndefined: function(obj) {
-      return typeof obj === "undefined";
-    },
-    isFunction: function(f) {
-      return typeof f === "function";
-    },
-    isString: function(s) {
-      return toString.call(s) === "[object String]";
+    isUndefined: function(o) {
+      return typeof o === 'undefined';
     },
     isPrimitive: function(o) {
       return o === true || o === false || this.isString(o) || this.isNumber(o);
@@ -520,8 +511,18 @@ define('Util',[],function() {
     }
   };
   Util.isArray = Array.isArray || function(obj) {
-    return toString.call(obj) === "[object Array]";
+    return Object.prototype.toString.call(obj) === "[object Array]";
   };
+  buildIsType = function(type) {
+    return function(obj) {
+      return Object.prototype.toString.call(obj) === ("[object " + type + "]");
+    };
+  };
+  _ref = ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'];
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    type = _ref[_i];
+    Util["is" + type] = buildIsType(type);
+  }
   return Util;
 });
 

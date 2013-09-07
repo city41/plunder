@@ -27,17 +27,8 @@ define ->
     radiansToDegrees: (radians) ->
       radians * 180 / Math.PI
 
-    isNumber: (n) ->
-      typeof n == "number"
-
-    isUndefined: (obj) ->
-      typeof obj == "undefined"
-
-    isFunction: (f) ->
-      typeof f == "function"
-
-    isString: (s) ->
-      toString.call(s) == "[object String]"
+    isUndefined: (o) ->
+      typeof o == 'undefined'
 
     isPrimitive: (o) ->
       o == true || o == false || @isString(o) || @isNumber(o) 
@@ -83,7 +74,13 @@ define ->
       array && array.length > 0
 
   Util.isArray = Array.isArray or (obj) ->
-    toString.call(obj) == "[object Array]"
+    Object::toString.call(obj) == "[object Array]"
+
+  buildIsType = (type) ->
+    (obj) -> Object::toString.call(obj) == "[object #{type}]"
+
+  for type in ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']
+    Util["is#{type}"] = buildIsType(type)
 
   return Util
 
