@@ -64,9 +64,10 @@ module.exports = (grunt) ->
       options:
         baseUrl: "dist/amd"
         name: "main"
+        almond: true
         wrap:
-          startFile: [ "support/start.frag", "support/almond.js" ],
-          endFile: [ "support/end.frag" ]
+          startFile: "support/start.frag"
+          endFile: "support/end.frag"
       plunder:
         options:
           out: "dist/<%= pkg.name %>.js"
@@ -102,7 +103,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
-  grunt.loadNpmTasks "grunt-contrib-requirejs"
+  grunt.loadNpmTasks "grunt-requirejs"
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-open"
 
