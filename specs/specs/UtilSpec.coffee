@@ -30,6 +30,24 @@ require ["Util"], (U) ->
         expect(U.radiansToDegrees(2*Math.PI)).toEqual 360
         expect(U.radiansToDegrees(100)).toEqual 100 * 180 / Math.PI
 
+    describe "#isString", ->
+      it "should say a string is a string", ->
+        expect(U.isString("im a string")).toBeTruthy()
+        expect(U.isString("")).toBeTruthy()
+        expect(U.isString(String(4))).toBeTruthy()
+        expect(U.isString((2).toString())).toBeTruthy()
+
+      it "should say non strings are not a string", ->
+        expect(U.isString()).toBeFalsy()
+        expect(U.isString({})).toBeFalsy()
+        expect(U.isString([])).toBeFalsy()
+        expect(U.isString(null)).toBeFalsy()
+        expect(U.isString(false)).toBeFalsy()
+        expect(U.isString(true)).toBeFalsy()
+        expect(U.isString(undefined)).toBeFalsy()
+        expect(U.isString(3)).toBeFalsy()
+        expect(U.isString(3.14)).toBeFalsy()
+
     describe "#isNumber", ->
       it "should say an integer is a number", ->
         expect(U.isNumber(81)).toBeTruthy()

@@ -1,4 +1,4 @@
-define(function() {
+define(['./Util'], function(U) {
   /*
   Easie.coffee (https://github.com/jimjeffers/Easie)
   Project created by J. Jeffers
@@ -13,6 +13,19 @@ define(function() {
   var Easie;
   return Easie = (function() {
     function Easie() {}
+
+    Easie.reverse = function(easing) {
+      if (!U.isString(easing)) {
+        return easing;
+      }
+      if (easing.indexOf('InOut') > -1) {
+        return easing;
+      }
+      if (easing.indexOf('In') > -1) {
+        return easing.replace(/In/, 'Out');
+      }
+      return easing.replace(/Out/, 'In');
+    };
 
     Easie.backIn = function(time, begin, change, duration, overshoot) {
       if (overshoot == null) {

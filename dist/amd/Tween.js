@@ -23,7 +23,7 @@ define(['./Easie', './Util', './Accessor'], function(Easie, U, Accessor) {
         targets: this.targets,
         from: this.to,
         to: this.from,
-        easing: this.easing,
+        easing: Easie.reverse(this.easing),
         duration: this.duration
       });
     };

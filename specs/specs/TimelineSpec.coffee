@@ -161,6 +161,7 @@ require ["Timeline", "Tween", "Repeat", "Easie"], (Timeline, Tween, Repeat, Easi
           to: 4
           duration: 1000
           property: 'x'
+          easing: 'cubicIn'
 
         reversed = @timeline.reverse(tween)
 
@@ -168,6 +169,7 @@ require ["Timeline", "Tween", "Repeat", "Easie"], (Timeline, Tween, Repeat, Easi
         expect(reversed.to).toEqual tween.from
         expect(reversed.duration).toEqual tween.duration
         expect(reversed.property).toEqual tween.property
+        expect(reversed.easing).toEqual 'cubicOut'
 
     describe "#together", ->
       it "should pass the default config down to children", ->

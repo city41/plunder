@@ -181,6 +181,12 @@ require ['Tween', 'Easie'], (Tween, Easie) ->
           expect(reversed.duration).toEqual tween.duration
           expect(reversed.easeFunc).toEqual tween.easeFunc
 
+        it "should reverse the easing", ->
+          { tween, target } = getNumericTween easing: 'quadIn'
+          reversed = tween.reverse()
+
+          expect(reversed.easing).toBe 'quadOut'
+
       describe "error conditions", ->
         it "should throw an error if asked to tween a non numeric value", ->
           target = foo: 'hello'

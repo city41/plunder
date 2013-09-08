@@ -1,4 +1,4 @@
-define ->
+define ['./Util'], (U) ->
   ###
   Easie.coffee (https://github.com/jimjeffers/Easie)
   Project created by J. Jeffers
@@ -11,6 +11,18 @@ define ->
   ###
 
   class Easie
+
+    @reverse: (easing) ->
+      return easing if !U.isString(easing)
+
+      if easing.indexOf('InOut') > -1
+        return easing
+
+      if easing.indexOf('In') > -1
+        return easing.replace(/In/, 'Out')
+
+      return easing.replace(/Out/, 'In')
+
     
     # Back Easing 
     # -----------------------------------------------------

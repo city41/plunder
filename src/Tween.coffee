@@ -22,7 +22,7 @@ define ['./Easie', './Util', './Accessor'], (Easie, U, Accessor) ->
         targets: @targets
         from: @to
         to: @from
-        easing: @easing
+        easing: Easie.reverse(@easing)
         duration: @duration
 
     update: (delta) ->
