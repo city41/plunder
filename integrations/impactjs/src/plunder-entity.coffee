@@ -6,9 +6,9 @@ ig.module("plugins.plunder-entity")
 
   root.MixinPlunder =
     init: (x, y, settings) ->
-      @parent x, y, settings
       @timeline = new Plunder.Timeline(this)
       @anis = []
+      @parent x, y, settings
 
     update: ->
       for ani in @anis
@@ -26,4 +26,3 @@ ig.module("plugins.plunder-entity")
       ig.system.context.globalAlpha = if @alpha? then @alpha else originalAlpha
       @parent()
       ig.system.context.globalAlpha = originalAlpha
-
