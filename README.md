@@ -4,11 +4,11 @@
 
 A tween based animation system for JavaScript game engines.
 
-Plunder is a powerful, expressive animation system that can help fill in the gaps on smaller game engines such as ImpactJS. 
+Plunder is a powerful, expressive animation system that can help fill in the gaps on smaller game engines such as ImpactJS.
 I'd love to see Plunder become so compelling that even people using more complete engines like Lime want to use it.
 
 ## Early Stuff So Far
-Plunder is coming along nicely but still needs a bit of love before it's really usable. 
+Plunder is coming along nicely but still needs a bit of love before it's really usable.
 
 ## See Plunder in action
 Check out the [website](http://plunderjs.com) for live examples.
@@ -52,6 +52,9 @@ You can also see our [waffle board](http://waffle.io/city41/plunder) to get an i
 
 ## Plunder's Website
 The [website](http://plunderjs.com) for Plunder now has its own repo, as it's gotten pretty involved. Check it out at http://github.com/city41/plunderSite  
-  
+
 The `gh-pages` branch here is now deprecated.
 
+## Games Using Plunder
+
+[Dragon Plunder](http://www.mattgreer.org/dragon-plunder/) -- this is the game Plunder was extracted from, hence the name.
