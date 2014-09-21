@@ -56,3 +56,9 @@ The `gh-pages` branch here is now deprecated.
 ## Games Using Plunder
 
 [Dragon Plunder](http://www.mattgreer.org/dragon-plunder/) -- this is the game Plunder was extracted from, hence the name.
+
+## Legacy Tech Removal - Bower -> NPM
+
+Plunder used to be a Bower package, it is now only an NPM package. [Browserify](http://browserify.org/) is the prefered way to pull it into a website.
+
+Eventually want to also remove all CoffeeScript (use ES6 and Traceur instead) and switch Grunt over to Gulp. These will be tackled at some point.

@@ -1,3 +1,4 @@
+Plunder = require('../index.js')
 Timeline = Plunder.Timeline
 U = Plunder.Util
 
@@ -144,4 +145,3 @@ update = (ts) ->
   window.requestAnimationFrame(update)
 
 update(0)
-

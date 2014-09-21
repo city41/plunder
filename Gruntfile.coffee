@@ -12,11 +12,9 @@ module.exports = (grunt) ->
     pkg:
       name: "plunder"
       version: "0.1.0"
-      homepage: "http://city41.github.io/plunder"
+      homepage: "http://plunderjs.com"
       author:
         name: "Matt Greer"
-
-    banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " + "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" + "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" + "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" + " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n"
 
     connect:
       options:
@@ -25,7 +23,7 @@ module.exports = (grunt) ->
       sandbox:
         options:
           middleware: (connect) ->
-            [lrSnippet, mountFolder(connect, 'sandbox'), mountFolder(connect, 'dist')]
+            [lrSnippet, mountFolder(connect, 'sandbox')]
 
     open:
       server:
@@ -41,12 +39,6 @@ module.exports = (grunt) ->
         src: ["**/*.coffee"]
         dest: "lib"
         ext: ".js"
-      spec:
-        options:
-          bare: true
-        files:
-          "specs/JasmineSpecs.js": "specs/specs/**/*Spec.coffee"
-          "specs/helpers/helpers.js": "specs/helpers/**/*.coffee"
       sandbox:
         options:
           bare: false
@@ -58,7 +50,7 @@ module.exports = (grunt) ->
         files: "integrations/impactjs/built/plunder-entity.js": "integrations/impactjs/src/**/*.coffee"
 
     clean:
-      files: ["dist/amd", "built", "specs/JasmineSpecs.js"]
+      files: ["lib"]
 
      mochaTest:
       test:
@@ -79,6 +71,13 @@ module.exports = (grunt) ->
         ]
         tasks: ["build:sandbox"]
 
+    browserify:
+      sandbox:
+        files:
+          'sandbox/sandbox-bundle.js': ['sandbox/sandbox.coffee']
+        options:
+          transform: ['coffeeify']
+
 
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
@@ -88,7 +87,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-open"
   grunt.loadNpmTasks "grunt-mocha-test"
+  grunt.loadNpmTasks('grunt-browserify')
 
   grunt.registerTask "default", ["mochaTest", "build:plunder"]
   grunt.registerTask "spec", ["mochaTest"]
   grunt.registerTask "build:plunder", ["clean", "coffee:plunder"]
+  grunt.registerTask "build:sandbox", ["browserify:sandbox"]
+  grunt.registerTask "server:sandbox", ["build:sandbox", "connect", "watch:sandbox"]

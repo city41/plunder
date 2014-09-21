@@ -5,3 +5,4 @@ compiledjs/
 ~*
 *.swp
 README.html
+sandbox/sandbox-bundle.js
