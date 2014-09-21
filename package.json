@@ -1,7 +1,35 @@
 {
   "name": "plunder",
+
+  "description": "An animation system for JavaScript game engines",
+
   "version": "0.1.1",
+
   "main": "index.js",
+
+  "author": {
+    "name": "Matt Greer",
+    "email": "matt.e.greer@gmail.com"
+  },
+
+  "keywords": [
+    "game",
+    "animation",
+    "engine",
+    "canvas"
+  ],
+
+  "homepage": "http://plunderjs.com",
+
+  "license": "MIT",
+
+  "contributors": [
+    {
+      "name": "Matt Greer",
+      "email": "matt.e.greer@gmail.com"
+    }
+  ],
+
   "devDependencies": {
     "chai": "^1.9.1",
     "chai-as-promised": "^4.1.1",
@@ -20,7 +48,8 @@
     "sinon": "^1.10.3",
     "sinon-chai": "^2.5.0"
   },
+
   "scripts": {
-    "test": "grunt spec --verbose"
+    "test": "grunt spec"
   }
 }
