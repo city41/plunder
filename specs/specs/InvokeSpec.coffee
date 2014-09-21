@@ -1,37 +1,37 @@
-require ['Invoke'], (Invoke) ->
-  describe "Invoke", ->
-    describe "#update", ->
-      it "should invoke the provided function", ->
-        obj = func: ->
+Invoke = require('../../src/Invoke')
 
-        spyOn obj, "func"
-        invoke = new Invoke(func: obj.func)
-        invoke.update()
-        expect(obj.func).toHaveBeenCalled()
-        expect(invoke.done).toBe true
+describe "Invoke", ->
+  describe "#update", ->
+    it "should invoke the provided function", ->
+      obj = func: ->
 
-    describe "#reset", ->
-      it "should reset", ->
-        invoke = new Invoke(func: ->)
-        invoke.done = true
+      @spy(obj, "func")
+      invoke = new Invoke(func: obj.func)
+      invoke.update()
+      expect(obj.func).to.have.been.called.once
+      expect(invoke.done).to.be.true
 
-        invoke.reset()
-        expect(invoke.done).toBe false
+  describe "#reset", ->
+    it "should reset", ->
+      invoke = new Invoke(func: ->)
+      invoke.done = true
 
-    describe "#reverse", ->
-      beforeEach ->
-        @invoke = new Invoke
-          func: ->
-          context: {}
+      invoke.reset()
+      expect(invoke.done).to.be.false
 
-        @reversed = @invoke.reverse()
+  describe "#reverse", ->
+    beforeEach ->
+      @invoke = new Invoke
+        func: ->
+        context: {}
 
-      it "should be a different animation", ->
-        expect(@reversed).not.toBe @invoke
+      @reversed = @invoke.reverse()
 
-      it "should have the same function", ->
-        expect(@reversed.func).toBe @invoke.func
+    it "should be a different animation", ->
+      expect(@reversed == @invoke).to.be.false
 
-      it "should have the same context", ->
-        expect(@reversed.context).toBe @invoke.context
+    it "should have the same function", ->
+      expect(@reversed.func).to.eql(@invoke.func)
 
+    it "should have the same context", ->
+      expect(@reversed.context).to.eql(@invoke.context)

@@ -1,64 +1,64 @@
-require ["Wait"], (Wait) ->
-  getWait = ->
-    new Wait
-      duration: 100
+Wait = require('../../src/Wait')
 
-  getMinMaxWait = (min=10, max=20) ->
-    new Wait
-      min: min
-      max: max
+describe "Wait", ->
+  helpers
+    getWait: ->
+      new Wait
+        duration: 100
 
-  describe "Wait", ->
-    describe "#constructor", ->
-      it "should not be done", ->
-        wait = getWait()
-        expect(wait.done).toBeFalsy()
+    getMinMaxWait: (min=10, max=20) ->
+      new Wait
+        min: min
+        max: max
 
-      it "should set duration from min and max", ->
-        wait = getMinMaxWait(5, 10)
+  describe "#constructor", ->
+    it "should not be done", ->
+      wait = @getWait()
+      expect(wait.done).to.be.false
 
-        expect(wait.duration).toBeGreaterThan(4)
-        expect(wait.duration).toBeLessThan(11)
+    it "should set duration from min and max", ->
+      wait = @getMinMaxWait(5, 10)
 
-      it "should throw if min is greater than max", ->
-        fn = ->
-          getMinMaxWait(10, 5)
+      expect(wait.duration).to.be.above(4)
+      expect(wait.duration).to.be.below(11)
 
-        expect(fn).toThrow()
+    it "should throw if min is greater than max", ->
+      fn = ->
+        getMinMaxWait(10, 5)
 
-    describe "#update", ->
-      it "should wait for the specified duration", ->
-        wait = getWait()
+      expect(fn).to.throw(Error)
 
-        for i in [0...99]
-          wait.update(1)
-          expect(wait.done).toBeFalsy()
+  describe "#update", ->
+    it "should wait for the specified duration", ->
+      wait = @getWait()
 
+      for i in [0...99]
         wait.update(1)
-        expect(wait.done).toBeTruthy()
+        expect(wait.done).to.be.false
 
-    describe "#reverse", ->
-      it "should be a different animation", ->
-        wait = getWait()
-        reversed = wait.reverse()
+      wait.update(1)
+      expect(wait.done).to.be.true
 
-        expect(reversed).not.toBe wait
+  describe "#reverse", ->
+    it "should be a different animation", ->
+      wait = @getWait()
+      reversed = wait.reverse()
 
-      it "should wait the same for a static wait", ->
-        wait = getWait()
-        reversed = wait.reverse()
+      expect(reversed == wait).to.be.false
 
-        expect(reversed.min).toEqual wait.min
-        expect(reversed.max).toEqual wait.max
-        expect(reversed.duration).toEqual wait.duration
+    it "should wait the same for a static wait", ->
+      wait = @getWait()
+      reversed = wait.reverse()
 
-      it "should have the same duration for a variable wait", ->
-        # ie: it should not reroll a new duration
-        wait = getMinMaxWait()
-        reversed = wait.reverse()
+      expect(reversed.min).to.eql(wait.min)
+      expect(reversed.max).to.eql(wait.max)
+      expect(reversed.duration).to.eql(wait.duration)
 
-        expect(reversed.min).toBeUndefined()
-        expect(reversed.max).toBeUndefined()
-        expect(reversed.duration).toEqual wait.duration
+    it "should have the same duration for a variable wait", ->
+      # ie: it should not reroll a new duration
+      wait = @getMinMaxWait()
+      reversed = wait.reverse()
 
-
+      expect(reversed.min).to.be.undefined
+      expect(reversed.max).to.be.undefined
+      expect(reversed.duration).to.eql(wait.duration)

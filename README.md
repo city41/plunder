@@ -17,7 +17,7 @@ Check out the [website](http://plunderjs.com) for live examples.
 Here's what you need to do
 
 1. clone this repo to your box
-2. run `npm install` (you will need [npm](http://npmjs.org) installed)
+2. `npm install`
 3. run `grunt server:sandbox` to play with the sandbox
 
 `sandbox/sandbox.coffee` is a truly minimal infrastructure to make Plunder possible.
@@ -47,8 +47,6 @@ Please fork the repo and send pull requests. Make sure to take advantage of the 
 * `grunt spec` -- runs the tests
 * `grunt build:sandbox` -- builds the sandbox
 * `grunt server:sandbox` -- starts a server on `localhost:9000` with the sandbox served from there, then opens a browser to it
-
-You can also see our [waffle board](http://waffle.io/city41/plunder) to get an idea of what needs to be worked on
 
 ## Plunder's Website
 The [website](http://plunderjs.com) for Plunder now has its own repo, as it's gotten pretty involved. Check it out at http://github.com/city41/plunderSite  

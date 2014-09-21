@@ -1,25 +1,24 @@
-define ->
+class Together
+  constructor: (@children=[]) ->
 
-  class Together
-    constructor: (@children=[]) ->
+  reset: ->
+    @done = false
+    for child in @children
+      child.reset()
 
-    reset: ->
-      @done = false
-      for child in @children
-        child.reset()
+  reverse: ->
+    reversedChildren = (child.reverse() for child in @children)
+    new Together reversedChildren
 
-    reverse: ->
-      reversedChildren = (child.reverse() for child in @children)
-      new Together reversedChildren
+  update: (args...)->
+    return  if @done
 
-    update: (args...)->
-      return  if @done
+    childNotDone = false
 
-      childNotDone = false
+    for child in @children
+      child.update.apply child, args
+      childNotDone = true unless child.done
 
-      for child in @children
-        child.update.apply child, args
-        childNotDone = true unless child.done
+    @done = not childNotDone
 
-      @done = not childNotDone
-
+module.exports = Together

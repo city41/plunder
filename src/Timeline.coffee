@@ -1,146 +1,145 @@
-define [
-  "./Util"
-  "./Bezier"
-  "./Tween"
-  "./Wait"
-  "./Repeat"
-  "./Together"
-  "./Invoke"
-], (U, Bezier, Tween, Wait, Repeat, Together, Invoke) ->
+U = require('./Util')
+Bezier = require('./Bezier')
+Tween = require('./Tween')
+Wait = require('./Wait')
+Repeat = require('./Repeat')
+Together = require('./Together')
+Invoke = require('./Invoke')
 
-  class Timeline
-    constructor: (@owner) ->
-      throw new Error("Timeline requires an owner") unless @owner
-      @_buildStack = []
-      @_childConfigStack = []
+class Timeline
+  constructor: (@owner) ->
+    throw new Error("Timeline requires an owner") unless @owner
+    @_buildStack = []
+    @_childConfigStack = []
 
-    _getTargets: (targetOptions) ->
-      targets = targetOptions.target ?  @owner
-      return U.toArray(targets)
+  _getTargets: (targetOptions) ->
+    targets = targetOptions.target ?  @owner
+    return U.toArray(targets)
 
-    _mergeConfig: (config) ->
-      if U.any(@_childConfigStack)
-        return U.extend(U.clone(U.last(@_childConfigStack)), config)
-      else
-        return config
+  _mergeConfig: (config) ->
+    if U.any(@_childConfigStack)
+      return U.extend(U.clone(U.last(@_childConfigStack)), config)
+    else
+      return config
 
-    _addParentAnimation: (childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) ->
-      if U.isFunction(childConfigOrBuilder)
-        builder = childConfigOrBuilder
-      else
-        childConfig = childConfigOrBuilder
-        builder = builderOrUndefined
+  _addParentAnimation: (childConfigOrBuilder, builderOrUndefined, AniConstructor, consArg) ->
+    if U.isFunction(childConfigOrBuilder)
+      builder = childConfigOrBuilder
+    else
+      childConfig = childConfigOrBuilder
+      builder = builderOrUndefined
 
-      parentAni = new AniConstructor(consArg)
+    parentAni = new AniConstructor(consArg)
 
-      if childConfig
-        @_childConfigStack.push childConfig
+    if childConfig
+      @_childConfigStack.push childConfig
 
-      @_buildStack.push parentAni
-      builder this
-      @_buildStack.pop()
+    @_buildStack.push parentAni
+    builder this
+    @_buildStack.pop()
 
-      if childConfig
-        @_childConfigStack.pop()
+    if childConfig
+      @_childConfigStack.pop()
 
-      @_pushAnimation parentAni
+    @_pushAnimation parentAni
 
-    _addAnimation: (AniConstructor, config) ->
-      ani = new AniConstructor(@_mergeConfig(config))
-      ani.targets = @_getTargets ani
-      @_pushAnimation ani
+  _addAnimation: (AniConstructor, config) ->
+    ani = new AniConstructor(@_mergeConfig(config))
+    ani.targets = @_getTargets ani
+    @_pushAnimation ani
 
-    _pushAnimation: (ani) ->
-      if @_buildStack.length is 0
-        @owner.addPlunderAnimation ani
-      else
-        @_buildStack[@_buildStack.length - 1].children.push ani
+  _pushAnimation: (ani) ->
+    if @_buildStack.length is 0
+      @owner.addPlunderAnimation ani
+    else
+      @_buildStack[@_buildStack.length - 1].children.push ani
 
-      return ani
+    return ani
 
-    ## Animation creation helpers
+  ## Animation creation helpers
 
-    _fade: (config, from, to) ->
-      config = duration: config  if U.isNumber(config)
-      config.property = "alpha"
-      config.from = from
-      config.to = to
-      @_addAnimation Tween, config
+  _fade: (config, from, to) ->
+    config = duration: config  if U.isNumber(config)
+    config.property = "alpha"
+    config.from = from
+    config.to = to
+    @_addAnimation Tween, config
 
-    ## Animations
+  ## Animations
 
-    reverse: (ani) ->
-      @_pushAnimation ani.reverse()
+  reverse: (ani) ->
+    @_pushAnimation ani.reverse()
 
-    setProperty: (config = {}) ->
-      config.duration = 0
-      config.from = config.to = config.value
-      @tween config
+  setProperty: (config = {}) ->
+    config.duration = 0
+    config.from = config.to = config.value
+    @tween config
 
-    bezier: (config = {}) ->
-      @_addAnimation Bezier, config
+  bezier: (config = {}) ->
+    @_addAnimation Bezier, config
 
-    tween: (config = {}) ->
-      @_addAnimation Tween, config
+  tween: (config = {}) ->
+    @_addAnimation Tween, config
 
-    fadeIn: (config = {}) ->
-      @_fade config, 0, 1
+  fadeIn: (config = {}) ->
+    @_fade config, 0, 1
 
-    fadeOut: (config = {}) ->
-      @_fade config, 1, 0
+  fadeOut: (config = {}) ->
+    @_fade config, 1, 0
 
-    scale: (config = {}) ->
-      config.property = 'scale'
-      @tween(config)
+  scale: (config = {}) ->
+    config.property = 'scale'
+    @tween(config)
 
-    color: (config = {}) ->
-      config.property = 'color'
-      @tween(config)
+  color: (config = {}) ->
+    config.property = 'color'
+    @tween(config)
 
-    rotate: (config = {}) ->
-      config.property = 'angle'
-      @tween(config)
+  rotate: (config = {}) ->
+    config.property = 'angle'
+    @tween(config)
 
-    move: (config) ->
-      xconfig = U.clone(config)
-      xconfig.easing = config.easingX ? config.easing
-      xconfig.from = config.from.x
-      xconfig.to = config.to.x
-      xconfig.property = 'x'
+  move: (config) ->
+    xconfig = U.clone(config)
+    xconfig.easing = config.easingX ? config.easing
+    xconfig.from = config.from.x
+    xconfig.to = config.to.x
+    xconfig.property = 'x'
 
-      yconfig = U.clone(config)
-      yconfig.easing = config.easingY ? config.easing
-      yconfig.from = config.from.y
-      yconfig.to = config.to.y
-      yconfig.property = 'y'
+    yconfig = U.clone(config)
+    yconfig.easing = config.easingY ? config.easing
+    yconfig.from = config.from.y
+    yconfig.to = config.to.y
+    yconfig.property = 'y'
 
-      @together (tl) ->
-        tl.tween(xconfig)
-        tl.tween(yconfig)
+    @together (tl) ->
+      tl.tween(xconfig)
+      tl.tween(yconfig)
 
-    together: (childConfigOrBuilder, builderOrUndefined) ->
-      @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Together
+  together: (childConfigOrBuilder, builderOrUndefined) ->
+    @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Together
 
-    sequence: (childConfigOrBuilder, builderOrUndefined) ->
-      @repeat 1, childConfigOrBuilder, builderOrUndefined
+  sequence: (childConfigOrBuilder, builderOrUndefined) ->
+    @repeat 1, childConfigOrBuilder, builderOrUndefined
 
-    forever: (childConfigOrBuilder, builderOrUndefined) ->
-      @repeat(Infinity, childConfigOrBuilder, builderOrUndefined)
+  forever: (childConfigOrBuilder, builderOrUndefined) ->
+    @repeat(Infinity, childConfigOrBuilder, builderOrUndefined)
 
-    repeat: (count, childConfigOrBuilder, builderOrUndefined) ->
-      @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Repeat, count
+  repeat: (count, childConfigOrBuilder, builderOrUndefined) ->
+    @_addParentAnimation childConfigOrBuilder, builderOrUndefined, Repeat, count
 
-    wait: (duration) ->
-      @waitBetween duration, duration
+  wait: (duration) ->
+    @waitBetween duration, duration
 
-    waitBetween: (min, max) ->
-      @_addAnimation  Wait, { min, max }
+  waitBetween: (min, max) ->
+    @_addAnimation  Wait, { min, max }
 
-    invoke: (func, context) ->
-      @_addAnimation Invoke, { func, context }
+  invoke: (func, context) ->
+    @_addAnimation Invoke, { func, context }
 
-    ## Animation maintenance
+  ## Animation maintenance
 
-    stop: ->
-      @owner.clearPlunderAnimations()
+  stop: ->
+    @owner.clearPlunderAnimations()
 
+module.exports = Timeline

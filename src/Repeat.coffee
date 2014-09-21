@@ -1,39 +1,40 @@
-define ["./Util"], (U) ->
-  class Repeat
-    constructor: (@count, @children=[]) ->
-      @_currentChild = 0
-      @_curCount = 0
+U = require('./Util')
 
-    reset: ->
-      @done = false
-      @_currentChild = 0
-      @_curCount = 0
-      for child in @children
-        child.reset()
+class Repeat
+  constructor: (@count, @children=[]) ->
+    @_currentChild = 0
+    @_curCount = 0
 
-    reverse: ->
-      # TODO: reversing the array is not always the correct thing to do
+  reset: ->
+    @done = false
+    @_currentChild = 0
+    @_curCount = 0
+    for child in @children
+      child.reset()
 
-      reversedChildren = (child.reverse() for child in @children)
-      new Repeat @count, reversedChildren.reverse()
+  reverse: ->
+    # TODO: reversing the array is not always the correct thing to do
 
-    update: (args...) ->
-      @done = @_curCount >= @count
-      return  if @done
+    reversedChildren = (child.reverse() for child in @children)
+    new Repeat @count, reversedChildren.reverse()
 
-      curChild = @children[@_currentChild]
+  update: (args...) ->
+    @done = @_curCount >= @count
+    return  if @done
 
-      curChild.update.apply curChild, args
+    curChild = @children[@_currentChild]
 
-      if curChild.done
-        ++@_currentChild
-        if @_currentChild >= @children.length
-          @_currentChild = 0
+    curChild.update.apply curChild, args
 
-          ++@_curCount
-          @done = @_curCount >= @count
+    if curChild.done
+      ++@_currentChild
+      if @_currentChild >= @children.length
+        @_currentChild = 0
 
-          if not @done
-            child.reset() for child in @children
+        ++@_curCount
+        @done = @_curCount >= @count
 
+        if not @done
+          child.reset() for child in @children
 
+module.exports = Repeat

@@ -39,7 +39,7 @@ module.exports = (grunt) ->
         flatten: true
         cwd: "src"
         src: ["**/*.coffee"]
-        dest: "dist/amd"
+        dest: "lib"
         ext: ".js"
       spec:
         options:
@@ -60,33 +60,14 @@ module.exports = (grunt) ->
     clean:
       files: ["dist/amd", "built", "specs/JasmineSpecs.js"]
 
-    requirejs:
-      options:
-        baseUrl: "dist/amd"
-        name: "main"
-        almond: true
-        wrap:
-          startFile: "support/start.frag"
-          endFile: "support/end.frag"
-      plunder:
+     mochaTest:
+      test:
         options:
-          out: "dist/<%= pkg.name %>.js"
-          optimize: "none"
-      min:
-        options:
-          out: "dist/<%= pkg.name %>.min.js"
-          optimize: "uglify"
-
-    jasmine:
-      src: "dist/amd/**/*.js"
-      options:
-        keepRunner: true
-        specs: "specs/JasmineSpecs.js"
-        template: require("grunt-template-jasmine-requirejs")
-        templateOptions:
-          requireConfig:
-            baseUrl: "dist/amd/"
-        helpers: "specs/helpers/**/*.js"
+          reporter: 'spec'
+        src: [
+          'specs/helpers/*helper.coffee'
+          'specs/specs/*Spec.coffee'
+        ]
 
     watch:
       sandbox:
@@ -106,10 +87,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-requirejs"
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-open"
+  grunt.loadNpmTasks "grunt-mocha-test"
 
-  grunt.registerTask "default", ["build:plunder"]
-  grunt.registerTask "spec", ["clean", "coffee", "jasmine"]
-  grunt.registerTask "build:plunder", ["spec", "clean", "coffee:plunder", "requirejs"]
-  grunt.registerTask "build:sandbox", ["clean", "coffee:plunder", "coffee:sandbox", "requirejs:plunder"]
-  grunt.registerTask "server:sandbox", ["build:sandbox", "connect:sandbox", "open", "watch:sandbox"]
-
+  grunt.registerTask "default", ["mochaTest", "build:plunder"]
+  grunt.registerTask "spec", ["mochaTest"]
+  grunt.registerTask "build:plunder", ["clean", "coffee:plunder"]
