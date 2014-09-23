@@ -86,22 +86,11 @@ class Entity
     loader = new Loader()
     loader.load(animationDefinition, @timeline)
 
-  # this method is required by Plunder, an ani
-  # is something like tween, bezier, scale, etc
-  addPlunderAnimation: (ani) ->
-    @anis.push(ani)
-
-  # also required by Plunder, but so far not really used
-  clearPlunderAnimations: ->
-    @anis = []
-
-  # also required by Plunder, update the anis in each run of the
-  # game loop. delta is how much time has passed since the previous
-  # game loop call. Time units don't matter to Plunder, as long as
-  # delta here and duration in the Timeline calls are the same unit
+  # Required by Plunder:
+  # during your entity's update inside your gameloop,
+  # have the timeline update too
   update: (delta) ->
-    for ani in @anis
-      ani.update(delta)
+    @timeline.update(delta)
 
   # when drawing the entity, Plunder has tweened various properties
   # such as scale, color and angle. use those properties to determine

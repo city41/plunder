@@ -11,6 +11,7 @@ class Timeline
     throw new Error("Timeline requires an owner") unless @owner
     @_buildStack = []
     @_childConfigStack = []
+    @_builtAnis = []
 
   _getTargets: (targetOptions) ->
     targets = targetOptions.target ?  @owner
@@ -50,7 +51,7 @@ class Timeline
 
   _pushAnimation: (ani) ->
     if @_buildStack.length is 0
-      @owner.addPlunderAnimation ani
+      @_builtAnis.push(ani)
     else
       @_buildStack[@_buildStack.length - 1].children.push ani
 
@@ -139,7 +140,8 @@ class Timeline
 
   ## Animation maintenance
 
-  stop: ->
-    @owner.clearPlunderAnimations()
+  update: (delta) ->
+    for ani in @_builtAnis
+      ani.update(delta)
 
 module.exports = Timeline
