@@ -92,5 +92,5 @@ module.exports = (grunt) ->
   grunt.registerTask "default", ["mochaTest", "build:plunder"]
   grunt.registerTask "spec", ["mochaTest"]
   grunt.registerTask "build:plunder", ["clean", "coffee:plunder"]
-  grunt.registerTask "build:sandbox", ["browserify:sandbox"]
+  grunt.registerTask "build:sandbox", ["build:plunder", "browserify:sandbox"]
   grunt.registerTask "server:sandbox", ["build:sandbox", "connect", "watch:sandbox"]

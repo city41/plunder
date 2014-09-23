@@ -1,6 +1,9 @@
 Plunder = require('../index.js')
 Timeline = Plunder.Timeline
+Loader = Plunder.Loader
 U = Plunder.Util
+
+animationDefinition = require('./animation-definition.coffee')
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
@@ -79,6 +82,10 @@ class Entity
       tl.wait 500
       tl.reverse(group)
 
+  fromDefinition: ->
+    loader = new Loader()
+    loader.load(animationDefinition, @timeline)
+
   # this method is required by Plunder, an ani
   # is something like tween, bezier, scale, etc
   addPlunderAnimation: (ani) ->
@@ -119,7 +126,8 @@ entity = new Entity()
 #
 
 # entity.standard()
-entity.bezier()
+# entity.bezier()
+entity.fromDefinition()
 
 
 #

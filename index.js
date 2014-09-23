@@ -7,5 +7,6 @@ module.exports = {
   Repeat: require('./lib/Repeat'),
   Together: require('./lib/Together'),
   Tween: require('./lib/Tween'),
-  Wait: require('./lib/Wait')
+  Wait: require('./lib/Wait'),
+  Loader: require('./lib/Loader')
 };
