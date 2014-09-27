@@ -51,14 +51,6 @@ describe "Timeline", ->
       expect(tween.targets[0]).to.eql(targets[0])
       expect(tween.targets[1]).to.eql(targets[1])
 
-  describe "creating anis", ->
-    it "should add the ani to the owner", ->
-      tween = @timeline.tween
-        property: 'x'
-
-      expect(tween).to.be.an.instanceOf(Tween)
-      expect(tween).to.eql(@owner.anis[0])
-
   describe "#move", ->
     it "should translate x/y correctly", ->
       move = @timeline.move
